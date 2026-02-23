@@ -3,6 +3,11 @@
 -----------------------------------------------------------------------------------------------------------------------------------------
 local RColor,GColor,BColor = HexToRGB(Theme["main"])
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- DEFAULTCOLOURS
+-----------------------------------------------------------------------------------------------------------------------------------------
+local Def140R,Def140G,Def140B,Def140A = GetHudColour(140)
+local Def142R,Def142G,Def142B,Def142A = GetHudColour(142)
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- MODELEXIST
 -----------------------------------------------------------------------------------------------------------------------------------------
 function tvRP.ModelExist(Hash)
@@ -301,6 +306,37 @@ exports("ReloadCharacter",function()
 	SetWeaponDamageModifier("WEAPON_NIGHTSTICK",0.35)
 	SetWeaponDamageModifier("WEAPON_SMOKEGRENADE",0.0)
 	SetWeaponDamageModifier("WEAPON_STONE_HATCHET",0.25)
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- THREADDEFAULTCOLOURS
+-----------------------------------------------------------------------------------------------------------------------------------------
+CreateThread(function()
+	local WasEmergency = false
+
+	while true do
+		local Ped = PlayerPedId()
+		local InEmergency = false
+		if IsPedInAnyVehicle(Ped,false) then
+			local Vehicle = GetVehiclePedIsIn(Ped,false)
+			if GetVehicleClass(Vehicle) == 18 then
+				InEmergency = true
+			end
+		end
+
+		if InEmergency and not WasEmergency then
+			ReplaceHudColourWithRgba(140,Def140R,Def140G,Def140B,Def140A)
+			ReplaceHudColourWithRgba(142,Def142R,Def142G,Def142B,Def142A)
+
+			WasEmergency = true
+		elseif not InEmergency and WasEmergency then
+			ReplaceHudColourWithRgba(140,RColor,GColor,BColor,150)
+			ReplaceHudColourWithRgba(142,RColor,GColor,BColor,225)
+
+			WasEmergency = false
+		end
+
+		Wait(500)
+	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- REMOVEPICKUPS
