@@ -1,0 +1,7 @@
+Coords = vec3(124.200577, -1050.246948, 29.884678), Hash = -1156020871, Disabled = false, Lock = true, Distance = 1.75
+Coords = vec3(124.200577, -1050.246948, 29.884678), Hash = -1156020871, Disabled = false, Lock = true, Distance = 1.75
+Coords = vec3(124.200577, -1050.246948, 29.884678), Hash = -1156020871, Disabled = false, Lock = true, Distance = 1.75
+Coords = vec3(124.200577, -1050.246948, 29.884678), Hash = -1156020871, Disabled = false, Lock = true, Distance = 1.75
+Coords = vec3(124.200577, -1050.246948, 29.884678), Hash = -1156020871, Disabled = false, Lock = true, Distance = 1.75
+Coords = vec3(124.200577, -1050.246948, 29.884678), Hash = -1156020871, Disabled = false, Lock = true, Distance = 1.75
+Coords = vec3(124.200577, -1050.246948, 29.884678), Hash = -1156020871, Disabled = false, Lock = true, Distance = 1.75

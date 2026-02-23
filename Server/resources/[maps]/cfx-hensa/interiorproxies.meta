@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SInteriorOrderData>
+	<startFrom value="2165" />
+	<proxies>
+		<!-- ./input/cfx-hensa -->
+		<Item>hopital2</Item>
+		<Item>hensa_electric</Item>
+		<Item>bkr_id1_29_long_0</Item>
+		<Item>HensaGangs</Item>
+		<Item>lr_cs4_06_strm_2</Item>
+		<Item>lr_sc1_27_strm_0</Item>
+		<Item>HensaGarages</Item>
+		<Item>hedwig_hunt_milo_</Item>
+		<Item>hei_cs1_16_critical_0</Item>
+		<Item>liquor_milo_</Item>
+		<Item>cs2_occl_02</Item>
+		<Item>grapeseed_pharma</Item>
+		<Item>hei_dt1_14_long_0</Item>
+		<Item>hei_dt1_occl_07</Item>
+		<Item>hei_dt1_rd1_strm_6</Item>
+		<Item>pharmacy</Item>
+		<Item>HensaPrison</Item>
+		<Item>creativeFranklin</Item>
+		<Item>creativeLostudios</Item>
+		<Item>creativeOneFloors</Item>
+		<Item>creativeSquare</Item>
+		<Item>creativeThreeFloors</Item>
+		<Item>creativeTwoFloors</Item>
+		<Item>creativeWarehouseL</Item>
+		<Item>creativeWarehouseM</Item>
+		<Item>creativeWarehouseS</Item>
+		<Item>bh1_occl_05</Item>
+		<Item>hei_bh1_occl_05</Item>
+		<Item>np_town_hall_milo_</Item>
+		<Item>town_hall_details</Item>
+		<Item>HensaPalms</Item>
+	</proxies>
+</SInteriorOrderData>

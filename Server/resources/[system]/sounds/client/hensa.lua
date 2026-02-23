@@ -1,0 +1,10 @@
+RegisterNetEvent("sounds:playSound")
+AddEventHandler("sounds:playSound",function(Name,Sound,Volume,Loop)
+	exports.sounds:PlayUrl(Name,"nui://sounds/html/sounds/"..Sound..".mp3",Volume,Loop)
+end)
+
+RegisterNetEvent("sounds:playSoundDistance")
+AddEventHandler("sounds:playSoundDistance",function(Name,Sound,Volume,Loop,Coords,Distance)
+	exports.sounds:PlayUrlPos(Name,"nui://sounds/html/sounds/"..Sound..".mp3",Volume,vec3(Coords),Loop)
+	exports.sounds:Distance(Name,Distance)
+end)

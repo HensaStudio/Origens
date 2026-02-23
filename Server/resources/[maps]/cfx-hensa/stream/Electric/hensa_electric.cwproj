@@ -1,0 +1,27 @@
+<CodeWalkerProject>
+  <Name>New CodeWalker Project</Name>
+  <Version value="1" />
+  <YmapFilenames>
+    <Item>map1.ymap</Item>
+  </YmapFilenames>
+  <YtypFilenames>
+    <Item>hensa_prop_electric.ytyp</Item>
+  </YtypFilenames>
+  <YbnFilenames />
+  <YndFilenames />
+  <YnvFilenames />
+  <TrainsFilenames />
+  <ScenarioFilenames />
+  <AudioRelFilenames />
+  <YdrFilenames>
+    <Item>hensa_ground.ydr</Item>
+    <Item>hensa_prop_electric_plug.ydr</Item>
+    <Item>hensa_prop_electric_terminal2.ydr</Item>
+    <Item>hensa_prop_electric_terminal3.ydr</Item>
+    <Item>hensa_prop_electric_terminal4.ydr</Item>
+    <Item>hensa_prop_electric_terminal5.ydr</Item>
+  </YdrFilenames>
+  <YddFilenames />
+  <YftFilenames />
+  <YtdFilenames />
+</CodeWalkerProject>
