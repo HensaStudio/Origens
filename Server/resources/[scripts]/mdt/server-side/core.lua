@@ -1464,52 +1464,121 @@ end
 -- ASSIGNUNIT
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Creative.AssignUnit(Data)
-  local source = source
-  local Passport = vRP.Passport(source)
-  local Permission = Permission[Passport]
-  local Hierarchy = vRP.HasPermission(Passport, Permission)
+	local source = source
+	local Passport = vRP.Passport(source)
+	local Permission = Permission[Passport]
+	local Hierarchy = vRP.HasPermission(Passport, Permission)
 
-  local Number = Data.UnitId or Data.Id
-  local Data = Data.Passport or Data.Officer
+	local Number = Data.UnitId or Data.Id
+	local Data = Data.Passport or Data.Officer
 
-  if not Config.Permissions.Units.Assign == Hierarchy then
-      TriggerClientEvent("mdt:Notify", source, "Erro", "Você não tem permissão para atribuir unidades.", "vermelho")
-      return false
-  end
+	if not Config.Permissions.Units.Assign == Hierarchy then
+		TriggerClientEvent("mdt:Notify", source, "Erro", "Você não tem permissão para atribuir unidades.", "vermelho")
+		return false
+	end
 
-  local Consult = exports.oxmysql:single_async("SELECT * FROM mdt_creative_units WHERE id = ? AND Permission = ?", {Number, Permission})
+	local Consult = exports.oxmysql:single_async("SELECT * FROM mdt_creative_units WHERE id = ? AND Permission = ?", {Number, Permission})
 
-  local Officers = json.decode(Consult.Officers) or {}
+	local Officers = json.decode(Consult.Officers) or {}
 
-  for _, Existing in ipairs(Officers) do
-      if Existing == Data then
-          TriggerClientEvent("mdt:Notify", source, "Aviso", "Este oficial já está na unidade.", "amarelo")
-          return false
-      end
-  end
+	for _, Existing in ipairs(Officers) do
+		if Existing == Data then
+			TriggerClientEvent("mdt:Notify", source, "Aviso", "Este oficial já está na unidade.", "amarelo")
+			return false
+		end
+	end
 
-  table.insert(Officers, Data)
+	table.insert(Officers, Data)
 
-  local Consult = exports.oxmysql:execute_async("UPDATE mdt_creative_units SET Officers = ? WHERE id = ?", {json.encode(Officers), Number} )
+	local Consult = exports.oxmysql:execute_async("UPDATE mdt_creative_units SET Officers = ? WHERE id = ?", {json.encode(Officers), Number} )
 
-  if Consult then
-      local Name = vRP.FullName(Data)
-      TriggerClientEvent("mdt:Notify", source, "Sucesso", ("Oficial %s adicionado à unidade %s"):format(Name, Consult.Name), "verde")
-      
-      local Target = vRP.Source(Data)
-      if Target then
-          TriggerClientEvent("Notify", Target, "Unidade", ("Você foi designado para a unidade %s"):format(Consult.Name), "verde", 10000)
-      end
-      return true
-  else
-      TriggerClientEvent("mdt:Notify", source, "Erro", "Falha ao atualizar a unidade.", "vermelho")
-      return false
-  end
+	if Consult then
+		local Name = vRP.FullName(Data)
+		TriggerClientEvent("mdt:Notify", source, "Sucesso", ("Oficial %s adicionado à unidade %s"):format(Name, Consult.Name), "verde")
+	  
+		local Target = vRP.Source(Data)
+		if Target then
+			TriggerClientEvent("Notify", Target, "Unidade", ("Você foi designado para a unidade %s"):format(Consult.Name), "verde", 10000)
+		end
+		return true
+	else
+		TriggerClientEvent("mdt:Notify", source, "Erro", "Falha ao atualizar a unidade.", "vermelho")
+		return false
+	end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- REMOVEUNIT
 -----------------------------------------------------------------------------------------------------------------------------------------
+function Creative.RemoveUnit(Data)
+	local source = source
+	local Passport = vRP.Passport(source)
+	local Perm = Permission[Passport]
+	local Hierarchy = vRP.HasPermission(Passport, Perm)
 
+	local UnitId = tonumber(Data.Id or Data.UnitId) or 0
+	local OfficerRaw = Data.Officer or Data.Passport or Data.Officers
+
+	local OfficerList = {}
+	if type(OfficerRaw) == "table" then
+		for _,v in pairs(OfficerRaw) do
+			local num = tonumber(v) or tonumber(v and v.Value) or 0
+			if num > 0 then OfficerList[#OfficerList+1] = num end
+		end
+	else
+		local num = tonumber(OfficerRaw) or tonumber(OfficerRaw and OfficerRaw.Value) or 0
+		if num > 0 then OfficerList[1] = num end
+	end
+
+	if UnitId <= 0 or #OfficerList <= 0 then
+		TriggerClientEvent("mdt:Notify", source, "Erro", "Dados inválidos para remover unidade.", "vermelho")
+		return false
+	end
+
+	if not Config.Permissions.Units.Assign == Hierarchy then
+		TriggerClientEvent("mdt:Notify", source, "Erro", "Você não tem permissão para remover oficiais da unidade.", "vermelho")
+		return false
+	end
+
+	local Consult = exports.oxmysql:single_async("SELECT * FROM mdt_creative_units WHERE id = ? AND Permission = ?", { UnitId, Perm })
+	if not Consult then
+		TriggerClientEvent("mdt:Notify", source, "Erro", "Unidade não encontrada.", "vermelho")
+		return false
+	end
+
+	local Officers = json.decode(Consult.Officers) or {}
+	local RemovedAny = false
+
+	for _,Officer in ipairs(OfficerList) do
+		for i = #Officers, 1, -1 do
+			if tonumber(Officers[i]) == Officer then
+				table.remove(Officers, i)
+				RemovedAny = true
+				break
+			end
+		end
+	end
+
+	if not RemovedAny then
+		TriggerClientEvent("mdt:Notify", source, "Aviso", "Este oficial não está nessa unidade.", "amarelo")
+		return false
+	end
+
+	local Updated = exports.oxmysql:execute_async("UPDATE mdt_creative_units SET Officers = ? WHERE id = ? AND Permission = ?", { json.encode(Officers), UnitId, Perm })
+	if Updated then
+		for _,Officer in ipairs(OfficerList) do
+			local Name = vRP.FullName(Officer)
+			local Target = vRP.Source(Officer)
+			if Target then
+				TriggerClientEvent("Notify", Target, "Unidade", ("Você foi removido da unidade %s"):format(Consult.Name), "amarelo", 10000)
+			end
+			TriggerClientEvent("mdt:Notify", source, "Sucesso", ("Oficial %s removido da unidade %s."):format(Name, Consult.Name), "verde")
+		end
+		return true
+	end
+
+	TriggerClientEvent("mdt:Notify", source, "Erro", "Falha ao atualizar a unidade.", "vermelho")
+	return false
+end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- DESTROYUNIT
 -----------------------------------------------------------------------------------------------------------------------------------------
