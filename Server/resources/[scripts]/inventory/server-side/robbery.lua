@@ -37,6 +37,7 @@ local Config = {
 	Register = {
 		Timer = 15,
 		Cooldown = {},
+		Safecrack = true,
 		Percentage = 750,
 		Title = "Roubo a Registradora",
 		Payment = {
@@ -116,6 +117,14 @@ AddEventHandler("inventory:Robbery",function(Number,Mode)
 	if Configuration.Need then
 		if not vRP.ConsultItem(Passport,Configuration.Need.Item,Configuration.Need.Amount) then
 			TriggerClientEvent("Notify",source,"Atenção","Precisa de <b>"..Configuration.Need.Amount.."x "..ItemName(Configuration.Need.Item).."</b>.","amarelo",5000)
+			return
+		end
+	end
+
+	if Configuration.Safecrack then
+		local TaskResult = vRP.Safecrack(source,1)
+		if not TaskResult then
+			TriggerClientEvent("Notify",source,"Atenção","Você fracassou.","amarelo",5000)
 			return
 		end
 	end
@@ -205,7 +214,7 @@ AddEventHandler("inventory:Robbery",function(Number,Mode)
 		if Mode == "Register" then
 			vRP.GenerateItem(Passport,Configuration.Payment.Money.Item,Valuation,true)
 		elseif Configuration.Explosion then
-			local Coords = GetEntityCoords(GetPlayerPed(source))
+			local Coords = Robbery[Number] and Robbery[Number].Coords or GetEntityCoords(GetPlayerPed(source))
 
 			for _,PlayerSource in pairs(vRPC.Players(source)) do
 				async(function()
