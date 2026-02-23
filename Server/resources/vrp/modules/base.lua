@@ -298,7 +298,13 @@ AddEventHandler("playerConnecting",function(_,__,deferrals)
 	deferrals.defer()
 
 	local Source = source
+	deferrals.update("Validando identificação...")
+
 	local License = vRP.Identities(Source)
+	if not License then
+		deferrals.done("\n\nNão foi possível efetuar conexão com a Steam.")
+		return
+	end
 
 	local function Present(Card,Fallback,UseCard)
 		if UseCard and AdaptiveCardsEnabled and deferrals.presentCard then
@@ -311,79 +317,115 @@ AddEventHandler("playerConnecting",function(_,__,deferrals)
 	end
 
 	local function Generate(Body,Actions)
-		return json.encode({ ["$schema"] = "http://adaptivecards.io/schemas/adaptive-card.json", type = "AdaptiveCard", version = "1.6", body = Body, actions = Actions })
+		return json.encode({
+			["$schema"] = "http://adaptivecards.io/schemas/adaptive-card.json",
+			type = "AdaptiveCard",
+			version = "1.6",
+			body = Body,
+			actions = Actions
+		})
 	end
 
-	if not License then
-		local Card = Generate({
-			{
-				type = "RichTextBlock",
-				inlines = {
-					{ type = "TextRun", text = "Não foi possível efetuar conexão com a ", size = "Medium", weight = "Lighter" },
-					{ type = "TextRun", text = "Steam", size = "Medium", weight = "Bolder" }
-				}
-			}
-		},nil)
+	deferrals.update("Verificando conta...")
 
-		Present(Card,"\n\nNão foi possível efetuar conexão com a Steam.",AdaptiveCardsLicense)
-		return false
-	end
-
-	local Account = vRP.Account(License) or ( vRP.Query("accounts/NewAccount", { License = License, Token = vRP.GenerateToken() }) and vRP.Account(License) )
+	local Account = vRP.Account(License)
 	if not Account then
-		local Card = Generate({
-			{
-				type = "RichTextBlock",
-				inlines = {
-					{ type = "TextRun", text = "Não foi possível efetuar conexão com a ", size = "Medium", weight = "Lighter" },
-					{ type = "TextRun", text = (BaseMode == "steam" and "Steam" or "Rockstar"), size = "Medium", weight = "Bolder" }
-				}
-			}
-		},nil)
+		vRP.Query("accounts/NewAccount",{ License = License, Token = vRP.GenerateToken() })
 
-		Present(Card,"\n\nNão foi possível efetuar conexão com a " ..(BaseMode == "steam" and "Steam" or "Rockstar") .. ".",AdaptiveCardsAccount)
-		return false
+		Account = vRP.Account(License)
 	end
+
+	if not Account then
+		deferrals.done("\n\nNão foi possível carregar sua conta.")
+		return
+	end
+
+	deferrals.update("Verificando manutenção...")
 
 	if not MaintenanceCanAccess(License) then
 		local Card = Generate({
 			{
-				type = "RichTextBlock",
-				inlines = {
-					{ type = "TextRun", text = "O servidor encontra-se em manutenção.", size = "Medium", weight = "Bolder" },
-					{ type = "TextRun", text = "\nPara mais informações, acesse: ", size = "Small", weight = "Lighter" },
-					{ type = "TextRun", text = ServerLink, size = "Small", weight = "Bolder" }
-				}
+				type = "TextBlock",
+				text = "O servidor encontra-se em manutenção.",
+				size = "Medium",
+				weight = "Bolder",
+				wrap = true
+			},
+			{
+				type = "TextBlock",
+				text = "Para mais informações, acesse: "..ServerLink,
+				size = "Small",
+				wrap = true
 			}
 		},nil)
 
-		Present(Card,"\n\nO servidor encontra-se em manutenção.\nPara mais informações, acesse: "..ServerLink,AdaptiveCardsMaintenance)
-		return false
+		Present(Card,"\n\nServidor em manutenção.\nAcesse: "..ServerLink,AdaptiveCardsMaintenance)
+		return
 	end
 
-	local Banned = vRP.Banned(Source,Account)
-	if Banned and Account.Banned == -1 then
-		local Duration = "Permanente"
-		local Reason = Banned[1] == "Other" and (Banned[2] or "Banimento") or (Account.Reason or "Banimento administrativo")
+	deferrals.update("Verificando penalidades...")
 
-		local Card = Generate({
-			{ type = "Image", url = ServerAvatar or "", size = "Medium", style = "Person" },
-			{ type = "RichTextBlock", inlines = {{ type = "TextRun", text = "Consequência: ", size = "Medium", weight = "Bolder" },{ type = "TextRun", text = "Banido", size = "Medium", weight = "Lighter" }} },
-			{ type = "RichTextBlock", inlines = {{ type = "TextRun", text = "Tempo: ", size = "Medium", weight = "Bolder" },{ type = "TextRun", text = Duration, size = "Medium", weight = "Lighter" }} },
-			{ type = "RichTextBlock", inlines = {{ type = "TextRun", text = "Motivo: ", size = "Medium", weight = "Bolder" },{ type = "TextRun", text = Reason, size = "Medium", weight = "Lighter" }} }
-		},nil)
+	local CurrentTime = os.time()
+	local BanTime = tonumber(Account.Banned or 0)
 
-		Present(Card,Banned[1] == "Other" and ("\n\nBanido | "..Banned[2].."\nMotivo unilateral.") or ("\n\n<b>Consequência:</b> Banido\n<b>Tempo:</b> "..Duration.."\n<b>Motivo:</b> "..Reason),AdaptiveCardsBan)
-		return false
+	if BanTime and BanTime ~= 0 then
+		if BanTime == -1 then
+			local Reason = Account.Reason or "Banimento administrativo"
+
+			deferrals.done("\n\nVocê está banido permanentemente.\nMotivo: "..Reason)
+			return
+		end
+
+		if BanTime > CurrentTime then
+			local Remaining = BanTime - CurrentTime
+			local Days = math.floor(Remaining / 86400)
+			local Hours = math.floor((Remaining % 86400) / 3600)
+			local Minutes = math.floor((Remaining % 3600) / 60)
+
+			local Reason = Account.Reason or "Banimento administrativo"
+
+			deferrals.done("\n\nVocê está banido.\nTempo restante: "..Days.."d "..Hours.."h "..Minutes.."m\nMotivo: "..Reason)
+			return
+		end
+
+		if BanTime < CurrentTime then
+			vRP.Query("accounts/Unban",{ License = License })
+		end
 	end
+
+	deferrals.update("Verificando liberação...")
 
 	if Whitelisted and not Account.Whitelist then
-		local Card = Generate({ { type = "RichTextBlock", inlines = { { type = "TextRun", text = "Efetue sua liberação através do botão abaixo enviando " .. (Account[Liberation] or "") .. "", wrap = true, size = "Medium", weight = "Lighter" },{ type = "TextRun", text = tostring(Account[Liberation] or ""), weight = "Bolder", size = "Medium" }, { type = "TextRun", text = ".", size = "Medium", weight = "Lighter" }}}},{ { type = "Action.OpenUrl", title = "Clique para abrir o Discord", url = ServerLink } })
-		Present(Card,"\n\nEfetue sua liberação através do link <b>" ..ServerLink .. "</b> enviando <b>" .. (Account[Liberation] or "") .. "</b>",AdaptiveCardsWhitelist)
+		local Code = tostring(Account[LiberationMode] or "")
+
+		local Card = Generate({
+			{
+				type = "TextBlock",
+				text = "Efetue sua liberação enviando o código abaixo:",
+				wrap = true,
+				size = "Medium"
+			},
+			{
+				type = "TextBlock",
+				text = Code,
+				weight = "Bolder",
+				size = "Large",
+				wrap = true
+			}
+		},{
+			{
+				type = "Action.OpenUrl",
+				title = "Abrir Discord",
+				url = ServerLink
+			}
+		})
+
+		Present(Card,"\n\nEfetue sua liberação enviando o código "..Code.." em "..ServerLink,AdaptiveCardsWhitelist)
 		return
 	end
 
 	vRP.Query("accounts/LastLogin",{ License = License })
+	deferrals.update("Conectando ao servidor...")
 	deferrals.done()
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
