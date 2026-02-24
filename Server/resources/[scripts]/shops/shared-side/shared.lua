@@ -19,6 +19,9 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 Location = {
 	{
+		Coords = vec3(891.06,-1038.11,35.19),
+		Mode = "Laundromat"
+	},{
 		Coords = vec3(954.73,-967.78,39.5),
 		Mode = "Mechanic"
 	},{
@@ -219,6 +222,18 @@ Location = {
 -- LIST
 -----------------------------------------------------------------------------------------------------------------------------------------
 List = {
+	Laundromat = {
+		Mode = "Buy",
+		Type = "Illegal",
+		List = {
+			moneywash = 15000,
+			moneywashplus = 17000,
+			moneywashalpha = 21000,
+			moneywashomega = 25000,
+			washbattery = 5500,
+			washbleach = 1500
+		}
+	},
 	Mechanic = {
 		Mode = "Buy",
 		Type = "Cash",
