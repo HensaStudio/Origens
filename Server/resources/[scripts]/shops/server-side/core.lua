@@ -22,6 +22,11 @@ function Creative.Permission(Name)
 			return false
 		end
 
+		if Name == "Laundromat" and not vRP.ConsultItem(Passport,"laundromataccess",1) then
+			TriggerClientEvent("Notify",source,"Atenção","Você precisa de <b>1x "..ItemName("laundromataccess").."</b>.","amarelo",5000)
+			return false
+		end
+
 		if not List[Name]["Permission"] or (List[Name]["Permission"] and vRP.HasService(Passport,List[Name]["Permission"])) then
 			return true
 		end
@@ -99,43 +104,75 @@ function Creative.Take(Item,Amount,Target,Name)
 	local Amount = parseInt(Amount,true)
 	local Passport = vRP.Passport(source)
 	if Passport and Item and Target and List[Name] and List[Name]["Type"] and List[Name]["List"] and List[Name]["List"][Item] then
+		if Amount <= 0 then
+			return false
+		end
+
 		if Amount > 1 and (ItemUnique(Item) or ItemLoads(Item)) then
 			Amount = 1
 		end
 
 		local Inventory = vRP.Inventory(Passport)
-		if not vRP.MaxItens(Passport,Item,Amount) and vRP.CheckWeight(Passport,Item,Amount) and (not Inventory[Target] or (Inventory[Target] and Inventory[Target]["item"] == Item)) then
-			if List[Name]["Type"] == "Cash" then
+
+		if vRP.MaxItens(Passport,Item,Amount) then
+			TriggerClientEvent("inventory:Notify",source,"Aviso","Quantidade máxima atingida para este item.","amarelo")
+			return false
+		end
+
+		if not vRP.CheckWeight(Passport,Item,Amount) then
+			TriggerClientEvent("inventory:Notify",source,"Aviso","Espaço insuficiente na mochila.","amarelo")
+			return false
+		end
+
+		if Inventory[Target] and Inventory[Target]["item"] ~= Item then
+			TriggerClientEvent("inventory:Notify",source,"Aviso","Slot já está ocupado por outro item.","amarelo")
+			return false
+		end
+
+		if List[Name]["Type"] == "Cash" then
+			if ItemMedical(Item) then
+				local Prescription = vRP.HasPrescription(Passport,Item) or vRP.HasService(Passport,"Paramedic")
+				if not Prescription then
+					TriggerClientEvent("inventory:Notify",source,"Aviso","Você precisa de uma receita para comprar este medicamento.","amarelo")
+					return false
+				end
+			end
+
+			if vRP.PaymentFull(Passport,List[Name]["List"][Item] * Amount) then
+				vRP.GenerateItem(Passport,Item,Amount,false,Target)
+
 				if ItemMedical(Item) then
-					local Prescription = vRP.HasPrescription(Passport,Item) or vRP.HasService(Passport,"Paramedic")
-					if not Prescription then
-						TriggerClientEvent("inventory:Notify",source,"Aviso","Você precisa de uma receita para comprar este medicamento.","amarelo")
-						return false
+					local Prescription = vRP.HasPrescription(Passport,Item)
+					if Prescription then
+						vRP.TakeItem(Passport,Prescription.Item,1,true,Prescription.Slot)
 					end
 				end
 
-				if vRP.PaymentFull(Passport,List[Name]["List"][Item] * Amount) then
-					vRP.GenerateItem(Passport,Item,Amount,false,Target)
-
-					if ItemMedical(Item) then
-						local Prescription = vRP.HasPrescription(Passport,Item)
-						if Prescription then
-							vRP.TakeItem(Passport,Prescription.Item,1,true,Prescription.Slot)
-						end
-					end
-
-					if Item == "WEAPON_PETROLCAN" then
-						vRP.GenerateItem(Passport,"WEAPON_PETROLCAN_AMMO",4500)
-					end
-				else
-					TriggerClientEvent("inventory:Notify",source,"Aviso","Dinheiro insuficiente.","amarelo")
+				if Item == "WEAPON_PETROLCAN" then
+					vRP.GenerateItem(Passport,"WEAPON_PETROLCAN_AMMO",4500)
 				end
-			elseif List[Name]["Type"] == "Consume" and List[Name]["Item"] then
-				if vRP.TakeItem(Passport,List[Name]["Item"],List[Name]["List"][Item] * Amount) then
-					vRP.GenerateItem(Passport,Item,Amount,false,Target)
-				else
-					TriggerClientEvent("inventory:Notify",source,"Atenção","<b>"..ItemName(List[Name]["Item"]).."</b> insuficiente.","vermelho")
-				end
+			else
+				TriggerClientEvent("inventory:Notify",source,"Aviso","Dinheiro insuficiente.","amarelo")
+				return false
+			end
+		elseif List[Name]["Type"] == "Illegal" then
+
+			local Price = List[Name]["List"][Item] * Amount
+
+			if vRP.TakeItem(Passport,"dirtydollar",Price,true) then
+				vRP.GenerateItem(Passport,Item,Amount,false,Target)
+			else
+				TriggerClientEvent("inventory:Notify",source,"Aviso","Dinheiro Sujo insuficiente.","amarelo")
+				return false
+			end
+		elseif List[Name]["Type"] == "Consume" and List[Name]["Item"] then
+			local Required = List[Name]["List"][Item] * Amount
+
+			if vRP.TakeItem(Passport,List[Name]["Item"],Required) then
+				vRP.GenerateItem(Passport,Item,Amount,false,Target)
+			else
+				TriggerClientEvent("inventory:Notify",source,"Atenção","<b>"..ItemName(List[Name]["Item"]).."</b> insuficiente.","vermelho")
+				return false
 			end
 		end
 	end
