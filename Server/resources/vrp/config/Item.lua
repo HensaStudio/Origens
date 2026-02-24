@@ -3691,6 +3691,16 @@ local List = {
 		["Market"] = true,
 		["Economy"] = 4225
 	},
+	["laundromataccess"] = {
+		["Index"] = "laundromataccess",
+		["Name"] = "Chave de Acesso",
+		["Type"] = "Comum",
+		["Rarity"] = "rare",
+		["Arrest"] = true,
+		["Weight"] = 0.0,
+		["Economy"] = 1525,
+		["Market"] = true
+	},
 	["dismantle"] = {
 		["Index"] = "dismantle",
 		["Name"] = "Cartão Ilegível",
