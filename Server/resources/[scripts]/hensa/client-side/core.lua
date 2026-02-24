@@ -71,6 +71,8 @@ local BLIPS = {
 
 	{ Coords = vec3(1849.95,2586.06,45.67), Sprite = 438, Color = 22, Name = "Penitenciária de Bolingbroke", Scale = 0.6 },
 
+	{ Coords = vec3(896.79,-1037.06,35.25), Sprite = 73, Color = 78, Name = "Lavanderia", Scale = 0.6 },
+
 	{ Coords = vec3(265.01,-1261.14,29.28), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
 	{ Coords = vec3(818.8,-1027.92,26.4), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
 	{ Coords = vec3(1208.61,-1402.43,35.23), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
