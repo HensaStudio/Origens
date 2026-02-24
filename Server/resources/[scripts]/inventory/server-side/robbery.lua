@@ -34,6 +34,78 @@
 -- CONFIG
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Config = {
+	Laundromat = {
+		Police = 4,
+		Timer = 300,
+		Wanted = 1800,
+		Delay = 3600,
+		Cooldown = {},
+		Title = "Lavanderia",
+		Residual = "Resquício de Línter",
+		Payment = {
+			Multiplier = { Min = 1, Max = 1 },
+			List = {
+				{ Item = "wetdollar", Chance = 100, Min = 25000, Max = 65000 }
+			}
+		},
+		Need = {
+			Item = "lockpick",
+			Amount = 1,
+			Consume = true
+		},
+		Animation = {
+			Dict = "mini@safe_cracking",
+			Name = "dial_turn_anti_fast_1"
+		}
+	},
+	Ammunation = {
+		Police = 6,
+		Timer = 300,
+		Wanted = 1800,
+		Delay = 3600,
+		Cooldown = {},
+		Title = "Loja de Armamentos",
+		Residual = "Resquício de Línter",
+		Payment = {
+			Multiplier = { Min = 1, Max = 1 },
+			List = {
+				{ Item = "dirtydollar", Chance = 100, Min = 50000, Max = 75000 }
+			}
+		},
+		Need = {
+			Item = "lockpick",
+			Amount = 1,
+			Consume = true
+		},
+		Animation = {
+			Dict = "mini@safe_cracking",
+			Name = "dial_turn_anti_fast_1"
+		}
+	},
+	Department = {
+		Police = 8,
+		Timer = 300,
+		Wanted = 1800,
+		Delay = 3600,
+		Cooldown = {},
+		Title = "Loja de Departamento",
+		Residual = "Resquício de Línter",
+		Payment = {
+			Multiplier = { Min = 1, Max = 1 },
+			List = {
+				{ Item = "dirtydollar", Chance = 100, Min = 75000, Max = 100000 }
+			}
+		},
+		Need = {
+			Item = "lockpick",
+			Amount = 1,
+			Consume = true
+		},
+		Animation = {
+			Dict = "mini@safe_cracking",
+			Name = "dial_turn_anti_fast_1"
+		}
+	},
 	Register = {
 		Timer = 15,
 		Cooldown = {},
@@ -59,7 +131,8 @@ local Config = {
 			List = {
 				{ Item = "water", Chance = 100, Min = 1, Max = 2 },
 				{ Item = "bandage", Chance = 100, Min = 1, Max = 2 },
-				{ Item = "weedclone", Chance = 100, Min = 1, Max = 2 }
+				{ Item = "weedclone", Chance = 100, Min = 1, Max = 2 },
+				{ Item = "laundromataccess", Chance = 50, Min = 1, Max = 2 }
 			}
 		},
 		Animation = {
@@ -74,7 +147,11 @@ local Config = {
 		Cooldown = {},
 		Explosion = true,
 		Title = "Caixa Eletrônico",
-		Need = { Item = "c4", Amount = 1, Consume = true },
+		Need = {
+			Item = "c4",
+			Amount = 1,
+			Consume = true
+		},
 		Payment = {
 			Money = { Item = "dirtydollar", Min = 325, Max = 375 }
 		}
