@@ -18,11 +18,16 @@ local Mode = false
 local Checkpoint = 1
 local InitSeconds = 0
 local Selected = false
+local SmokeEffects = {}
 local Progressing = false
 local ExplodeTimers = false
 local Seconds = GetGameTimer()
 local ExplodeCooldown = GetGameTimer()
 local PositionCooldown = GetGameTimer()
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- THEME
+-----------------------------------------------------------------------------------------------------------------------------------------
+local RColor, GColor, BColor = HexToRGB(Theme["main"])
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- THREADRACES
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -69,7 +74,7 @@ CreateThread(function()
 			local Distance = #(Coords - InitCoords.xyz)
 
 			if Distance <= 25 then
-				DrawMarker(23,InitCoords.x,InitCoords.y,InitCoords.z - 0.35,0,0,0,0,0,0,10.0,10.0,10.0,88,101,242,175,false,false,0,false)
+				DrawMarker(23,InitCoords.x,InitCoords.y,InitCoords.z - 0.35,0,0,0,0,0,0,10.0,10.0,10.0,RColor,GColor,BColor,175,false,false,0,false)
 				TimeDistance = 0
 
 				if Distance <= 5 and IsControlJustPressed(1,38) and vSERVER.Runners(Mode,Selected) then
@@ -90,6 +95,7 @@ function FinishRace(Vehicle)
 	PlaySoundFrontend(-1,"RACE_PLACED","HUD_AWARDS",true)
 	vSERVER.Finish(Mode,Selected,Seconds,Position)
 	SendNUIMessage({ Action = "Close" })
+	CleanSmokeEffects()
 	CleanObjects()
 	CleanMarker()
 
@@ -102,10 +108,7 @@ function FinishRace(Vehicle)
 	SetNetworkVehicleAsGhost(Vehicle,false)
 	LocalPlayer.state:set("Races",false,false)
 
-	SendNUIMessage({
-		Action = "Results",
-		Payload = vSERVER.Ranking(Mode,Selected,ResultFinish)
-	})
+	SendNUIMessage({ Action = "Results", Payload = vSERVER.Ranking(Mode,Selected,ResultFinish) })
 
 	Selected,Mode = false,false
 
@@ -251,6 +254,7 @@ end
 -- CREATEDTYRES
 -----------------------------------------------------------------------------------------------------------------------------------------
 function CreatedTyres()
+	CleanSmokeEffects()
 	CleanObjects()
 
 	local Coords = Routes[Selected].Coords[Checkpoint]
@@ -264,6 +268,8 @@ function CreatedTyres()
 		PlaceObjectOnGroundProperly(v)
 		SetEntityCollision(v,false,false)
 	end
+
+	CreateSmokeEffect(Coords.Center)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CLEANMARKER
@@ -290,12 +296,44 @@ function CleanObjects()
 	Object = {}
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- CREATESMOKEEFFECT
+-----------------------------------------------------------------------------------------------------------------------------------------
+function CreateSmokeEffect(Coords)
+	RequestNamedPtfxAsset("core")
+
+	CreateThread(function()
+		while not HasNamedPtfxAssetLoaded("core") do
+			Wait(100)
+		end
+
+		local GroundZ = Coords.z
+
+		UseParticleFxAssetNextCall("core")
+		local SmokeEffect = StartParticleFxLoopedAtCoord("exp_grd_flare", Coords.x, Coords.y, GroundZ - 0.5, 0.0, 0.0, 0.0, 2.0, false, false, false, false)
+
+		SmokeEffects[#SmokeEffects + 1] = SmokeEffect
+	end)
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- CLEANSMOKEEFFECTS
+-----------------------------------------------------------------------------------------------------------------------------------------
+function CleanSmokeEffects()
+	for _,Effect in pairs(SmokeEffects) do
+		if DoesParticleFxLoopedExist(Effect) then
+			StopParticleFxLooped(Effect, false)
+		end
+	end
+
+	SmokeEffects = {}
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- STOPCIRCUIT
 -----------------------------------------------------------------------------------------------------------------------------------------
 function StopCircuit()
 	LocalPlayer.state:set("Races",false,false)
 	SendNUIMessage({ Action = "Close" })
 	vSERVER.Cancel()
+	CleanSmokeEffects()
 	CleanObjects()
 	CleanMarker()
 
