@@ -285,7 +285,7 @@ local List = {
 		Anim = { "amb@lo_res_idles@","world_human_lean_male_foot_up_lo_res_base" }
 	},{ -- MoneyWash
 		Distance = 50,
-		Coords = vec4(68.93,-1569.81,29.59,48.19),
+		Coords = vec4(890.81,-1041.15,35.25,331.66),
 		Model = "a_m_m_soucent_03",
 		Anim = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
 	},{ -- Throwing
