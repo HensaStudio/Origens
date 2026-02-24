@@ -710,36 +710,6 @@ ShopItens = {
 		Discount = 1.0,
 		Category = "Medicamentos"
 	},
-	moneywash = {
-		Price = 5000,
-		Discount = 1.0,
-		Category = "Lavagem"
-	},
-	moneywashplus = {
-		Price = 10000,
-		Discount = 0.95,
-		Category = "Lavagem"
-	},
-	moneywashalpha = {
-		Price = 20000,
-		Discount = 0.90,
-		Category = "Lavagem"
-	},
-	moneywashomega = {
-		Price = 100000,
-		Discount = 0.85,
-		Category = "Lavagem"
-	},
-	washbattery = {
-		Price = 750,
-		Discount = 1.0,
-		Category = "Lavagem"
-	},
-	washbleach = {
-		Price = 500,
-		Discount = 1.0,
-		Category = "Lavagem"
-	},
 	radiomhz = {
 		Price = 7500,
 		Discount = 1.0,
