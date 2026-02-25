@@ -11,6 +11,7 @@ vSERVER = Tunnel.getInterface("pause")
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Pause = false
 local Cooldown = GetGameTimer()
+local Coolranking = GetGameTimer()
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- COMMAND
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -86,6 +87,12 @@ RegisterNUICallback("Settings",function(Data,Callback)
 	Callback("Ok")
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- STATISTICS
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNUICallback("Statistics",function(Data,Callback)
+	Callback({ Statistics = vSERVER.Statistics(), Message = StatisticsMessage })
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- MAP
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNUICallback("Map",function(Data,Callback)
@@ -126,7 +133,7 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNUICallback("PropertyWaypoint",function(Data,Callback)
 	SetNewWaypoint(Propertys[Data.Index].Coords.x + 0.0001,Propertys[Data.Index].Coords.y + 0.0001)
-	SendNUIMessage({ Action = "Notify", Payload = { "Sucesso","Propriedade marcada.","verde" } })
+	TriggerEvent("pause:Notify","Sucesso","Propriedade marcada.","verde")
 
 	Callback("Ok")
 end)
@@ -220,7 +227,13 @@ end)
 -- RANKING
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNUICallback("Ranking",function(Data,Callback)
-	Callback(vSERVER.Ranking(Data.Column,Data.Direction))
+	if Coolranking > GetGameTimer() then
+		Callback(false)
+		return false
+	end
+
+	Coolranking = GetGameTimer() + 1000
+	Callback(vSERVER.Ranking(Data.Direction))
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- DAILY
@@ -245,5 +258,12 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNetEvent("pause:Notify")
 AddEventHandler("pause:Notify",function(Title,Message,Type)
-	SendNUIMessage({ Action = "Notify", Payload = { Title,Message,Type } })
+	SendNUIMessage({ Action = "Notify", Payload = { Title = Title, Message = Message, Type = Type } })
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- PAUSE:UPDATECONFIG
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("pause:UpdateConfig")
+AddEventHandler("pause:UpdateConfig",function()
+	SendNUIMessage({ Action = "UpdateConfig" })
 end)
