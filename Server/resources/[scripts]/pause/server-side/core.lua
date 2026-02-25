@@ -139,7 +139,7 @@ function Creative.Statistics()
 			local WeaponName = v.Weapon or "Desconhecida"
 			
 			local WeaponHash = tonumber(WeaponName)
-			if WeaponHash and WeaponsHash[WeaponHash] then
+			if WeaponHash and WeaponsHash and WeaponsHash[WeaponHash] then
 				WeaponName = WeaponsHash[WeaponHash]
 			end
 			
