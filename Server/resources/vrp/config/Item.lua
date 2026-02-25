@@ -3694,6 +3694,7 @@ local List = {
 	["laundromataccess"] = {
 		["Index"] = "laundromataccess",
 		["Name"] = "Chave de Acesso",
+		["Description"] = "Utilizada para liberar o acesso a Lavanderia.",
 		["Type"] = "Comum",
 		["Rarity"] = "rare",
 		["Arrest"] = true,
@@ -4099,7 +4100,7 @@ local List = {
 		["Name"] = "Dólar Molhado",
 		["Type"] = "Comum",
 		["Arrest"] = true,
-		["Weight"] = 0.05,
+		["Weight"] = 0.02,
 		["Market"] = true,
 		["Economy"] = 1
 	},
