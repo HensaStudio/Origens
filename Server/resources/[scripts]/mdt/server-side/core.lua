@@ -1416,54 +1416,54 @@ end
 -- CREATEUNIT
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Creative.CreateUnit(Data)
-  local source = source
-  local Passport = vRP.Passport(source)
-  local Permission = Permission[Passport]
-  local Hierarchy = vRP.HasPermission(Passport, Permission)
+	local source = source
+	local Passport = vRP.Passport(source)
+	local Permission = Permission[Passport]
+	local Hierarchy = vRP.HasPermission(Passport, Permission)
 
-  if not Config.Permissions.Units.Create == Hierarchy then
-      TriggerClientEvent("mdt:Notify", source, "Erro", "Você não possui permissões necessárias para criar unidades.", "vermelho")
-      return false
-  end
+	if not Config.Permissions.Units.Create == Hierarchy then
+		TriggerClientEvent("mdt:Notify", source, "Erro", "Você não possui permissões necessárias para criar unidades.", "vermelho")
+		return false
+	end
 
-  local Image = Data.Image
+	local Image = Data.Image
 
-  local Result = exports.oxmysql:insert_async("INSERT INTO mdt_creative_units (Image, Name, Permission, Officers) VALUES (?, ?, ?, ?)", {Image, Data.Name, Permission, "[]"} )
+	local Result = exports.oxmysql:insert_async("INSERT INTO mdt_creative_units (Image, Name, Permission, Officers) VALUES (?, ?, ?, ?)", {Image, Data.Name, Permission, "[]"} )
 
-  if Result then
-      TriggerClientEvent("mdt:Notify", source, "Sucesso", "Unidade <b>"..Data.Name.."</b> criada com sucesso.", "verde")
-      return true
-  else
-      TriggerClientEvent("mdt:Notify", source, "Erro", "Falha ao criar a unidade.", "vermelho")
-      return false
-  end
+	if Result then
+		TriggerClientEvent("mdt:Notify", source, "Sucesso", "Unidade <b>"..Data.Name.."</b> criada com sucesso.", "verde")
+		return true
+	else
+		TriggerClientEvent("mdt:Notify", source, "Erro", "Falha ao criar a unidade.", "vermelho")
+		return false
+	end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- UPDATEUNIT
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Creative.UpdateUnit(Data)
-  local source = source
-  local Passport = vRP.Passport(source)
-  local Permission = Permission[Passport]
-  local Hierarchy = vRP.HasPermission(Passport, Permission)
+	local source = source
+	local Passport = vRP.Passport(source)
+	local Permission = Permission[Passport]
+	local Hierarchy = vRP.HasPermission(Passport, Permission)
 
-  if not Config.Permissions.Units.Edit == Hierarchy then
-      TriggerClientEvent("mdt:Notify", source, "Erro", "Você não possui permissões necessárias para editar unidades.", "vermelho")
-      return false
-  end
+	if not Config.Permissions.Units.Edit == Hierarchy then
+		TriggerClientEvent("mdt:Notify", source, "Erro", "Você não possui permissões necessárias para editar unidades.", "vermelho")
+		return false
+	end
 
-  local Consult = exports.oxmysql:single_async("SELECT * FROM mdt_creative_units WHERE id = ? AND Permission = ?", {Data.Id, Permission})
+	local Consult = exports.oxmysql:single_async("SELECT * FROM mdt_creative_units WHERE id = ? AND Permission = ?", {Data.Id, Permission})
 
-  local Result = exports.oxmysql:execute_async("UPDATE mdt_creative_units SET Name = ?, Image = ? WHERE id = ?", {Data.Name, Data.Image or Consult.Image, Data.Id} )
+	local Result = exports.oxmysql:execute_async("UPDATE mdt_creative_units SET Name = ?, Image = ? WHERE id = ?", {Data.Name, Data.Image or Consult.Image, Data.Id} )
 
-  if Result then
-      TriggerClientEvent("mdt:Notify", source, "Sucesso", "Unidade <b>"..Data.Name.."</b> atualizada com sucesso.", "verde")
-      
-      return { Name = Data.Name, Image = Data.Image or Consult.Image, Id = Data.Id, Officers = json.decode(Consult.Officers) or {} }
-  else
-      TriggerClientEvent("mdt:Notify", source, "Erro", "Falha ao atualizar a unidade.", "vermelho")
-      return false
-  end
+	if Result then
+		TriggerClientEvent("mdt:Notify", source, "Sucesso", "Unidade <b>"..Data.Name.."</b> atualizada com sucesso.", "verde")
+
+		return { Name = Data.Name, Image = Data.Image or Consult.Image, Id = Data.Id, Officers = json.decode(Consult.Officers) or {} }
+	else
+		TriggerClientEvent("mdt:Notify", source, "Erro", "Falha ao atualizar a unidade.", "vermelho")
+		return false
+	end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- ASSIGNUNIT
@@ -1477,7 +1477,7 @@ function Creative.AssignUnit(Data)
 	local Number = Data.UnitId or Data.Id
 	local Data = Data.Passport or Data.Officer
 
-	if not Config.Permissions.Units.Assign == Hierarchy then
+	if Hierarchy ~= Config.Permissions.Units.Assign then
 		TriggerClientEvent("mdt:Notify", source, "Erro", "Você não tem permissão para atribuir unidades.", "vermelho")
 		return false
 	end
@@ -1505,6 +1505,7 @@ function Creative.AssignUnit(Data)
 		if Target then
 			TriggerClientEvent("Notify", Target, "Unidade", ("Você foi designado para a unidade %s"):format(Consult.Name), "verde", 10000)
 		end
+
 		return true
 	else
 		TriggerClientEvent("mdt:Notify", source, "Erro", "Falha ao atualizar a unidade.", "vermelho")
@@ -1520,18 +1521,38 @@ function Creative.RemoveUnit(Data)
 	local Perm = Permission[Passport]
 	local Hierarchy = vRP.HasPermission(Passport, Perm)
 
-	local UnitId = tonumber(Data.Id or Data.UnitId) or 0
-	local OfficerRaw = Data.Officer or Data.Passport or Data.Officers
+	local UnitId = tonumber(Data.Id or Data.UnitId or Data.unitId) or 0
+
+	if UnitId <= 0 and type(Data.Id or Data.UnitId) == "string" then
+		local unitName = Data.Id or Data.UnitId
+		local row = exports.oxmysql:single_async("SELECT id FROM mdt_creative_units WHERE Name = ? AND Permission = ? LIMIT 1", { unitName, Perm })
+		if row and row.id then UnitId = tonumber(row.id) or 0 end
+	end
+	local OfficerRaw = Data.Officer or Data.Passport or Data.Officers or Data.officer or Data.passport or Data.officers
 
 	local OfficerList = {}
+
+	local function pushOfficer(v)
+		if v == nil then return end
+		local num = tonumber(v)
+		if not num and type(v) == "table" then
+			num = tonumber(v.Value) or tonumber(v.value) or tonumber(v.Passport) or tonumber(v.passport) or tonumber(v.id) or tonumber(v.ID)
+		end
+		if num and num > 0 then
+			OfficerList[#OfficerList+1] = num
+		end
+	end
+
 	if type(OfficerRaw) == "table" then
-		for _,v in pairs(OfficerRaw) do
-			local num = tonumber(v) or tonumber(v and v.Value) or 0
-			if num > 0 then OfficerList[#OfficerList+1] = num end
+		if OfficerRaw.Value or OfficerRaw.value or OfficerRaw.Passport or OfficerRaw.passport or OfficerRaw.id or OfficerRaw.ID then
+			pushOfficer(OfficerRaw)
+		else
+			for _,v in pairs(OfficerRaw) do
+				pushOfficer(v)
+			end
 		end
 	else
-		local num = tonumber(OfficerRaw) or tonumber(OfficerRaw and OfficerRaw.Value) or 0
-		if num > 0 then OfficerList[1] = num end
+		pushOfficer(OfficerRaw)
 	end
 
 	if UnitId <= 0 or #OfficerList <= 0 then
@@ -1539,7 +1560,7 @@ function Creative.RemoveUnit(Data)
 		return false
 	end
 
-	if not Config.Permissions.Units.Assign == Hierarchy then
+	if Hierarchy ~= Config.Permissions.Units.Assign then
 		TriggerClientEvent("mdt:Notify", source, "Erro", "Você não tem permissão para remover oficiais da unidade.", "vermelho")
 		return false
 	end
@@ -1576,8 +1597,10 @@ function Creative.RemoveUnit(Data)
 			if Target then
 				TriggerClientEvent("Notify", Target, "Unidade", ("Você foi removido da unidade %s"):format(Consult.Name), "amarelo", 10000)
 			end
+
 			TriggerClientEvent("mdt:Notify", source, "Sucesso", ("Oficial %s removido da unidade %s."):format(Name, Consult.Name), "verde")
 		end
+
 		return true
 	end
 
