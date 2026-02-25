@@ -632,6 +632,7 @@ end
 -- ARREST
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Creative.Arrest(Data)
+	local source = source
 	local Passport = Data.Offender
 	local Officer = vRP.Passport(source)
 	local Timestamp = os.time()
@@ -651,6 +652,7 @@ function Creative.Arrest(Data)
 	if Data.ReductionFine and Data.ReductionFine > 0 then
 		Fine = math.floor(Fine * (1 - (Data.ReductionFine / 100)))
 	end
+
 	if Data.ReductionArrest and Data.ReductionArrest > 0 then
 		Services = math.floor(Services * (1 - (Data.ReductionArrest / 100)))
 	end
@@ -661,7 +663,8 @@ function Creative.Arrest(Data)
 
 	local Infractions = {}
 	for i = 1, #Articles do Infractions[i] = Articles[i].Article end
-	local Arrest = exports.oxmysql:insert_async("INSERT INTO `mdt_creative_arrest` (`Passport`, `Officer`, `Officers`, `Timestamp`, `Infractions`, `Arrest`, `Fine`, `Description`) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ", { Passport, Officer, Data.OfficersInvolved, Timestamp, table.concat(Infractions, ", "), Services, Fine, Description })
+
+	local Arrest = exports.oxmysql:insert_async("INSERT INTO `mdt_creative_arrest` (`Passport`, `Officer`, `Officers`, `Timestamp`, `Infractions`, `Arrest`, `Fine`, `Description`) VALUES (?, ?, ?, ?, ?, ?, ?, ?) ", { Passport, Officer, json.encode(Data.OfficersInvolved), Timestamp, table.concat(Infractions, ", "), Services, Fine, Description })
 
 	if Arrest then
 		if Services > 0 then
@@ -674,9 +677,11 @@ function Creative.Arrest(Data)
 
 				TriggerClientEvent("Notify", Target, "Boolingbroke", "Todas as lixeiras do pátio estão disponíveis para <b>vasculhar</b> em troca de redução penal.", "amarelo", 30000)
 			end
-		end
 
-		TriggerClientEvent("mdt:Notify", source, "Sucesso", "Prisão efetuada com sucesso.", "verde")
+			TriggerClientEvent("mdt:Notify", source, "Sucesso", "Prisão efetuada com sucesso.", "verde")
+		else
+			TriggerClientEvent("mdt:Notify", source, "Sucesso", "Multa aplicada com sucesso.", "verde")
+		end
 	end
 
 	return true
