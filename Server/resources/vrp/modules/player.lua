@@ -337,7 +337,7 @@ function vRP.Teleport(source,x,y,z)
 	if source and Characters[source] then
 		local Ped = GetPlayerPed(source)
 		if DoesEntityExist(Ped) then
-			if type(x) == "vec3" then
+			if type(x) == "vector3" or type(x) == "vector4" then
 				y = x.y
 				z = x.z
 				x = x.x
