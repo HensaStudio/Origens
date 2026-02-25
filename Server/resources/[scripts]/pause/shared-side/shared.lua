@@ -2,6 +2,11 @@
 -- VARIABLES
 -----------------------------------------------------------------------------------------------------------------------------------------
 MarketplaceTax = 0.03 -- Taxa em cima do valor do item anunciado.
+HomeBoxes = { 1,2,3 } -- ID das caixas que vão aparecer no inicio
+ShopAllDisplay = true -- Mostra a opção "Todos" na Loja
+BattlepassPoints = 500 -- Pontos para resgatar cada item
+BattlepassPrice = 10000 -- Valor para comprar o passe
+StatisticsMessage = "As informações apresentadas nesta página não devem ser utilizadas dentro do roleplay.<br>Todo o conteúdo aqui exibido tem caráter informativo e de consulta pessoal apenas.<br>O uso dessas informações para obter vantagens, reproduzir situações ou influenciar eventos dentro do servidor é estritamente proibido e pode resultar em punições administrativas." -- Mensagem que aparece nas estatisticas, false para remover
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- BOXES
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -587,13 +592,28 @@ Premium = {
 -----------------------------------------------------------------------------------------------------------------------------------------
 Propertys = {
 	{
-		Name = "Residência De Santa",
-		Image = "Michael",
-		Permission = "Michael",
-		Coords = vec3(-815.73,178.54,72.15),
+		Name = "Fazenda 01",
+		Image = "fazenda",
+		Permission = "Fazenda",
+		Coords = vec3(0.0,0.0,0.0),
 		Price = 100000,
 		Discount = 1.0,
 		Duration = 2592000,
+		Category = "Fazendas",
+		Rewards = {
+			"Textos da descrição. 01",
+			"Textos da descrição. 02",
+			"Textos da descrição. 03"
+		}
+	},{
+		Name = "Fazenda 02",
+		Image = "fazenda",
+		Permission = "Fazenda",
+		Coords = vec3(0.0,0.0,0.0),
+		Price = 100000,
+		Discount = 1.0,
+		Duration = 2592000,
+		Category = "Mansões",
 		Rewards = {
 			"Textos da descrição. 01",
 			"Textos da descrição. 02",
@@ -609,6 +629,21 @@ ShopItens = {
 		Price = 1,
 		Discount = 1.0,
 		Category = "Diamantes"
+	},
+	personalp = {
+		Price = 2000,
+		Discount = 1.0,
+		Category = "Pessoal"
+	},
+	personalm = {
+		Price = 4000,
+		Discount = 1.0,
+		Category = "Pessoal"
+	},
+	personalg = {
+		Price = 7000,
+		Discount = 1.0,
+		Category = "Pessoal"
 	},
 	skinshop = {
 		Price = 25000,
@@ -629,11 +664,6 @@ ShopItens = {
 		Price = 5000,
 		Discount = 1.0,
 		Category = "Veículos"
-	},
-	newchars = {
-		Price = 4000,
-		Discount = 1.0,
-		Category = "Utilidades"
 	},
 	namechange = {
 		Price = 3000,
@@ -710,6 +740,36 @@ ShopItens = {
 		Discount = 1.0,
 		Category = "Medicamentos"
 	},
+	moneywash = {
+		Price = 5000,
+		Discount = 1.0,
+		Category = "Lavagem"
+	},
+	moneywashplus = {
+		Price = 10000,
+		Discount = 0.95,
+		Category = "Lavagem"
+	},
+	moneywashalpha = {
+		Price = 20000,
+		Discount = 0.90,
+		Category = "Lavagem"
+	},
+	moneywashomega = {
+		Price = 100000,
+		Discount = 0.85,
+		Category = "Lavagem"
+	},
+	washbattery = {
+		Price = 750,
+		Discount = 1.0,
+		Category = "Lavagem"
+	},
+	washbleach = {
+		Price = 500,
+		Discount = 1.0,
+		Category = "Lavagem"
+	},
 	radiomhz = {
 		Price = 7500,
 		Discount = 1.0,
@@ -757,9 +817,9 @@ ShopItens = {
 	}
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
--- ROLEITENS
+-- BATTLEPASS
 -----------------------------------------------------------------------------------------------------------------------------------------
-RoleItens = {
+Battlepass = {
 	Free = {
 		{
 			Amount = 1000,
