@@ -610,7 +610,7 @@ Use = {
 
 	["vehiclekey"] = function(source,Passport,Amount,Slot,Full,Item,Split)
 		local Vehicle,Network,Plate = vRPC.VehicleList(source)
-		if Vehicle and Plate == Split[3] then
+		if Vehicle and Plate == Split[2] then
 			TriggerEvent("garages:LockVehicle",source,Network)
 		end
 	end,
@@ -3291,7 +3291,7 @@ for Model,v in pairs(VehicleList()) do
 						vRP.Query("vehicles/addVehicles",{ Passport = Passport, Vehicle = Model, Plate = Plate, Weight = VehicleWeight(Model), Work = 0 })
 					end
 
-					TriggerClientEvent("inventory:Notify",source,"Sucesso","Veículo <b>"..VehicleName(Model).."</b> adicionado.","verde")
+					TriggerClientEvent("inventory:Notify",source,"Sucesso","Veículo <b>"..VehicleName(Model).."</b> adicionado.<br>Retire seu novo veículo na <b>Garagem 1</b>.","verde")
 					TriggerClientEvent("inventory:Update",source)
 				end
 			end
