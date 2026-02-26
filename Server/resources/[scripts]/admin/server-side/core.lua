@@ -1371,7 +1371,7 @@ RegisterCommand("addcar",function(source)
 
 	exports.oxmysql:query_async("INSERT IGNORE INTO vehicles (Passport,Vehicle,Plate,Weight,Work,Rental,Tax,Block) VALUES (@Passport,@Vehicle,@Plate,@Weight,@Work,@Rental,@Tax,@Block)",{ Passport = OtherPassport, Vehicle = Model, Plate = Plate, Weight = Weight, Work = Work, Rental = Rental, Tax = Tax, Block = Block })
 	exports.discord:Embed("AddCar","**[ADMIN]:** "..Passport.."\n**[PASSAPORTE]:** "..OtherPassport.."\n**[MODEL]:** "..Model.."\n**[TIPO]:** "..Mode)
-	vRP.GiveItem(OtherPassport,"vehiclekey-"..os.time().."-"..Plate,1,true)
+	vRP.GiveItem(OtherPassport,"vehiclekey-"..Plate,1,true)
 	TriggerClientEvent("Notify",source,"Sucesso","Veículo <b>"..VehicleName(Model).."</b> entregue.","verde",5000)
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
