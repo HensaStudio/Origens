@@ -99,7 +99,7 @@ exports("Drops",function(Passport,source,Item,Amount,Force,Coords)
 		local Item = Split[1]
 
 		if not Provisory.desc then
-			if Item == "vehiclekey" and Split[3] then
+			if Item == "vehiclekey" and Split[2] then
 				local Consult = exports.oxmysql:single_async("SELECT * FROM vehicles WHERE Plate = ? LIMIT 1",{ Split[3] })
 				if Consult and VehicleExist(Consult.Vehicle) then
 					Provisory.desc = "Proprietário: <common>"..vRP.FullName(Consult.Passport).."</common><br>Modelo: <common>"..VehicleName(Consult.Vehicle).."</common><br>Placa: <common>"..Split[3].."</common>"
