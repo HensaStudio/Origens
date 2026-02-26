@@ -57,9 +57,9 @@ function Creative.Buy(Model)
 						local GeneratePlate = vRP.GeneratePlate()
 
 						vRP.Query("vehicles/rentalVehicles",{ Passport = Passport, Vehicle = Model, Plate = GeneratePlate, Days = 30, Weight = VehicleWeight(Model), Work = 0 })
-						vRP.GiveItem(Passport,"vehiclekey-"..os.time().."-"..GeneratePlate,1,true)
+						vRP.GiveItem(Passport,"vehiclekey-"..GeneratePlate,1,true)
 						exports.discord:Embed("Pdm","**[PASSAPORTE]:** "..Passport.."\n**[COMPROU]:** "..Model.."\n**[VALOR]:** "..Dotted(PaymentValue).." Diamantes.")
-						TriggerClientEvent("Notify",source,"Sucesso","Aluguel do veículo <b>"..VehicleName(Model).."</b> concluído.","verde",5000)
+						TriggerClientEvent("Notify",source,"Sucesso","Aluguel do veículo <b>"..VehicleName(Model).."</b> concluído.<br>Retire seu veículo na <b>Garagem 1</b>.","verde",10000)
 						Return = true
 					else
 						TriggerClientEvent("Notify",source,"Aviso","Diamante insuficiente.","amarelo",5000)
@@ -72,12 +72,12 @@ function Creative.Buy(Model)
 						vRP.Query("vehicles/addVehicles",{ Passport = Passport, Vehicle = Model, Plate = GeneratePlate, Weight = VehicleWeight(Model), Work = 0 })
 
 						if VehicleClass(Model) ~= "Bicicletas" then
-							vRP.GiveItem(Passport,"vehiclekey-"..os.time().."-"..GeneratePlate,1,true)
+							vRP.GiveItem(Passport,"vehiclekey-"..GeneratePlate,1,true)
 						end
 
 						exports.discord:Embed("Pdm","**[PASSAPORTE]:** "..Passport.."\n**[COMPROU]:** "..Model.."\n**[VALOR]:** "..Currency..Dotted(VehiclePrice))
 						exports.bank:AddTaxs(Passport,source,"Concessionária",VehiclePrice,"Compra do veículo "..VehicleName(Model)..".",false)
-						TriggerClientEvent("Notify",source,"Sucesso","Compra concluída.","verde",5000)
+						TriggerClientEvent("Notify",source,"Sucesso","Compra concluída.<br>Retire seu novo veículo na <b>Garagem 1</b>.","verde",10000)
 						Return = true
 					else
 						TriggerClientEvent("Notify",source,"Aviso","Dinheiro insuficiente.","amarelo",5000)
@@ -167,7 +167,7 @@ AddEventHandler("pdm:MakeVehiclekey", function(Plate)
 
 		if vRP.Request(Passport,"Concessionária","A <b>"..ItemName("vehiclekey").."</b> tem o custo de <b>"..Currency..""..Dotted(VehiclekeyPrice).."</b> dólares, deseja prosseguir com a criação da mesma?") then
 			if vRP.PaymentFull(Passport,VehiclekeyPrice) then
-				vRP.GiveItem(Passport,"vehiclekey-"..os.time().."-"..Plate,1,true)
+				vRP.GiveItem(Passport,"vehiclekey-"..Plate,1,true)
 			end
 		end
 	end
