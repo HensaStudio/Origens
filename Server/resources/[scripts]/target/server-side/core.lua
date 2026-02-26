@@ -64,15 +64,6 @@ function Creative.AcademyWeight(Number)
 	end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
--- DISCONNECT
------------------------------------------------------------------------------------------------------------------------------------------
-AddEventHandler("Disconnect",function(Passport)
-	if Workout[Passport] then
-		GlobalState["Academy-"..Workout[Passport]] = false
-		Workout[Passport] = nil
-	end
-end)
------------------------------------------------------------------------------------------------------------------------------------------
 -- CHECKIN
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Creative.CheckIn()
@@ -82,6 +73,11 @@ function Creative.CheckIn()
 	local Valuation,Repose = 1000,1200
 	local Passport = vRP.Passport(source)
 	if Passport then
+		if vRP.AmountService("Paramedic") > 0 then
+			TriggerClientEvent("Notify",source,"Atenção","Há paramédicos em serviço no momento. Procure um deles para receber atendimento.","amarelo",10000)
+			Return = false
+		end
+
 		local MedicPlan = vRP.DatatableInformation(Passport,"MedicPlan")
 		if MedicPlan and MedicPlan > os.time() then
 			Valuation,Repose = 500,600
@@ -211,5 +207,14 @@ AddEventHandler("target:Announces", function(Service)
 				TriggerClientEvent("Notify",source,"Aviso","Você não pode enviar um anúncio.","vermelho",5000)
 			end
 		end
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- DISCONNECT
+-----------------------------------------------------------------------------------------------------------------------------------------
+AddEventHandler("Disconnect",function(Passport)
+	if Workout[Passport] then
+		GlobalState["Academy-"..Workout[Passport]] = false
+		Workout[Passport] = nil
 	end
 end)
