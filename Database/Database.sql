@@ -32,7 +32,6 @@ CREATE TABLE IF NOT EXISTS `characters` (
   `Name` varchar(50) DEFAULT 'Individuo',
   `Lastname` varchar(50) DEFAULT 'Indigente',
   `License` varchar(50) DEFAULT NULL,
-  `Locate` varchar(5) DEFAULT 'Hensa',
   `Bank` bigint(20) NOT NULL DEFAULT 5000,
   `Blood` int(1) NOT NULL DEFAULT 1,
   `Prison` int(10) NOT NULL DEFAULT 0,
