@@ -474,6 +474,7 @@ CREATE TABLE IF NOT EXISTS `vehicles` (
   `Dirt` int(5) NOT NULL DEFAULT 0.0,
   `Seatbelt` tinyint(1) NOT NULL DEFAULT 0,
   `Drift` tinyint(1) NOT NULL DEFAULT 0,
+  `Keys` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `Passport` (`Passport`),
   KEY `Vehicle` (`Vehicle`) USING BTREE
