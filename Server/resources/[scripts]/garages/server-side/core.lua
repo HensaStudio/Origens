@@ -280,6 +280,11 @@ AddEventHandler("garages:Respawns",function(Plate)
 	TriggerClientEvent("garages:Respawn",-1,"Remove",Plate)
 	Spawn[Plate] = { Spawn[1],VehicleData.Vehicle,Vehicle }
 	Respawns[Plate] = nil
+
+	if VehicleData.Keys == 1 then
+		vRP.GiveItem(Passport,"vehiclekey-"..Plate,1,true)
+		vRP.Query("vehicles/updateVehiclesKeys",{ Passport = Passport, Vehicle = VehicleData.Vehicle, Keys = 0 })
+	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- GARAGES:CHANGEPLATE
@@ -411,34 +416,41 @@ function Creative.Vehicles(Number)
 		local Consult = vRP.Query("vehicles/UserVehicles",{ Passport = Passport })
 		for _,v in pairs(Consult) do
 			if VehicleExist(v.Vehicle) and not v.Work then
-				local TaxTimer,RentalTimer = false,false
+				if not Garage.Save or v.Save == Number then
+					local TaxTimer,RentalTimer = false,false
 
-				if v.Tax > os.time() then
-					TaxTimer = CompleteTimers(v.Tax - os.time())
-				end
-
-				if v.Rental ~= 0 then
-					if v.Rental > os.time() then
-						RentalTimer = CompleteTimers(v.Rental - os.time())
-					else
-						RentalTimer = "Vencido"
+					if v.Tax > os.time() then
+						TaxTimer = CompleteTimers(v.Tax - os.time())
 					end
-				end
 
-				table.insert(Vehicles,{
-					Model = v.Vehicle,
-					Name = VehicleName(v.Vehicle),
-					Tax = VehiclePrice(v.Vehicle) * 0.15,
-					Mode = VehicleMode(v.Vehicle),
-					Weight = v.Weight,
-					Engine = v.Engine / 10,
-					Body = v.Body / 10,
-					Fuel = v.Fuel,
-					TaxTime = TaxTimer,
-					RentalTime = RentalTimer
-				})
+					if v.Rental ~= 0 then
+						if v.Rental > os.time() then
+							RentalTimer = CompleteTimers(v.Rental - os.time())
+						else
+							RentalTimer = "Vencido"
+						end
+					end
+
+					table.insert(Vehicles,{
+						Model = v.Vehicle,
+						Name = VehicleName(v.Vehicle),
+						Tax = VehiclePrice(v.Vehicle) * 0.15,
+						Mode = VehicleMode(v.Vehicle),
+						Weight = v.Weight,
+						Engine = v.Engine / 10,
+						Body = v.Body / 10,
+						Fuel = v.Fuel,
+						TaxTime = TaxTimer,
+						RentalTime = RentalTimer
+					})
+				end
 			end
 		end
+	end
+
+	if #Vehicles <= 0 then
+		TriggerClientEvent("Notify",source,"Aviso","Você não possui veículos nesta garagem.","amarelo",5000)
+		return false
 	end
 
 	return Vehicles
@@ -632,7 +644,7 @@ AddEventHandler("garages:Spawn",function(Name,Number)
 					vRP.Query("vehicles/addVehicles",{ Passport = Passport, Vehicle = Name, Plate = GeneratePlate, Weight = VehicleWeight(Name), Work = 1 })
 
 					if Class ~= "Bicicletas" then
-						vRP.GiveItem(Passport,"vehiclekey-"..os.time().."-"..GeneratePlate,1,true)
+						vRP.GiveItem(Passport,"vehiclekey-"..GeneratePlate,1,true)
 					end
 
 					exports.discord:Embed("Vehicles","**[PASSAPORTE]:** "..Passport.."\n**[COMPROU]:** "..Name.."\n**[VALOR]:** "..Currency..Dotted(Price))
@@ -655,23 +667,8 @@ AddEventHandler("garages:Spawn",function(Name,Number)
 
 	local SaveGarage = Vehicle.Save
 	if Number ~= SaveGarage then
-		if Garages[SaveGarage] and Garages[Number] and Garages[Number].Save then
-			TriggerClientEvent("Notify",source,"Aviso","O veículo não está neste local, mas será marcado no mapa por 30 segundos.","amarelo",5000)
-			TriggerClientEvent("garages:Close",source)
-			vCLIENT.SearchBlip(source,SaveGarage)
-
-			if vRP.Request(source,"Garagem",("Resgatar o veículo custa <b>%s%s</b>, deseja prosseguir?"):format(Currency,Dotted(Price * 0.1))) then
-				if not vRP.PaymentFull(Passport,Price * 0.1) then
-					return CancelProcess("Dinheiro insuficiente.")
-				end
-
-				vRP.Update("vehicles/UpdateSave",{ Passport = Passport, Vehicle = Name, Save = Number })
-				TriggerClientEvent("Notify",source,"Sucesso","Resgate concluído.","verde",5000)
-			else
-				return CancelProcess("Processo cancelado.")
-			end
-		else
-			vRP.Update("vehicles/UpdateSave",{ Passport = Passport, Vehicle = Name, Save = Number })
+		if Garages[Number] and Garages[Number].Save then
+			return CancelProcess("O veículo não está neste local. Ele se encontra na <b>Garagem "..SaveGarage.."</b>.")
 		end
 	end
 
@@ -764,6 +761,11 @@ AddEventHandler("garages:Spawn",function(Name,Number)
 
 				Entity(Entitys).state:set("Lockpick",Passport,true)
 				Spawn[Plate] = { Passport,Name,Entitys }
+
+				if Vehicle.Keys == 1 then
+					vRP.GiveItem(Passport,"vehiclekey-"..Plate,1,true)
+					vRP.Query("vehicles/updateVehiclesKeys",{ Passport = Passport, Vehicle = Name, Keys = 0 })
+				end
 			end
 		end
 	end
@@ -797,7 +799,7 @@ RegisterCommand("car",function(source,Message)
 	end
 
 	if not vRP.PassportHasVehicleKey(Passport,Plate) then
-		vRP.GiveItem(Passport,"vehiclekey-"..os.time().."-"..Plate,1,true)
+		vRP.GiveItem(Passport,"vehiclekey-"..Plate,1,true)
 	end
 
 	Entity(Vehicle).state:set("Lockpick",Plate,true)
@@ -839,7 +841,7 @@ AddEventHandler("garages:Key",function(EntityData)
 	end
 
 	if vRP.Request(source,"Garagem","Você realmente deseja criar <b>1x "..ItemName("vehiclekey").."</b> no emplacamento <b>"..Plate.."</b>?") then
-		vRP.GiveItem(Passport,"vehiclekey-"..os.time().."-"..Plate,1,true)
+		vRP.GiveItem(Passport,"vehiclekey-"..Plate,1,true)
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -897,6 +899,7 @@ end)
 -- DELETE
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Creative.Delete(Network,Doors,Tyres,Brakes,Plate,Save)
+	local source = source
 	local Networked = NetworkGetEntityFromNetworkId(Network)
 	if not DoesEntityExist(Networked) or IsPedAPlayer(Networked) or GetEntityType(Networked) ~= 2 or GetVehicleNumberPlateText(Networked) ~= Plate then
 		return false
@@ -905,6 +908,23 @@ function Creative.Delete(Network,Doors,Tyres,Brakes,Plate,Save)
 	if Spawn[Plate] then
 		local Name = Spawn[Plate][2]
 		local Passport = Spawn[Plate][1]
+		local PlayerPassport = vRP.Passport(source)
+
+		local KeyFound = false
+		local Inventory = vRP.Inventory(PlayerPassport)
+		for Slot,v in pairs(Inventory) do
+			local Split = splitString(v.item,"-")
+			if Split[1] == "vehiclekey" and Split[2] == Plate then
+				KeyFound = true
+				break
+			end
+		end
+
+		if not KeyFound and VehicleClass(Name) ~= "Bicicletas" then
+			TriggerClientEvent("Notify",source,"Aviso","Você não possui a chave do veículo <b>"..VehicleName(Name).."</b> por isso não pode guardar ele.","amarelo",5000)
+			return false
+		end
+
 		if vRP.SelectVehicle(Passport,Name) then
 			local Health = GetEntityHealth(Networked)
 			local Dirt = GetVehicleDirtLevel(Networked)
@@ -925,10 +945,22 @@ function Creative.Delete(Network,Doors,Tyres,Brakes,Plate,Save)
 			local TyresJson = json.encode(Tyres)
 			local BrakesJson = json.encode(Brakes)
 
+			local HasKey = 0
+			local Inventory = vRP.Inventory(PlayerPassport)
+			for Slot,v in pairs(Inventory) do
+				local Split = splitString(v.item,"-")
+				if Split[1] == "vehiclekey" and Split[2] == Plate then
+					if vRP.TakeItem(PlayerPassport,v.item,1,true,Slot) then
+						HasKey = 1
+						break
+					end
+				end
+			end
+
 			if VehicleMode(Name) ~= "Work" and Save and Garages[Save] and Garages[Save].Name == "Garage" then
-				vRP.Update("vehicles/updateVehiclesSave",{ Engine = math.floor(Engine), Body = math.floor(Body), Health = math.floor(Health), Fuel = Fuel, Nitro = Nitro, Doors = DoorsJson, Windows = WindowsJson, Tyres = TyresJson, Brakes = BrakesJson, Dirt = math.floor(Dirt), Save = Save, Passport = Passport, Vehicle = Name })
+				vRP.Update("vehicles/updateVehiclesSave",{ Engine = math.floor(Engine), Body = math.floor(Body), Health = math.floor(Health), Fuel = Fuel, Nitro = Nitro, Doors = DoorsJson, Windows = WindowsJson, Tyres = TyresJson, Brakes = BrakesJson, Dirt = math.floor(Dirt), Save = Save, Passport = Passport, Vehicle = Name, Keys = HasKey })
 			else
-				vRP.Update("vehicles/updateVehicles",{ Engine = math.floor(Engine), Body = math.floor(Body), Health = math.floor(Health), Fuel = Fuel, Nitro = Nitro, Doors = DoorsJson, Windows = WindowsJson, Tyres = TyresJson, Brakes = BrakesJson, Dirt = math.floor(Dirt), Passport = Passport, Vehicle = Name })
+				vRP.Update("vehicles/updateVehicles",{ Engine = math.floor(Engine), Body = math.floor(Body), Health = math.floor(Health), Fuel = Fuel, Nitro = Nitro, Doors = DoorsJson, Windows = WindowsJson, Tyres = TyresJson, Brakes = BrakesJson, Dirt = math.floor(Dirt), Passport = Passport, Vehicle = Name, Keys = HasKey })
 			end
 		end
 	end
