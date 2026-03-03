@@ -8,6 +8,11 @@ local Timer = 0
 local Cocaine = 0
 local CocaineTimer = 0
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- ENERGETIC
+-----------------------------------------------------------------------------------------------------------------------------------------
+local Energetic = 0
+local EnergeticTimer = 0
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- METHAMPHETAMINE
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Methamphetamine = 0
@@ -177,6 +182,18 @@ AddEventHandler("Cocaine",function()
 	Cocaine = Cocaine + 30
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- ENERGETIC
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("Energetic")
+AddEventHandler("Energetic",function(Timer,Number)
+	Energetic = Energetic + Timer
+	SetRunSprintMultiplierForPlayer(PlayerId(),Number)
+
+	if not AnimpostfxIsRunning("HeistTripSkipFade") then
+		AnimpostfxPlay("HeistTripSkipFade",0,true)
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- METHAMPHETAMINE
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNetEvent("Methamphetamine")
@@ -281,6 +298,25 @@ CreateThread(function()
 				end
 
 				Cocaine = 0
+			end
+		end
+
+		if Energetic > 0 and GetGameTimer() >= EnergeticTimer then
+			Energetic = Energetic - 1
+			RestorePlayerStamina(Pid,1.0)
+			EnergeticTimer = GetGameTimer() + 1000
+
+			if Energetic <= 0 or Health <= 100 then
+				if AnimpostfxIsRunning("HeistTripSkipFade") then
+					AnimpostfxStop("HeistTripSkipFade")
+				end
+
+				if AnimpostfxIsRunning("MinigameTransitionIn") then
+					AnimpostfxStop("MinigameTransitionIn")
+				end
+
+				SetRunSprintMultiplierForPlayer(Pid,1.0)
+				Energetic = 0
 			end
 		end
 
