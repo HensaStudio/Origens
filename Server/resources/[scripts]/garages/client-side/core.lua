@@ -364,23 +364,11 @@ end
 RegisterNetEvent("garages:Delete")
 AddEventHandler("garages:Delete",function(Vehicle)
 	if not Vehicle or Vehicle == "" then
-		Vehicle = vRP.ClosestVehicle(15)
+		Vehicle = vRP.VehicleList(5.0)
 	end
 
 	if IsEntityAVehicle(Vehicle) and (not Entity(Vehicle).state.Tow or LocalPlayer.state.Admin) then
-		local Doors = {}
-		for Number = 0,5 do
-			Doors[Number] = IsVehicleDoorDamaged(Vehicle,Number)
-		end
-
-		local Tyres = {}
-		for Number = 0,7 do
-			Tyres[Number] = (GetTyreHealth(Vehicle,Number) ~= 1000.0 and true or false)
-		end
-
-		local Brakes = { GetVehicleHandlingFloat(Vehicle,"CHandlingData","fBrakeForce"),GetVehicleHandlingFloat(Vehicle,"CHandlingData","fBrakeBiasFront"),GetVehicleHandlingFloat(Vehicle,"CHandlingData","fHandBrakeForce") }
-
-		vSERVER.Delete(NetworkGetNetworkIdFromEntity(Vehicle),Doors,Tyres,Brakes,GetVehicleNumberPlateText(Vehicle),Opened or "1")
+		vSERVER.Delete(NetworkGetNetworkIdFromEntity(Vehicle),GetVehicleNumberPlateText(Vehicle))
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -559,7 +547,22 @@ end)
 -- DELETE
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNUICallback("Delete",function(Data,Callback)
-	TriggerEvent("garages:Delete")
+	local Vehicle = vRP.VehicleList(5.0)
+	if IsEntityAVehicle(Vehicle) then
+		local Doors = {}
+		for Number = 0,5 do
+			Doors[Number] = IsVehicleDoorDamaged(Vehicle,Number)
+		end
+
+		local Tyres = {}
+		for Number = 0,7 do
+			Tyres[Number] = (GetTyreHealth(Vehicle,Number) ~= 1000.0 and true or false)
+		end
+
+		local Brakes = { GetVehicleHandlingFloat(Vehicle,"CHandlingData","fBrakeForce"),GetVehicleHandlingFloat(Vehicle,"CHandlingData","fBrakeBiasFront"),GetVehicleHandlingFloat(Vehicle,"CHandlingData","fHandBrakeForce") }
+
+		vSERVER.Store(NetworkGetNetworkIdFromEntity(Vehicle),Doors,Tyres,Brakes,GetVehicleNumberPlateText(Vehicle),Opened or "1")
+	end
 
 	Callback("Ok")
 end)
