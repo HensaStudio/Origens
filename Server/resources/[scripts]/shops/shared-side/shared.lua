@@ -267,6 +267,7 @@ List = {
 		Mode = "Buy",
 		Type = "Cash",
 		List = {
+			energetic = 50,
 			postit = 20,
 			cigarette = 15,
 			lighter = 225,
