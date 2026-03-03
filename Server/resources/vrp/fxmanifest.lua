@@ -10,7 +10,6 @@ client_scripts {
 
 	"client/base.lua",
 	"client/gui.lua",
-	"client/iplloader.lua",
 	"client/objects.lua",
 	"client/playanim.lua",
 	"client/player.lua",
