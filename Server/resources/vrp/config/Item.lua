@@ -1460,6 +1460,17 @@ local List = {
 		["LostWater"] = true,
 		["Fridge"] = true
 	},
+	["energetic"] = {
+		["Index"] = "energetic",
+		["Name"] = "Energético",
+		["Type"] = "Consumível",
+		["Weight"] = 0.50,
+		["Market"] = true,
+		["Economy"] = 45,
+		["Water"] = "Out",
+		["Max"] = 5,
+		["LostWater"] = true
+	},
 	-- COMIDAS
 	["nigirizushi"] = {
 		["Index"] = "nigirizushi",
