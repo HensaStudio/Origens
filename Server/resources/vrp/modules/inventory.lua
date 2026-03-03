@@ -75,7 +75,7 @@ function tvRP.HasVehicleKey(Plate)
 	local Inventory = vRP.Inventory(Passport)
 	for Slot,v in pairs(Inventory) do
 		local Split = splitString(v.item,"-")
-		if Split[1] == "vehiclekey" and Split[3] == Plate then
+		if Split[1] == "vehiclekey" and Split[2] == Plate then
 			return true
 		end
 	end
@@ -89,7 +89,7 @@ function vRP.PassportHasVehicleKey(Passport,Plate)
 	local Inventory = vRP.Inventory(Passport)
 	for Slot,v in pairs(Inventory) do
 		local Split = splitString(v.item,"-")
-		if Split[1] == "vehiclekey" and Split[3] == Plate then
+		if Split[1] == "vehiclekey" and Split[2] == Plate then
 			return true
 		end
 	end
