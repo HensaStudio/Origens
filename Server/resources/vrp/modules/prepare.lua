@@ -77,12 +77,13 @@ vRP.Prepare("vehicles/PlateOwner","SELECT * FROM vehicles WHERE Plate = @Plate A
 vRP.Prepare("vehicles/moveVehicles","UPDATE vehicles SET Passport = @OtherPassport WHERE Passport = @Passport AND Vehicle = @Vehicle")
 vRP.Prepare("vehicles/UpdateWeight","UPDATE vehicles SET Weight = Weight + (10 * @Multiplier) WHERE Passport = @Passport AND Vehicle = @Vehicle")
 vRP.Prepare("vehicles/updateVehiclesTax","UPDATE vehicles SET Tax = UNIX_TIMESTAMP() + (86400 * 30) WHERE Passport = @Passport AND Vehicle = @Vehicle")
+vRP.Prepare("vehicles/updateVehiclesKeys","UPDATE vehicles SET `Keys` = @Keys WHERE Passport = @Passport AND Vehicle = @Vehicle")
 vRP.Prepare("vehicles/rentalVehiclesUpdate","UPDATE vehicles SET Rental = UNIX_TIMESTAMP() + (86400 * @Days) WHERE Passport = @Passport AND Vehicle = @Vehicle")
 vRP.Prepare("vehicles/addVehicles","INSERT IGNORE INTO vehicles (Passport,Vehicle,Plate,Weight,Work,Tax) VALUES (@Passport,@Vehicle,@Plate,@Weight,@Work,UNIX_TIMESTAMP() + (86400 * 7))")
 vRP.Prepare("vehicles/updateVehiclesRespawns","UPDATE vehicles SET Engine = @Engine, Body = @Body, Health = @Health, Fuel = @Fuel, Windows = @Windows, Nitro = @Nitro WHERE Passport = @Passport AND Vehicle = @Vehicle")
 vRP.Prepare("vehicles/rentalVehicles","INSERT IGNORE INTO vehicles (Passport,Vehicle,Plate,Weight,Work,Rental,Tax) VALUES (@Passport,@Vehicle,@Plate,@Weight,@Work,UNIX_TIMESTAMP() + (86400 * @Days),UNIX_TIMESTAMP() + (86400 * @Days))")
-vRP.Prepare("vehicles/updateVehicles","UPDATE vehicles SET Engine = @Engine, Body = @Body, Health = @Health, Fuel = @Fuel, Nitro = @Nitro, Doors = @Doors, Windows = @Windows, Tyres = @Tyres, Brakes = @Brakes, Dirt = @Dirt WHERE Passport = @Passport AND Vehicle = @Vehicle")
-vRP.Prepare("vehicles/updateVehiclesSave","UPDATE vehicles SET Engine = @Engine, Body = @Body, Health = @Health, Fuel = @Fuel, Nitro = @Nitro, Doors = @Doors, Windows = @Windows, Tyres = @Tyres, Brakes = @Brakes, Dirt = @Dirt, Save = @Save WHERE Passport = @Passport AND Vehicle = @Vehicle")
+vRP.Prepare("vehicles/updateVehicles","UPDATE vehicles SET Engine = @Engine, Body = @Body, Health = @Health, Fuel = @Fuel, Nitro = @Nitro, Doors = @Doors, Windows = @Windows, Tyres = @Tyres, Brakes = @Brakes, Dirt = @Dirt, `Keys` = @Keys WHERE Passport = @Passport AND Vehicle = @Vehicle")
+vRP.Prepare("vehicles/updateVehiclesSave","UPDATE vehicles SET Engine = @Engine, Body = @Body, Health = @Health, Fuel = @Fuel, Nitro = @Nitro, Doors = @Doors, Windows = @Windows, Tyres = @Tyres, Brakes = @Brakes, Dirt = @Dirt, Save = @Save, `Keys` = @Keys WHERE Passport = @Passport AND Vehicle = @Vehicle")
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CHESTS
 -----------------------------------------------------------------------------------------------------------------------------------------
