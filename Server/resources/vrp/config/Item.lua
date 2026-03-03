@@ -3841,8 +3841,7 @@ local List = {
 		["Index"] = "vehiclekey",
 		["Name"] = "Chave Reserva",
 		["Type"] = "Consumível",
-		["Durability"] = 72,
-		["Weight"] = 0.25,
+		["Weight"] = 1.0,
 		["LostWater"] = true,
 		["Economy"] = 1225
 	},
