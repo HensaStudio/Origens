@@ -1828,6 +1828,32 @@ Use = {
 		end)
 	end,
 
+	["energetic"] = function(source,Passport,Amount,Slot,Full,Item,Split)
+		vRPC.AnimActive(source)
+		Active[Passport] = os.time() + 10
+		Player(source)["state"]["Buttons"] = true
+		TriggerClientEvent("inventory:Close",source)
+		TriggerClientEvent("Progress",source,"Bebendo",10000)
+		vRPC.CreateObjects(source,"mp_player_intdrink","loop_bottle","vw_prop_casino_water_bottle_01a",49,60309,0.0,0.0,-0.06,0.0,0.0,130.0)
+
+		CreateThread(function()
+			while Active[Passport] and os.time() < Active[Passport] do
+				Wait(100)
+			end
+
+			if Active[Passport] then
+				Active[Passport] = nil
+				vRPC.Destroy(source,"one")
+				Player(source)["state"]["Buttons"] = false
+
+				if vRP.TakeItem(Passport,Full,1,true,Slot) then
+					vRP.UpgradeStress(Passport,5)
+					TriggerClientEvent("Energetic",source,60,1.2)
+				end
+			end
+		end)
+	end,
+
 	["sinkalmy"] = function(source,Passport,Amount,Slot,Full,Item,Split)
 		vRPC.AnimActive(source)
 		Active[Passport] = os.time() + 5
