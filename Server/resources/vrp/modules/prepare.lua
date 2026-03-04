@@ -61,7 +61,7 @@ vRP.Prepare("entitydata/SetData","INSERT INTO entitydata (Name,Information) VALU
 -----------------------------------------------------------------------------------------------------------------------------------------
 vRP.Prepare("vehicles/All","SELECT * FROM vehicles")
 vRP.Prepare("vehicles/plateVehicles","SELECT * FROM vehicles WHERE Plate = @Plate")
-vRP.Prepare("vehicles/Arrest","UPDATE vehicles SET Arrest = 1 WHERE Plate = @Plate")
+vRP.Prepare("vehicles/Arrest","UPDATE vehicles SET Arrest = 1, Save = 153 WHERE Plate = @Plate")
 vRP.Prepare("vehicles/UserVehicles","SELECT * FROM vehicles WHERE Passport = @Passport")
 vRP.Prepare("vehicles/Count","SELECT COUNT(Vehicle) FROM vehicles WHERE Vehicle = @Vehicle")
 vRP.Prepare("vehicles/Minimals","SELECT * FROM vehicles WHERE Tax + (86400 * 15) <= UNIX_TIMESTAMP()")
