@@ -203,7 +203,18 @@ AddEventHandler("prison:Vehicle",function(Entity)
 		if Vehicle[1] then
 			if not Vehicle[1]["Arrest"] then
 				vRP.Query("vehicles/Arrest",{ Plate = Plate })
-				TriggerClientEvent("Notify",source,"Departamento Policial","Veículo apreendido.","policia",5000)
+
+				local OwnerPassport = vRP.PassportPlate(Plate)
+				if OwnerPassport then
+					local OwnerSource = vRP.Source(OwnerPassport)
+					if OwnerSource then
+						TriggerClientEvent("Notify", OwnerSource, "Departamento Policial",
+							("Seu veículo de placa <b>%s</b> foi apreendido e enviado para a <b>Garagem Reboque</b>."):format(Plate),
+							"policia", 10000)
+					end
+				end
+
+				TriggerClientEvent("Notify",source,"Departamento Policial","Veículo apreendido e enviado para a <b>Garagem Reboque</b>.","policia",5000)
 			else
 				TriggerClientEvent("Notify",source,"Departamento Policial","Veículo já se encontra apreendido.","policia",5000)
 			end
