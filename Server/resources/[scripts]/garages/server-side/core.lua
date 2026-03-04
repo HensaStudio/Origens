@@ -95,7 +95,10 @@ local Garages = {
 	["152"] = { ["Name"] = "Fishing" },
 
 	-- Impound
-	["153"] = { ["Name"] = "Garage", ["Save"] = false }
+	["153"] = { ["Name"] = "Garage", ["Save"] = false },
+
+	-- Pdm
+	["154"] = { ["Name"] = "Garage", ["Save"] = true }
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- WORKS
@@ -629,7 +632,7 @@ AddEventHandler("garages:Spawn",function(Name,Number)
 				end
 
 				local GeneratePlate = vRP.GeneratePlate()
-				vRP.Query("vehicles/rentalVehicles",{ Passport = Passport, Vehicle = Name, Plate = GeneratePlate, Days = 30, Weight = VehicleWeight(Name), Work = 1 })
+				vRP.Query("vehicles/rentalVehicles",{ Passport = Passport, Vehicle = Name, Plate = GeneratePlate, Days = 30, Weight = VehicleWeight(Name), Work = 1, Save = Number })
 				exports.discord:Embed("Vehicles","**[PASSAPORTE]:** "..Passport.."\n**[RENOVOU]:** "..Name.."\n**[VALOR]:** "..Dotted(PaymentValue).." "..Coin)
 				TriggerClientEvent("Notify",source,"Sucesso","Aluguel do veículo <b>"..VehicleName(Name).."</b> concluído.","verde",5000)
 				Vehicle = vRP.SelectVehicle(Passport,Name)
@@ -646,7 +649,7 @@ AddEventHandler("garages:Spawn",function(Name,Number)
 					end
 
 					local GeneratePlate = vRP.GeneratePlate()
-					vRP.Query("vehicles/addVehicles",{ Passport = Passport, Vehicle = Name, Plate = GeneratePlate, Weight = VehicleWeight(Name), Work = 1 })
+					vRP.Query("vehicles/addVehicles",{ Passport = Passport, Vehicle = Name, Plate = GeneratePlate, Weight = VehicleWeight(Name), Work = 1, Save = Number })
 
 					if Class ~= "Bicicletas" then
 						vRP.GiveItem(Passport,"vehiclekey-"..trim(GeneratePlate),1,true)
@@ -660,7 +663,7 @@ AddEventHandler("garages:Spawn",function(Name,Number)
 				end
 			else
 				local GeneratePlate = vRP.GeneratePlate()
-				vRP.Query("vehicles/addVehicles",{ Passport = Passport, Vehicle = Name, Plate = GeneratePlate, Weight = VehicleWeight(Name), Work = 1 })
+				vRP.Query("vehicles/addVehicles",{ Passport = Passport, Vehicle = Name, Plate = GeneratePlate, Weight = VehicleWeight(Name), Work = 1, Save = Number })
 				Vehicle = vRP.SelectVehicle(Passport,Name)
 			end
 		end
