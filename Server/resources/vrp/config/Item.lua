@@ -3850,11 +3850,15 @@ local List = {
 	},
 	["vehiclekey"] = {
 		["Index"] = "vehiclekey",
-		["Name"] = "Chave Reserva",
+		["Name"] = "Chave de Veículo",
+		["Description"] = "Utilize a chave para trancar e destrancar as portas, bem como para ligar e desligar o motor do veículo correspondente.",
 		["Type"] = "Consumível",
 		["Weight"] = 1.0,
+		["Economy"] = 1225,
 		["LostWater"] = true,
-		["Economy"] = 1225
+		["Named"] = true,
+		["Market"] = true,
+		["Delete"] = true
 	},
 	["graphite01"] = {
 		["Index"] = "graphite01",
