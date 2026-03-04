@@ -3312,9 +3312,9 @@ for Model,v in pairs(VehicleList()) do
 					local Plate = vRP.GeneratePlate()
 
 					if type(v["Item"]) == "number" then
-						vRP.Query("vehicles/rentalVehicles",{ Passport = Passport, Vehicle = Model, Plate = Plate, Days = v["Item"], Weight = VehicleWeight(Model), Work = 0 })
+						vRP.Query("vehicles/rentalVehicles",{ Passport = Passport, Vehicle = Model, Plate = Plate, Days = v["Item"], Weight = VehicleWeight(Model), Work = 0, Save = 1 })
 					elseif v["Item"] == "Permanent" then
-						vRP.Query("vehicles/addVehicles",{ Passport = Passport, Vehicle = Model, Plate = Plate, Weight = VehicleWeight(Model), Work = 0 })
+						vRP.Query("vehicles/addVehicles",{ Passport = Passport, Vehicle = Model, Plate = Plate, Weight = VehicleWeight(Model), Work = 0, Save = 1 })
 					end
 
 					TriggerClientEvent("inventory:Notify",source,"Sucesso","Veículo <b>"..VehicleName(Model).."</b> adicionado.<br>Retire seu novo veículo na <b>Garagem 1</b>.","verde")
