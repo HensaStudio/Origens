@@ -307,6 +307,48 @@ RegisterCommand("print",function(source,Message)
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- CODES
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterCommand("codes",function(source,Message)
+	local Passport = vRP.Passport(source)
+	if not Passport or not vRP.HasGroup(Passport,"Admin",1) then
+		return false
+	end
+
+	local Keyboard = vKEYBOARD.Codes(source,"Código","Usos","Recompensas")
+	if Keyboard then
+		local Code = Keyboard[1]
+		local Max = parseInt(Keyboard[2])
+		local Rewards = ConvertStringToTable(Keyboard[3])
+
+		local ConsultCodes = exports.oxmysql:single_async("SELECT * FROM codes_creative WHERE Code = ? LIMIT 1",{ Code })
+		if ConsultCodes then
+			TriggerClientEvent("Notify",source,"Aviso","Código já existe.","amarelo",5000)
+			return false
+		end
+
+		exports.oxmysql:insert_async("INSERT INTO codes_creative (Code,Rewards,Max,CreatedAt) VALUES (?,?,?,?)",{ Code,json.encode(Rewards),Max,os.time() })
+		TriggerClientEvent("Notify",source,"Sucesso","Código criado.","verde",5000)
+	end
+end)
+------------------------------------------------------------------------------------------------------------------------------------------
+-- POINTBATTLEPASS
+------------------------------------------------------------------------------------------------------------------------------------------
+RegisterCommand("pointbattlepass",function(source,Message)
+	local Passport = vRP.Passport(source)
+	if Passport and vRP.HasPermission(Passport,"Admin",1) then
+		local Keyboard = vKEYBOARD.Secondary(source,"Passaporte","Quantidade")
+		if Keyboard then
+			local Amount = parseInt(Keyboard[2])
+			local OtherPassport = parseInt(Keyboard[1])
+			if vRP.Identity(OtherPassport) then
+				vRP.BattlepassPoints(OtherPassport,Amount)
+				TriggerClientEvent("Notify",source,"Sucesso","Pontos enviados.","verde",5000)
+			end
+		end
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- WIPEBATTLEPASS
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterCommand("wipebattlepass",function(source,Message)
@@ -318,6 +360,7 @@ RegisterCommand("wipebattlepass",function(source,Message)
 		exports.oxmysql:query_async("DELETE FROM playerdata WHERE Name = ?",{ "Battlepass" })
 
 		TriggerClientEvent("Notify",source,"Sucesso","Passe de batalha resetado.","verde",5000)
+		TriggerEvent("pause:WipeBattlepass",CurrentTimer)
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -819,39 +862,47 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterCommand("ban",function(source,Message)
 	local Passport = vRP.Passport(source)
-	if Passport and vRP.HasGroup(Passport,"Admin") then
-		local Keyboard = vKEYBOARD.Banned(source,"Passaporte","Motivo",{ "Horas","Dias","Permanente" },"Quantidade")
-		if Keyboard then
-			local Mode = Keyboard[3]
-			local Reason = Keyboard[2]
-			local Amount = parseInt(Keyboard[4],true)
-			local OtherPassport = parseInt(Keyboard[1])
-
-			if vRP.Identity(OtherPassport) then
-				vRP.SetBanned(OtherPassport,(Mode == "Permanente" and -1 or Amount),Mode,Reason)
-				TriggerClientEvent("Notify",source,"Sucesso","Banimento aplicado ao passaporte <b>"..OtherPassport.."</b>.","verde",5000)
-			end
-		end
+	if not Passport or not vRP.HasGroup(Passport,"Admin") then
+		return false
 	end
+
+	local Keyboard = vKEYBOARD.Codes(source,"Passaporte","Minutos","Motivo")
+	if not Keyboard then
+		return false
+	end
+
+	local Reason = Keyboard[3]
+	local Duration = Keyboard[2]
+	local OtherPassport = Keyboard[1]
+	if not vRP.Identity(OtherPassport) then
+		return false
+	end
+
+	vRP.SetBanned(OtherPassport,Duration,Reason)
+	TriggerClientEvent("Notify",source,"Sucesso","Banimento aplicado ao passaporte <b>"..OtherPassport.."</b>.","verde",5000)
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- UNBAN
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterCommand("unban",function(source,Message)
 	local Passport = vRP.Passport(source)
-	if Passport and vRP.HasGroup(Passport,"Admin") then
-		local Keyboard = vKEYBOARD.Primary(source,"Passaporte")
-		if Keyboard then
-			local OtherPassport = parseInt(Keyboard[1])
-			local Account = vRP.AccountOptimize(OtherPassport)
-			if OtherPassport and Account then
-				vRP.Update("hwid/All",{ Account = Account.id, Banned = 1 })
-				vRP.Update("accounts/RemoveBanned",{ License = Account.License })
-				TriggerClientEvent("Notify",source,"Sucesso","Revogado o banimento do passaporte <b>"..Keyboard[1].."</b>.","verde",5000)
-				exports.discord:Embed("Ban","**[ADMIN]:** "..Passport.."\n**[PASSAPORTE]:** "..Keyboard[1].."\n**[MODO]:** Unban")
-			end
-		end
+	if not Passport or not vRP.HasGroup(Passport,"Admin") then
+		return false
 	end
+
+	local Keyboard = vKEYBOARD.Primary(source,"Passaporte")
+	if not Keyboard then
+		return false
+	end
+
+	local OtherPassport = Keyboard[1]
+	if not vRP.Identity(OtherPassport) then
+		return false
+	end
+
+	vRP.RemoveBanned(OtherPassport)
+	exports.discord:Embed("Ban","**[ADMIN]:** "..Passport.."\n**[PASSAPORTE]:** "..OtherPassport.."\n**[MODO]:** Unban")
+	TriggerClientEvent("Notify",source,"Sucesso","Revogado o banimento do passaporte <b>"..OtherPassport.."</b>.","verde",5000)
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- INSERTCRON
@@ -894,6 +945,15 @@ RegisterCommand("removecron",function(source)
 			exports.crons:Remove(Keyboard[1],"RemovePermission",Keyboard[2])
 			TriggerClientEvent("Notify",source,"Sucesso","Remoção efetuada.","verde",5000)
 		end
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- BUCKET
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterCommand("bucket",function(source,Message)
+	local Passport = vRP.Passport(source)
+	if Passport and vRP.HasGroup(Passport,"Admin") then
+		exports.vrp:Bucket(source,"Enter",Message[1])
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -1327,7 +1387,7 @@ RegisterCommand("rename",function(source)
 
 	local Account = vRP.Account(Identity.License)
 	if Account and Account.Discord then
-		exports.discord:Content("Rename",account.Discord.." #"..OtherPassport.." "..Name.." "..Lastname)
+		exports.discord:Content("Rename",Account.Discord.." #"..OtherPassport.." "..Name.." "..Lastname)
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -1509,6 +1569,27 @@ RegisterCommand("prescription",function(source)
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- BLACKOUT
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterCommand("blackout",function(source,Message)
+	local Passport = vRP.Passport(source)
+	if Passport and vRP.HasGroup(Passport,"Admin") then
+		GlobalState["Blackout"] = not GlobalState["Blackout"]
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- DEBUG
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterCommand("debug",function(source)
+	local source = source
+	local Passport = vRP.Passport(source)
+	if Passport then
+		if vRP.HasGroup(Passport,"Admin") then
+			TriggerClientEvent("ToggleDebug",source)
+		end
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- REMOVEWL
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterCommand("removewl",function(source,Message)
@@ -1579,160 +1660,5 @@ AddEventHandler("Disconnect",function(Passport,source)
 		end
 
 		Spectate[Passport] = nil
-	end
-end)
------------------------------------------------------------------------------------------------------------------------------------------
--- BLACKOUT
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterCommand("blackout",function(source,Message)
-	local Passport = vRP.Passport(source)
-	if Passport and vRP.HasGroup(Passport,"Admin") then
-		GlobalState["Blackout"] = not GlobalState["Blackout"]
-	end
-end)
------------------------------------------------------------------------------------------------------------------------------------------
--- NEWCODE
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterCommand("newcode",function(source)
-	local Passport = vRP.Passport(source)
-	if Passport and vRP.HasGroup(Passport,"Admin") then
-		local Keyboard = vKEYBOARD.Secondary(source,"Código","Tipo (money/gemstone/item)")
-		if Keyboard then
-			local Code = Keyboard[1]
-			local Type = Keyboard[2]
-
-			if not Code or not Type then
-				return TriggerClientEvent("Notify",source,"Atenção","Preencha todos os campos.","amarelo",5000)
-			end
-
-			if Type ~= "money" and Type ~= "gemstone" and Type ~= "item" then
-				return TriggerClientEvent("Notify",source,"Atenção","Tipo inválido. Use: money, gemstone ou item.","amarelo",5000)
-			end
-
-			local Keyboard2 = vKEYBOARD.Secondary(source,"Quantidade","Máximo de Usos")
-			if Keyboard2 then
-				local Amount = parseInt(Keyboard2[1])
-				local MaxUses = parseInt(Keyboard2[2])
-
-				if not Amount or not MaxUses or Amount <= 0 or MaxUses <= 0 then
-					return TriggerClientEvent("Notify",source,"Atenção","Quantidade e máximo de usos devem ser números positivos.","amarelo",5000)
-				end
-
-				local Keyboard3 = vKEYBOARD.Primary(source,"Dias para Expirar (0 = sem expiração)")
-				if Keyboard3 then
-					local ExpireDays = parseInt(Keyboard3[1]) or 0
-
-					local Rewards = {}
-					if Type == "money" then
-						table.insert(Rewards, { Type = "money", Amount = Amount })
-					elseif Type == "gemstone" then
-						table.insert(Rewards, { Type = "gemstone", Amount = Amount })
-					elseif Type == "item" then
-						table.insert(Rewards, { Type = "item", Item = Amount, Amount = 1 }) -- Amount vira o nome do item
-					end
-
-					local ExpireTime = ExpireDays > 0 and (ExpireDays * 86400) or 0
-
-					local Success,Message = vRP.CreateRedeemCode(Code, json.encode(Rewards), MaxUses, ExpireTime)
-					if Success then
-						TriggerClientEvent("Notify",source,"Sucesso","Código '" .. Code .. "' criado com sucesso!","verde",5000)
-					else
-						TriggerClientEvent("Notify",source,"Erro",Message or "Erro ao criar código","vermelho",5000)
-					end
-				end
-			end
-		end
-	end
-end)
------------------------------------------------------------------------------------------------------------------------------------------
--- CREATECODE
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterCommand("createcode",function(source)
-	local Passport = vRP.Passport(source)
-	if Passport and vRP.HasGroup(Passport,"Admin") then
-		local Keyboard = vKEYBOARD.Secondary(source,"Código","Máximo de Usos")
-		if Keyboard then
-			local Code = Keyboard[1]
-			local MaxUses = parseInt(Keyboard[2])
-
-			if not Code or not MaxUses or MaxUses <= 0 then
-				return TriggerClientEvent("Notify",source,"Atenção","Preencha todos os campos corretamente.","amarelo",5000)
-			end
-
-			local Keyboard2 = vKEYBOARD.Secondary(source,"Dias para Expirar (0 = sem expiração)","Recompensas JSON")
-			if Keyboard2 then
-				local ExpireDays = parseInt(Keyboard2[1]) or 0
-				local RewardsJson = Keyboard2[2]
-
-				if not RewardsJson then
-					return TriggerClientEvent("Notify",source,"Atenção","JSON de recompensas é obrigatório.","amarelo",5000)
-				end
-
-				local ExpireTime = ExpireDays > 0 and (ExpireDays * 86400) or 0
-
-				local Success,Message = vRP.CreateRedeemCode(Code, RewardsJson, MaxUses, ExpireTime)
-				if Success then
-					TriggerClientEvent("Notify",source,"Sucesso","Código '" .. Code .. "' criado com sucesso!","verde",5000)
-				else
-					TriggerClientEvent("Notify",source,"Erro",Message or "Erro ao criar código","vermelho",5000)
-				end
-			end
-		end
-	end
-end)
------------------------------------------------------------------------------------------------------------------------------------------
--- DEACTIVATECODE
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterCommand("deactivatecode",function(source)
-	local Passport = vRP.Passport(source)
-	if Passport and vRP.HasGroup(Passport,"Admin") then
-		local Keyboard = vKEYBOARD.Primary(source,"Código para Desativar")
-		if Keyboard then
-			local Code = Keyboard[1]
-			if not Code then
-				return TriggerClientEvent("Notify",source,"Atenção","Digite o código.","amarelo",5000)
-			end
-
-			local Success = vRP.DeactivateRedeemCode(Code)
-			if Success then
-				TriggerClientEvent("Notify",source,"Sucesso","Código '" .. Code .. "' desativado com sucesso!","verde",5000)
-			else
-				TriggerClientEvent("Notify",source,"Erro","Erro ao desativar código","vermelho",5000)
-			end
-		end
-	end
-end)
------------------------------------------------------------------------------------------------------------------------------------------
--- LISTCODES
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterCommand("listcodes",function(source)
-	local Passport = vRP.Passport(source)
-	if Passport and vRP.HasGroup(Passport,"Admin") then
-		local Codes = vRP.GetAllRedeemCodes()
-		if #Codes == 0 then
-			return TriggerClientEvent("Notify",source,"Info","Nenhum código ativo encontrado.","azul",5000)
-		end
-
-		local Message = "Códigos Ativos:\n"
-		for i, CodeData in pairs(Codes) do
-			if i <= 10 then -- Limitar a 10 códigos para não sobrecarregar
-				local ExpireInfo = CodeData.Expires > 0 and os.date("%d/%m/%Y", CodeData.Expires) or "Sem expiração"
-				Message = Message .. CodeData.Code .. " (" .. CodeData.Uses .. "/" .. CodeData.MaxUses .. ") - " .. ExpireInfo .. "\n"
-			end
-		end
-
-		TriggerClientEvent("Notify",source,"Códigos Ativos",Message,"azul",15000)
-	end
-end)
------------------------------------------------------------------------------------------------------------------------------------------
--- DEBUG
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterCommand("debug",function(source)
-	local source = source
-	local Passport = vRP.Passport(source)
-	if Passport then
-		if vRP.HasGroup(Passport,"Admin") then
-			TriggerClientEvent("ToggleDebug",source)
-		end
 	end
 end)
