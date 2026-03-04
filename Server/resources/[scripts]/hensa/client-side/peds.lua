@@ -551,6 +551,12 @@ local List = {
 		Model = "a_m_y_smartcaspat_01",
 		Anim = { "anim@heists@heist_corona@single_team","single_team_loop_boss" },
 		Collision = true
+	},{ -- Pdm Vehicle Garage
+		Distance = 100,
+		Coords = vec4(-7.47,-1085.78,26.67,73.71),
+		Model = "a_m_y_smartcaspat_01",
+		Anim = { "anim@heists@heist_corona@single_team","single_team_loop_boss" },
+		Collision = true
 	},{ -- Locksmith
 		Distance = 50,
 		Coords = vec4(165.12,-1808.04,29.32,328.82),
