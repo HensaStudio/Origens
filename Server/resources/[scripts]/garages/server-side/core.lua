@@ -93,6 +93,9 @@ local Garages = {
 	["150"] = { ["Name"] = "Milkman" },
 	["151"] = { ["Name"] = "Bikes" },
 	["152"] = { ["Name"] = "Fishing" },
+
+	-- Impound
+	["153"] = { ["Name"] = "Garage", ["Save"] = false }
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- WORKS
@@ -422,7 +425,7 @@ function Creative.Vehicles(Number)
 		local Consult = vRP.Query("vehicles/UserVehicles",{ Passport = Passport })
 		for _,v in pairs(Consult) do
 			if VehicleExist(v.Vehicle) and not v.Work then
-				if not Garage.Save or v.Save == Number then
+				if not Garage.Save or tostring(v.Save) == tostring(Number) then
 					local TaxTimer,RentalTimer = false,false
 
 					if v.Tax > os.time() then
@@ -452,11 +455,6 @@ function Creative.Vehicles(Number)
 				end
 			end
 		end
-	end
-
-	if #Vehicles <= 0 then
-		TriggerClientEvent("Notify",source,"Aviso","Você não possui veículos nesta garagem.","amarelo",5000)
-		return false
 	end
 
 	return Vehicles
@@ -673,9 +671,10 @@ AddEventHandler("garages:Spawn",function(Name,Number)
 		return false
 	end
 
-	local SaveGarage = Vehicle.Save
-	if Number ~= SaveGarage then
-		if Garages[Number] and Garages[Number].Save then
+	local SaveGarage = tostring(Vehicle.Save)
+	if tostring(Number) ~= SaveGarage then
+		if Garages[tostring(Number)] and Garages[tostring(Number)].Save then
+			TriggerClientEvent("garages:Close",source)
 			return CancelProcess("O veículo não está neste local. Ele se encontra na <b>Garagem "..SaveGarage.."</b>.")
 		end
 	end
@@ -980,6 +979,7 @@ function Creative.Delete(Network,Plate)
 		Changed[CustomPlate] = nil
 	end
 
+	TriggerClientEvent("garages:Close",source)
 	TriggerEvent("garages:Delete",Network,CustomPlate)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
