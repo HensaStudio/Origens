@@ -515,9 +515,14 @@ local List = {
 		Model = "cs_manuel",
 		Anim = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
 	},{ -- Lenhador
-		Distance = 50,
+		Distance = 100,
 		Coords = vec4(1961.61,5179.26,47.94,277.8),
 		Model = "a_m_o_ktown_01",
+		Anim = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
+	},{ -- Lenhador Garagem
+		Distance = 100,
+		Coords = vec4(1969.56,5185.46,47.89,181.42),
+		Model = "a_m_o_soucent_03",
 		Anim = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
 	},{ -- Caçador
 		Distance = 30,
