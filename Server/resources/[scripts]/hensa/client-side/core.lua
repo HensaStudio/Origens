@@ -127,6 +127,9 @@ local BLIPS = {
 	{ Coords = vec3(-1212.37,-331.37,38.0), Sprite = 108, Color = 25, Name = "Banco", Scale = 0.7 },
 	{ Coords = vec3(-112.86,6470.46,31.85), Sprite = 108, Color = 25, Name = "Banco", Scale = 0.7 },
 
+	{ Coords = vec3(-154.53,-1174.83,23.99), Sprite = 357, Color = 51, Name = "Garagem Reboque", Scale = 0.6 },
+	{ Coords = vec3(-7.47,-1085.78,26.67), Sprite = 357, Color = 75, Name = "Garagem Concessionária", Scale = 0.6 },
+
 	{ Coords = vec3(55.43,-876.19,30.66), Sprite = 357, Color = 2, Name = "Garagem", Scale = 0.6 },
 	{ Coords = vec3(598.04,2741.27,42.07), Sprite = 357, Color = 2, Name = "Garagem", Scale = 0.6 },
 	{ Coords = vec3(-139.91,6365.12,31.51), Sprite = 357, Color = 2, Name = "Garagem", Scale = 0.6 },
