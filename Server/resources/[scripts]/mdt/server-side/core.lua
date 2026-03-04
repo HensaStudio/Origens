@@ -1326,8 +1326,16 @@ function Creative.CreateSeizedVehicle(Data)
     function(Success)
       if Success then
         vRP.Query("vehicles/Arrest", { Plate = Data.Plate })
+
+        local OwnerSource = vRP.Source(Data.Passport)
+        if OwnerSource then
+          TriggerClientEvent("Notify", OwnerSource, "Departamento Policial",
+            ("Seu veículo <b>%s</b> de placa <b>%s</b> foi apreendido e enviado para a <b>Garagem Reboque</b>."):format(Data.Vehicle, Data.Plate),
+            "policia", 10000)
+        end
+
         TriggerClientEvent("Notify", source, "Departamento Policial",
-          ("O veículo <b>%s</b> de placa <b>%s</b> foi apreendido com sucesso."):format(Data.Vehicle, Data.Plate),
+          ("O veículo <b>%s</b> de placa <b>%s</b> foi apreendido com sucesso e enviado para a <b>Garagem Reboque</b>."):format(Data.Vehicle, Data.Plate),
           "verde", 5000)
       else
         TriggerClientEvent("Notify", source, "Departamento Policial", "Não foi possível apreender este veículo.",
