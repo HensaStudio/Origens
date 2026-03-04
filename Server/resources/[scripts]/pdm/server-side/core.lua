@@ -56,10 +56,10 @@ function Creative.Buy(Model)
 					if PaymentValue > 0 and vRP.PaymentGems(Passport,PaymentValue) then
 						local GeneratePlate = vRP.GeneratePlate()
 
-						vRP.Query("vehicles/rentalVehicles",{ Passport = Passport, Vehicle = Model, Plate = GeneratePlate, Days = 30, Weight = VehicleWeight(Model), Work = 0 })
+						vRP.Query("vehicles/rentalVehicles",{ Passport = Passport, Vehicle = Model, Plate = GeneratePlate, Days = 30, Weight = VehicleWeight(Model), Work = 0, Save = 154 })
 						vRP.GiveItem(Passport,"vehiclekey-"..GeneratePlate,1,true)
 						exports.discord:Embed("Pdm","**[PASSAPORTE]:** "..Passport.."\n**[COMPROU]:** "..Model.."\n**[VALOR]:** "..Dotted(PaymentValue).." Diamantes.")
-						TriggerClientEvent("Notify",source,"Sucesso","Aluguel do veículo <b>"..VehicleName(Model).."</b> concluído.<br>Retire seu veículo na <b>Garagem 1</b>.","verde",10000)
+						TriggerClientEvent("Notify",source,"Sucesso","Aluguel do veículo <b>"..VehicleName(Model).."</b> concluído.<br>O veículo foi para a <b>Garagem Concessionária</b>.","verde",10000)
 						Return = true
 					else
 						TriggerClientEvent("Notify",source,"Aviso","Diamante insuficiente.","amarelo",5000)
@@ -69,7 +69,7 @@ function Creative.Buy(Model)
 					if VehiclePrice and vRP.PaymentFull(Passport,VehiclePrice) then
 						local GeneratePlate = vRP.GeneratePlate()
 
-						vRP.Query("vehicles/addVehicles",{ Passport = Passport, Vehicle = Model, Plate = GeneratePlate, Weight = VehicleWeight(Model), Work = 0 })
+						vRP.Query("vehicles/addVehicles",{ Passport = Passport, Vehicle = Model, Plate = GeneratePlate, Weight = VehicleWeight(Model), Work = 0, Save = 154 })
 
 						if VehicleClass(Model) ~= "Bicicletas" then
 							vRP.GiveItem(Passport,"vehiclekey-"..GeneratePlate,1,true)
@@ -77,7 +77,7 @@ function Creative.Buy(Model)
 
 						exports.discord:Embed("Pdm","**[PASSAPORTE]:** "..Passport.."\n**[COMPROU]:** "..Model.."\n**[VALOR]:** "..Currency..Dotted(VehiclePrice))
 						exports.bank:AddTaxs(Passport,source,"Concessionária",VehiclePrice,"Compra do veículo "..VehicleName(Model)..".",false)
-						TriggerClientEvent("Notify",source,"Sucesso","Compra concluída.<br>Retire seu novo veículo na <b>Garagem 1</b>.","verde",10000)
+						TriggerClientEvent("Notify",source,"Sucesso","Compra concluída.<br>O veículo foi para a <b>Garagem Concessionária</b>.","verde",10000)
 						Return = true
 					else
 						TriggerClientEvent("Notify",source,"Aviso","Dinheiro insuficiente.","amarelo",5000)
