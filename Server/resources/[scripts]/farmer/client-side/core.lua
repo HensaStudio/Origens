@@ -2,6 +2,7 @@
 -- VRP
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Tunnel = module("vrp","lib/Tunnel")
+vRPS = Tunnel.getInterface("vRP")
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CONNECTION
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -59,41 +60,39 @@ CreateThread(function()
 	while true do
 		local Ped = PlayerPedId()
 		local TimerDistance = 5000
-		if not IsPedInAnyVehicle(Ped) then
-			local Coords = GetEntityCoords(Ped)
+		local Coords = GetEntityCoords(Ped)
 
-			for Number,v in pairs(Objects) do
-				if #(Coords - v["Coords"]["xyz"]) <= (v["Show"] or 100.0) and GlobalState["Work"] >= GlobalState["Farmer:"..Number] then
-					if not Display[Number] and LoadModel(v["Model"]) then
-						Display[Number] = CreateObjectNoOffset(v["Model"],v["Coords"]["x"],v["Coords"]["y"],v["Coords"]["z"] - (v["Height"] or 0.0),false,false,false)
+		for Number,v in pairs(Objects) do
+			if #(Coords - v["Coords"]["xyz"]) <= (v["Show"] or 100.0) and GlobalState["Work"] >= GlobalState["Farmer:"..Number] then
+				if not Display[Number] and LoadModel(v["Model"]) then
+					Display[Number] = CreateObjectNoOffset(v["Model"],v["Coords"]["x"],v["Coords"]["y"],v["Coords"]["z"] - (v["Height"] or 0.0),false,false,false)
 
-						SetEntityHeading(Display[Number],v["Coords"]["w"])
-						FreezeEntityPosition(Display[Number],true)
+					SetEntityHeading(Display[Number],v["Coords"]["w"])
+					FreezeEntityPosition(Display[Number],true)
 
-						if v["Model"] == "prop_rub_binbag_06" then
-							PlaceObjectOnGroundProperly(Display[Number])
-							v["Coords"] = GetEntityCoords(Display[Number])
-						end
-
-						InputTargetPosition(Number,v)
-						TimerDistance = 1000
+					if v["Model"] == "prop_rub_binbag_06" then
+						PlaceObjectOnGroundProperly(Display[Number])
+						v["Coords"] = GetEntityCoords(Display[Number])
 					end
-				else
-					if Display[Number] then
-						if DoesEntityExist(Display[Number]) then
-							DeleteEntity(Display[Number])
-						end
 
-						exports.target:RemCircleZone("Farmer:"..Number)
-						Display[Number] = nil
+					InputTargetPosition(Number,v)
+					TimerDistance = 1000
+				end
+			else
+				if Display[Number] then
+					if DoesEntityExist(Display[Number]) then
+						DeleteEntity(Display[Number])
 					end
-				end
 
-				if #Blips > 0 and v["Model"] == "prop_rub_binbag_06" and not Blips[Number] and GlobalState["Work"] >= GlobalState["Farmer:"..Number] then
-					Blips[Number] = AddBlipForRadius(v["Coords"]["xyz"],5.0)
-					SetBlipAlpha(Blips[Number],150)
-					SetBlipColour(Blips[Number],4)
+					exports.target:RemCircleZone("Farmer:"..Number)
+					Display[Number] = nil
 				end
+			end
+
+			if #Blips > 0 and v["Model"] == "prop_rub_binbag_06" and not Blips[Number] and GlobalState["Work"] >= GlobalState["Farmer:"..Number] then
+				Blips[Number] = AddBlipForRadius(v["Coords"]["xyz"],5.0)
+				SetBlipAlpha(Blips[Number],150)
+				SetBlipColour(Blips[Number],4)
 			end
 		end
 
@@ -165,34 +164,37 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- ADDSTATEBAGCHANGEHANDLER
 -----------------------------------------------------------------------------------------------------------------------------------------
-for Number = 1,#Objects do
-	AddStateBagChangeHandler("Farmer:"..Number,nil,function(Name,Key,Value)
-		if Display[Number] then
-			if DoesEntityExist(Display[Number]) then
-				DeleteEntity(Display[Number])
+AddStateBagChangeHandler(nil,"global",function(Name,Key,Value)
+	if Key:sub(1,7) == "Farmer:" then
+		local Number = tonumber(Key:sub(8))
+		if Number then
+			if Display[Number] then
+				if DoesEntityExist(Display[Number]) then
+					DeleteEntity(Display[Number])
+				end
+
+				exports.target:RemCircleZone("Farmer:"..Number)
+				Display[Number] = nil
 			end
 
-			exports.target:RemCircleZone("Farmer:"..Number)
-			Display[Number] = nil
-		end
+			if Blips[Number] then
+				if DoesBlipExist(Blips[Number]) then
+					RemoveBlip(Blips[Number])
+				end
 
-		if Blips[Number] then
-			if DoesBlipExist(Blips[Number]) then
-				RemoveBlip(Blips[Number])
+				Blips[Number] = nil
 			end
 
-			Blips[Number] = nil
-		end
+			if WeedBlips[Number] then
+				if DoesBlipExist(WeedBlips[Number]) then
+					RemoveBlip(WeedBlips[Number])
+				end
 
-		if WeedBlips[Number] then
-			if DoesBlipExist(WeedBlips[Number]) then
-				RemoveBlip(WeedBlips[Number])
+				WeedBlips[Number] = nil
 			end
-
-			WeedBlips[Number] = nil
 		end
-	end)
-end
+	end
+end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- POLYZONE
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -202,3 +204,55 @@ function Creative.PolyZone(Service)
 
 	return Poly[Service] and Poly[Service]:isPointInside(Coords)
 end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- FARMER:SPAWNCOW
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("farmer:SpawnCow")
+AddEventHandler("farmer:SpawnCow",function()
+	local Ped = PlayerPedId()
+	local Coords = GetEntityCoords(Ped)
+	local Model = "a_c_cow"
+
+	local Angle = math.random() * 2 * math.pi
+	local Radius = math.random(25,30)
+	local x = Coords.x + Radius * math.cos(Angle)
+	local y = Coords.y + Radius * math.sin(Angle)
+	local _,z = GetGroundZFor_3dCoord(x,y,Coords.z + 10.0,0)
+
+	local Networked = vRPS.CreateModels(Model,x,y,z,28)
+	if Networked then
+		local Cow = LoadNetwork(Networked)
+		if Cow then
+			TriggerEvent("Notify","Atenção","Uma vaca raivosa apareceu.","amarelo",5000)
+
+			SetEntityMaxHealth(Cow,500)
+			SetEntityHealth(Cow,500)
+			SetEntityInvincible(Cow,false)
+			SetPedRelationshipGroupHash(Cow,GetHashKey("HATES_PLAYER"))
+			SetPedFleeAttributes(Cow,0,false)
+			SetPedCombatAttributes(Cow,0,true)
+			SetPedCombatAttributes(Cow,46,true)
+			SetPedCombatAttributes(Cow,5,true)
+			SetPedCombatAttributes(Cow,16,true)
+			SetPedCombatRange(Cow,2)
+			SetPedCombatMovement(Cow,3)
+			SetPedCombatAbility(Cow,2)
+			SetBlockingOfNonTemporaryEvents(Cow,false)
+			GiveWeaponToPed(Cow,GetHashKey("WEAPON_ANIMAL"),200,true,true)
+			SetPedWeaponLiveryColor(Cow,GetHashKey("WEAPON_ANIMAL"),0)
+			TaskCombatPed(Cow,Ped,0,16)
+			SetPedKeepTask(Cow,true)
+
+			CreateThread(function()
+				local Timeout = GetGameTimer() + 45000
+				while DoesEntityExist(Cow) and GetGameTimer() < Timeout do
+					if not IsPedInCombat(Cow,Ped) then
+						TaskCombatPed(Cow,Ped,0,16)
+					end
+
+					Wait(3000)
+				end
+			end)
+		end
+	end
+end)
