@@ -16,6 +16,13 @@ local Peds = {
 	"s_m_y_garbage","a_m_o_ktown_01","a_f_y_eastsa_03"
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- WEAPONS
+-----------------------------------------------------------------------------------------------------------------------------------------
+local Weapons = {
+	"WEAPON_PISTOL",
+	"WEAPON_SMG"
+}
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- CATEGORY
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Category = {
@@ -56,7 +63,7 @@ local Category = {
 	},
 	[9] = {
 		"vagner","tyrant","krieger","furia","xa21",
-		"neon","taipan","jugular","paragon2","hakuchou2"
+		"neon","taipan","jugular","hakuchou2"
 	},
 	[10] = {
 		"calico","zorrusso","italirsx","coquette4",
@@ -200,20 +207,13 @@ AddEventHandler("dismantle:Dispatch",function()
 	local Ped = PlayerPedId()
 	local Coords = GetEntityCoords(Ped)
 
-	local PlayerHash = GetHashKey("PLAYER")
-	local GroupHash = GetHashKey("HATES_PLAYER")
-	SetRelationshipBetweenGroups(5,GroupHash,PlayerHash)
-	SetRelationshipBetweenGroups(5,PlayerHash,GroupHash)
-
 	for Number = 1,Amounts do
-		local Cooldown = 0
 		local FoundSafe = false
 		local SpawnPosition = nil
 
 		repeat
-			Cooldown = Cooldown + 1
-			local x = Coords.x + math.random(-30,30)
-			local y = Coords.y + math.random(-30,30)
+			local x = Coords.x + math.random(-25,25)
+			local y = Coords.y + math.random(-25,25)
 			local z = Coords.z
 
 			local Hitz,Groundz = GetGroundZFor_3dCoord(x,y,z,true)
@@ -223,10 +223,10 @@ AddEventHandler("dismantle:Dispatch",function()
 				FoundSafe = true
 				SpawnPosition = SafeCoords
 			end
-		until FoundSafe or Cooldown >= 100
+		until FoundSafe
 
-		if FoundSafe and SpawnPosition then
-			local Model = Peds[math.random(#Peds)]
+		local Model = Peds[math.random(#Peds)]
+		if FoundSafe and SpawnPosition and LoadModel(Model) then
 			local Networked = vRPS.CreateModels(Model,SpawnPosition.x,SpawnPosition.y,SpawnPosition.z)
 			if not Networked then return end
 
@@ -235,50 +235,41 @@ AddEventHandler("dismantle:Dispatch",function()
 				Wait(50)
 			end
 
-			SetPedArmour(Entity,100)
-			SetPedAccuracy(Entity,95)
-			SetPedMaxHealth(Entity,500)
-			SetEntityHealth(Entity,500)
+			SetPedArmour(Entitys,100)
+			SetPedAccuracy(Entitys,90)
+			SetPedMaxHealth(Entitys,500)
+			SetEntityHealth(Entitys,500)
 
-			SetPedAlertness(Entity,3)
-			SetPedAsEnemy(Entity,true)
-			SetPedKeepTask(Entity,true)
-			SetPedCombatRange(Entity,2)
-			SetPedCanRagdoll(Entity,false)
-			SetPedCombatMovement(Entity,3)
-			SetPedSeeingRange(Entity,250.0)
-			SetPedHearingRange(Entity,250.0)
-			SetPedCombatAbility(Entity,3)
+			SetPedCombatAttributes(Entitys,5,true)
+			SetPedCombatAttributes(Entitys,13,true)
+			SetPedCombatAttributes(Entitys,25,true)
+			SetPedCombatAttributes(Entitys,46,true)
 
-			SetPedCombatAttributes(Entity,0,true)
-			SetPedCombatAttributes(Entity,1,true)
-			SetPedCombatAttributes(Entity,3,true)
-			SetPedCombatAttributes(Entity,5,true)
-			SetPedCombatAttributes(Entity,46,true)
+			SetPedAlertness(Entitys,3)
+			SetPedKeepTask(Entitys,true)
+			SetPedCombatRange(Entitys,1)
+			SetPedCombatAbility(Entitys,3)
+			SetPedCanRagdoll(Entitys,false)
+			SetPedCombatMovement(Entitys,3)
+			SetPedSeeingRange(Entitys,150.0)
+			SetPedHearingRange(Entitys,150.0)
+			SetPedCanBeTargetted(Entitys,true)
+			SetPedCanEvasiveDive(Entitys,true)
+			SetPedTargetLossResponse(Entitys,1)
+			SetPedFiringPattern(Entitys,0xC6EE6B4C)
+			SetPedSuffersCriticalHits(Entitys,false)
+			SetPedDropsWeaponsWhenDead(Entitys,false)
+			SetPedRelationshipGroupHash(Entitys,-276063219)
 
-			SetPedFiringPattern(Entity,-957453492)
+			local Rand = math.random(#Weapons)
+			GiveWeaponToPed(Entitys,Weapons[Rand],250,false,true)
+			SetCurrentPedWeapon(Entitys,Weapons[Rand],true)
+			SetPedInfiniteAmmo(Entitys,true,Weapons[Rand])
+			SetPedCanSwitchWeapon(Entitys,true)
 
-			SetPedPathCanUseLadders(Entity,true)
-			SetPedPathCanUseClimbovers(Entity,true)
-			SetPedPathCanDropFromHeight(Entity,true)
-			SetPedCanEvasiveDive(Entity,true)
-			SetPedFleeAttributes(Entity,0,false)
-			SetPedSuffersCriticalHits(Entity,false)
-			SetPedDropsWeaponsWhenDead(Entity,false)
-			SetPedEnableWeaponBlocking(Entity,false)
-			SetBlockingOfNonTemporaryEvents(Entity,true)
-			DisablePedPainAudio(Entity,true)
-			StopPedSpeaking(Entity,true)
+			TaskCombatHatedTargetsAroundPed(Entitys,150.0,0)
 
-			SetPedRelationshipGroupHash(Entity,GroupHash)
-
-			local Weapon = "WEAPON_CARBINERIFLE"
-			GiveWeaponToPed(Entity,Weapon,250,false,true)
-			SetCurrentPedWeapon(Entity,Weapon,true)
-			SetPedInfiniteAmmo(Entity,true,Weapon)
-
-			RegisterHatedTargetsAroundPed(Entity,250.0)
-			TaskCombatHatedTargetsAroundPed(Entity,250.0,0)
+			Wait(250)
 		end
 	end
 end)
