@@ -17,6 +17,7 @@ local Focus = false
 local Selected = {}
 local Sucess = false
 local Actived = false
+local DismantleWaypoints = {}
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- DISMANTLE
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -316,12 +317,43 @@ local Fuels = {
 	{ Coords = vec3(1951.34,3756.12,32.78), Type = "Electric" }
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- DISMANTLE:WAYPOINT
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("dismantle:Waypoint")
+AddEventHandler("dismantle:Waypoint",function()
+	if next(DismantleWaypoints) then
+		for _,id in pairs(DismantleWaypoints) do
+			exports["waypoints"]:RemoveWaypoint(id)
+		end
+
+		DismantleWaypoints = {}
+	end
+
+	local RandomDismantle = Dismantle[math.random(#Dismantle)]
+	DismantleWaypoints[1] = exports["waypoints"]:AddWaypoint(RandomDismantle,{ label = "Desmanche", color = Theme["main"], autoRemove = true })
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- THREADSERVERSTART
 -----------------------------------------------------------------------------------------------------------------------------------------
 CreateThread(function()
 	RegisterCommand("+entityTarget",TargetEnable)
 	RegisterCommand("-entityTarget",TargetDisable)
 	RegisterKeyMapping("+entityTarget","Interação auricular.","keyboard","LMENU")
+
+	AddCircleZone("Trees",vec3(1964.6,5184.16,47.97),0.55,{
+		name = "Trees",
+		heading = 0.0,
+		useZ = true
+	},{
+		Distance = 1.55,
+		options = {
+			{
+				event = "farmer:Trees",
+				label = "Localizar Árvores",
+				tunnel = "client"
+			}
+		}
+	})
 
 	AddCircleZone("Weeds",vec3(1532.32,1721.92,110.30),0.55,{
 		name = "Weeds",
