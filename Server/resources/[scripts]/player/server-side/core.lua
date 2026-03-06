@@ -16,7 +16,6 @@ vKEYBOARD = Tunnel.getInterface("keyboard")
 -----------------------------------------------------------------------------------------------------------------------------------------
 local CallCooldown = {}
 local CooldownTime = 300
-local IdentityPrice = 1855
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- SERVICES
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -457,6 +456,20 @@ AddEventHandler("player:SetWalk",function(Walk)
 	TriggerClientEvent("Notify",source,"Sucesso","Você mudou o seu estilo de movimentos.","verde",5000)
 
 	TriggerClientEvent("vRP:Walk",source,Walk)
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- PLAYER:RESETWALK
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterServerEvent("player:ResetWalk")
+AddEventHandler("player:ResetWalk",function()
+	local source = source
+	local Passport = vRP.Passport(source)
+	if not Passport then return end
+
+	vRP.Query("playerdata/SetData",{ Passport = Passport, Name = "Walk", Information = json.encode(nil) })
+	TriggerClientEvent("Notify",source,"Sucesso","Você resetou o seu estilo de movimentos.","verde",5000)
+
+	TriggerClientEvent("vRP:Walk",source,nil)
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CONNECT
