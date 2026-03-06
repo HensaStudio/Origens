@@ -11,6 +11,53 @@ vRP = Proxy.getInterface("vRP")
 local Active = {}
 local Payments = {}
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- CALCULATEVALUATION
+-----------------------------------------------------------------------------------------------------------------------------------------
+local function CalculateValuation(Passport, BaseValuation, Type)
+	local Valuation = BaseValuation
+	local Multipliers = {
+		["Mining"] = { Party = 0.5, Luck = 0.5, VIP = { Ouro = 0.5, Prata = 0.35, Bronze = 0.2 } },
+		["Lumber"] = { Party = 0.25, Luck = 0.25, VIP = { Ouro = 0.25, Prata = 0.2, Bronze = 0.15 } },
+		["Weed"] = { Party = 0.25, Luck = 0.25, VIP = { Ouro = 0.25, Prata = 0.20, Bronze = 0.15 } },
+		["Simple"] = { Luck = 1 }
+	}
+
+	local Config = Multipliers[Type]
+	if not Config then return Valuation end
+
+	if Config.Party and exports.party:DoesExist(Passport, 2) then
+		Valuation = Valuation + (Valuation * Config.Party)
+	end
+
+	if Config.Luck and exports.inventory:Buffs("Luck", Passport) then
+		if Type == "Simple" then
+			Valuation = Valuation + Config.Luck
+		else
+			Valuation = Valuation + (Valuation * Config.Luck)
+		end
+	end
+
+	if Config.VIP then
+		for Permission, Multiplier in pairs(Config.VIP) do
+			if vRP.HasService(Passport, Permission) then
+				Valuation = Valuation + (Valuation * Multiplier)
+			end
+		end
+	end
+
+	return math.floor(Valuation)
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- CHECKDISTANCE
+-----------------------------------------------------------------------------------------------------------------------------------------
+local function CheckDistance(source, Number, MaxDistance)
+	if not Objects[Number] then return false end
+	local Ped = GetPlayerPed(source)
+	local Coords = GetEntityCoords(Ped)
+	local Distance = #(Coords - Objects[Number]["Coords"]["xyz"])
+	return Distance <= (MaxDistance or 10.0)
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- GLOBALSTATE
 -----------------------------------------------------------------------------------------------------------------------------------------
 for Number = 1,#Objects do
@@ -26,13 +73,16 @@ AddEventHandler("farmer:Minerman",function(Number)
 	if Passport and not Active[Passport] then
 		Active[Passport] = true
 
-		if not Number or type(Number) ~= "number" then
+		if not Number or type(Number) ~= "number" or not CheckDistance(source, Number) then
 			exports.discord:Embed("Hackers","**[PASSAPORTE]:** "..Passport.."\n**[FUNÇÃO]:** Payment do Farmer",source)
 
 			Payments[Passport] = (Payments[Passport] or 0) + 1
 			if Payments[Passport] >= 3 then
 				vRP.SetBanned(Passport,-1,"Permanente","Hacker")
 			end
+
+			Active[Passport] = nil
+			return
 		end
 
 		if GlobalState["Farmer:"..Number] and GlobalState["Work"] >= GlobalState["Farmer:"..Number] then
@@ -77,29 +127,21 @@ AddEventHandler("farmer:Minerman",function(Number)
 					end
 
 					local Consult = RandPercentage(Result)
-					if exports.party:DoesExist(Passport,2) then
-						Consult["Valuation"] = Consult["Valuation"] + (Consult["Valuation"] * 0.5)
-					end
+					local Amount = CalculateValuation(Passport, 1, "Mining")
 
-					if exports.inventory:Buffs("Luck",Passport) then
-						Consult["Valuation"] = Consult["Valuation"] + (Consult["Valuation"] * 0.5)
-					end
-
-					for Permission,Multiplier in pairs({ Ouro = 0.5, Prata = 0.35, Bronze = 0.2 }) do
-						if vRP.HasService(Passport,Permission) then
-							Consult["Valuation"] = Consult["Valuation"] + (Consult["Valuation"] * Consult["Valuation"] * Multiplier)
-						end
-					end
-
-					if vRP.CheckWeight(Passport,Consult["Item"],Consult["Valuation"]) and not vRP.MaxItens(Passport,Consult["Item"],Consult["Valuation"]) then
-						vRP.GenerateItem(Passport,Consult["Item"],Consult["Valuation"],true)
+					if vRP.CheckWeight(Passport,Consult["Item"],Amount) and not vRP.MaxItens(Passport,Consult["Item"],Amount) then
+						vRP.GenerateItem(Passport,Consult["Item"],Amount,true)
 					else
 						TriggerClientEvent("Notify",source,"Mochila Sobrecarregada","Sua recompensa caiu no chão.","amarelo",5000)
-						exports.inventory:Drops(Passport,source,Consult["Item"],Consult["Valuation"])
+						exports.inventory:Drops(Passport,source,Consult["Item"],Amount)
 					end
 
 					vRP.BattlepassPoints(Passport,2)
 					vRP.UpgradeStress(Passport,1)
+
+					if math.random(100) <= 50 then
+						TriggerClientEvent("farmer:SpawnCow",source)
+					end
 				end
 
 				Player(source)["state"]["Buttons"] = false
@@ -121,13 +163,16 @@ AddEventHandler("farmer:Lumberman",function(Number)
 	if Passport and not Active[Passport] then
 		Active[Passport] = true
 
-		if not Number or type(Number) ~= "number" then
+		if not Number or type(Number) ~= "number" or not CheckDistance(source, Number) then
 			exports.discord:Embed("Hackers","**[PASSAPORTE]:** "..Passport.."\n**[FUNÇÃO]:** Payment do Farmer",source)
 
 			Payments[Passport] = (Payments[Passport] or 0) + 1
 			if Payments[Passport] >= 3 then
 				vRP.SetBanned(Passport,-1,"Permanente","Hacker")
 			end
+
+			Active[Passport] = nil
+			return
 		end
 
 		if GlobalState["Farmer:"..Number] and GlobalState["Work"] >= GlobalState["Farmer:"..Number] then
@@ -138,27 +183,18 @@ AddEventHandler("farmer:Lumberman",function(Number)
 			if not Axe and not AxePlus then
 				TriggerClientEvent("Notify",source,"Atenção","Precisa de <b>1x "..ItemName(Item).."</b>.","amarelo",5000)
 			else
+				if math.random(100) <= 50 then
+					TriggerClientEvent("farmer:SpawnCow",source)
+				end
+
 				Player(source)["state"]["Cancel"] = true
 				Player(source)["state"]["Buttons"] = true
-				vRPC.playAnim(source,false,{"lumberjackaxe@idle","idle"},true)
+				vRPC.CreateObjects(source,"lumberjackaxe@idle","idle","prop_tool_fireaxe",1,57005,0.1,0.0,0.0,-90.0,0.0,0.0)
 
 				if vRP.Task(source,Axe and 10 or 5,10000) and GlobalState["Work"] >= GlobalState["Farmer:"..Number] then
 					GlobalState["Farmer:"..Number] = GlobalState["Work"] + 30
 
-					local Valuation = 3
-					if exports.party:DoesExist(Passport,2) then
-						Valuation = Valuation + (Valuation * 0.25)
-					end
-
-					if exports.inventory:Buffs("Luck",Passport) then
-						Valuation = Valuation + (Valuation * 0.25)
-					end
-
-					for Permission,Multiplier in pairs({ Ouro = 0.25, Prata = 0.2, Bronze = 0.15 }) do
-						if vRP.HasService(Passport,Permission) then
-							Valuation = Valuation + (Valuation * Multiplier)
-						end
-					end
+					local Valuation = CalculateValuation(Passport, 3, "Lumber")
 
 					if vRP.CheckWeight(Passport,"woodlog",Valuation) and not vRP.MaxItens(Passport,"woodlog",Valuation) then
 						vRP.GenerateItem(Passport,"woodlog",Valuation,true)
@@ -191,13 +227,16 @@ AddEventHandler("farmer:Transporter",function(Number)
 	if Passport and not Active[Passport] then
 		Active[Passport] = true
 
-		if not Number or type(Number) ~= "number" then
+		if not Number or type(Number) ~= "number" or not CheckDistance(source, Number) then
 			exports.discord:Embed("Hackers","**[PASSAPORTE]:** "..Passport.."\n**[FUNÇÃO]:** Payment do Farmer",source)
 
 			Payments[Passport] = (Payments[Passport] or 0) + 1
 			if Payments[Passport] >= 3 then
 				vRP.SetBanned(Passport,-1,"Permanente","Hacker")
 			end
+
+			Active[Passport] = nil
+			return
 		end
 
 		if GlobalState["Farmer:"..Number] and GlobalState["Work"] >= GlobalState["Farmer:"..Number] then
@@ -210,10 +249,7 @@ AddEventHandler("farmer:Transporter",function(Number)
 				if GlobalState["Work"] >= GlobalState["Farmer:"..Number] then
 					GlobalState["Farmer:"..Number] = GlobalState["Work"] + 18
 
-					local Valuation = 1
-					if exports.inventory:Buffs("Luck",Passport) then
-						Valuation = Valuation + 1
-					end
+					local Valuation = CalculateValuation(Passport, 1, "Simple")
 
 					if vRP.CheckWeight(Passport,"pouch",Valuation) and not vRP.MaxItens(Passport,"pouch",Valuation) then
 						vRP.GenerateItem(Passport,"pouch",Valuation,true)
@@ -226,13 +262,13 @@ AddEventHandler("farmer:Transporter",function(Number)
 				end
 
 				vRPC.Destroy(source)
+				Player(source)["state"]["Buttons"] = false
+				Player(source)["state"]["Cancel"] = false
+				Active[Passport] = nil
 			end)
-
-			Player(source)["state"]["Buttons"] = false
-			Player(source)["state"]["Cancel"] = false
+		else
+			Active[Passport] = nil
 		end
-
-		Active[Passport] = nil
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -245,13 +281,16 @@ AddEventHandler("farmer:Sandman",function(Number)
 	if Passport and not Active[Passport] then
 		Active[Passport] = true
 
-		if not Number or type(Number) ~= "number" then
+		if not Number or type(Number) ~= "number" or not CheckDistance(source, Number) then
 			exports.discord:Embed("Hackers","**[PASSAPORTE]:** "..Passport.."\n**[FUNÇÃO]:** Payment do Farmer",source)
 
 			Payments[Passport] = (Payments[Passport] or 0) + 1
 			if Payments[Passport] >= 3 then
 				vRP.SetBanned(Passport,-1,"Permanente","Hacker")
 			end
+
+			Active[Passport] = nil
+			return
 		end
 
 		if GlobalState["Farmer:"..Number] and GlobalState["Work"] >= GlobalState["Farmer:"..Number] then
@@ -264,10 +303,7 @@ AddEventHandler("farmer:Sandman",function(Number)
 				if GlobalState["Work"] >= GlobalState["Farmer:"..Number] then
 					GlobalState["Farmer:"..Number] = GlobalState["Work"] + 30
 
-					local Valuation = 1
-					if exports.inventory:Buffs("Luck",Passport) then
-						Valuation = Valuation + 1
-					end
+					local Valuation = CalculateValuation(Passport, 1, "Simple")
 
 					if vRP.CheckWeight(Passport,"sand",Valuation) and not vRP.MaxItens(Passport,"sand",Valuation) then
 						vRP.GenerateItem(Passport,"sand",Valuation,true)
@@ -281,13 +317,13 @@ AddEventHandler("farmer:Sandman",function(Number)
 				end
 
 				vRPC.Destroy(source)
+				Player(source)["state"]["Buttons"] = false
+				Player(source)["state"]["Cancel"] = false
+				Active[Passport] = nil
 			end)
-
-			Player(source)["state"]["Buttons"] = false
-			Player(source)["state"]["Cancel"] = false
+		else
+			Active[Passport] = nil
 		end
-
-		Active[Passport] = nil
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -300,13 +336,16 @@ AddEventHandler("farmer:Trasher",function(Number)
 	if Passport and not Active[Passport] then
 		Active[Passport] = true
 
-		if not Number or type(Number) ~= "number" then
+		if not Number or type(Number) ~= "number" or not CheckDistance(source, Number) then
 			exports.discord:Embed("Hackers","**[PASSAPORTE]:** "..Passport.."\n**[FUNÇÃO]:** Payment do Farmer",source)
 
 			Payments[Passport] = (Payments[Passport] or 0) + 1
 			if Payments[Passport] >= 3 then
 				vRP.SetBanned(Passport,-1,"Permanente","Hacker")
 			end
+
+			Active[Passport] = nil
+			return
 		end
 
 		if not vRPC.LastVehicle(source,"trash") then
@@ -393,7 +432,7 @@ AddEventHandler("farmer:Weed",function(Number)
 			if Player(source)["state"]["Basket"] and vRP.ConsultItem(Passport,"basket",1) then 
 				Active[Passport] = true
 
-				if not Number or type(Number) ~= "number" then
+				if not Number or type(Number) ~= "number" or not CheckDistance(source, Number) then
 					exports.discord:Embed("Hackers","**[PASSAPORTE]:** "..Passport.."\n**[FUNÇÃO]:** farmer:Weed",source)
 
 					Payments[Passport] = (Payments[Passport] or 0) + 1
@@ -425,23 +464,7 @@ AddEventHandler("farmer:Weed",function(Number)
 					TriggerClientEvent("Progress",source,"Coletando",60000)
 
 					SetTimeout(60000,function()
-						local Valuation = 3
-
-						if exports.party:DoesExist(Passport,2) then
-							Valuation = Valuation + (Valuation * 0.25)
-						end
-
-						if exports.inventory:Buffs("Luck",Passport) then
-							Valuation = Valuation + (Valuation * 0.25)
-						end
-
-						for Permission,Multiplier in pairs({ Ouro = 0.25, Prata = 0.20, Bronze = 0.15 }) do
-							if vRP.HasService(Passport,Permission) then
-								Valuation = Valuation + (Valuation * Multiplier)
-							end
-						end
-
-						Valuation = math.floor(Valuation)
+						local Valuation = CalculateValuation(Passport, 3, "Weed")
 
 						local Purity = GetRandomPurity()
 						local CloneItem = "weedclone_"..Purity
