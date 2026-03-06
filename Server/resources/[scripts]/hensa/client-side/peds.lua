@@ -30,6 +30,39 @@ local List = {
 		Collision = true
 	},
 
+	-- Trash
+	{
+		Distance = 100,
+		Coords = vec4(-330.55,-1564.29,25.22,144.57),
+		Model = "s_m_y_garbage",
+		Anim = { "amb@world_human_janitor@male@idle_a","idle_a" },
+		Prop = "prop_tool_broom",
+		Flag = 49,
+		Mao = 28422,
+		Collision = true
+	},{
+		Distance = 100,
+		Coords = vec4(13.14,6501.8,31.49,323.15),
+		Model = "s_m_y_garbage",
+		Anim = { "amb@world_human_janitor@male@idle_a","idle_a" },
+		Prop = "prop_tool_broom",
+		Flag = 49,
+		Mao = 28422,
+		Collision = true
+	},{
+		Distance = 100,
+		Coords = vec4(-340.47,-1567.88,25.22,62.37),
+		Model = "s_m_y_grip_01",
+		Anim = { "anim@heists@heist_corona@single_team","single_team_loop_boss" },
+		Collision = true
+	},{
+		Distance = 100,
+		Coords = vec4(19.88,6514.84,31.48,229.61),
+		Model = "s_m_y_grip_01",
+		Anim = { "anim@heists@heist_corona@single_team","single_team_loop_boss" },
+		Collision = true
+	},
+
 	-- Essências
 	{
 		Distance = 50,
