@@ -221,8 +221,8 @@ local BLIPS = {
 	{ Coords = vec3(375.3,-829.75,29.28), Sprite = 403, Color = 5, Name = "Farmácia", Scale = 0.7 },
 	{ Coords = vec3(1654.0,4874.14,42.11), Sprite = 403, Color = 5, Name = "Farmácia", Scale = 0.7 },
 
-	{ Coords = vec3(-339.89,-1560.35,25.22), Sprite = 318, Color = 62, Name = "Lixeiro", Scale = 0.6 },
-	{ Coords = vec3(19.19,6505.68,31.49), Sprite = 318, Color = 62, Name = "Lixeiro", Scale = 0.6 },
+	{ Coords = vec3(-340.47,-1567.88,25.22), Sprite = 318, Color = 62, Name = "Lixeiro", Scale = 0.6 },
+	{ Coords = vec3(19.88,6514.84,31.48), Sprite = 318, Color = 62, Name = "Lixeiro", Scale = 0.6 },
 
 	{ Coords = vec3(-191.36,-1161.28,23.67), Sprite = 477, Color = 51, Name = "Reboque", Scale = 0.6 },
 
