@@ -1307,6 +1307,16 @@ Use = {
 						vGARAGE.RegisterDecors(source,Vehicle)
 						TriggerClientEvent("player:Residual",source,"Resíduo de Alumínio")
 
+						local isDismantleVehicle = Entity(Networked).state.isDismantleVehicle
+						if isDismantleVehicle or Dismantle[Plate] or Dismantle[Plate:gsub("^%s*(.-)%s*$", "%1")] then
+							NotifyTitle = "Desmanche"
+
+							TriggerClientEvent("dismantle:Dispatch",source)
+
+							TriggerClientEvent("dismantle:Waypoint",source)
+							TriggerClientEvent("Notify",source,"Sucesso","Você recebeu uma localização de desmanche.","verde",10000)
+						end
+
 						exports.vrp:CallPolice({
 							["Source"] = source,
 							["Passport"] = Passport,
@@ -1357,9 +1367,15 @@ Use = {
 						TriggerClientEvent("Progress",source,"Destravando",15000)
 						TriggerClientEvent("player:Residual",source,"Resíduo de Alumínio")
 
-						if Dismantle[Plate] then
+						local isDismantleVehicle = Entity(Networked).state.isDismantleVehicle
+
+						if isDismantleVehicle or Dismantle[Plate] or Dismantle[Plate:gsub("^%s*(.-)%s*$", "%1")] then
 							NotifyTitle = "Desmanche"
+
 							TriggerClientEvent("dismantle:Dispatch",source)
+
+							TriggerClientEvent("dismantle:Waypoint",source)
+							TriggerClientEvent("Notify",source,"Sucesso","Você recebeu uma localização de desmanche.","verde",10000)
 						end
 
 						exports.vrp:CallPolice({
@@ -1381,7 +1397,8 @@ Use = {
 
 							if Active[Passport] and DoesEntityExist(Networked) then
 								if not vRP.PassportPlate(Plate) then
-									if not Dismantle[Plate] then
+									local isDismantleVehicle = Entity(Networked).state.isDismantleVehicle
+									if not isDismantleVehicle and not Dismantle[Plate] and not Dismantle[Plate:gsub("^%s*(.-)%s*$", "%1")] then
 										Entity(Networked)["state"]:set("Fuel",math.random(100),true)
 										Entity(Networked)["state"]:set("Nitro",0,true)
 									end
