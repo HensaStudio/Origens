@@ -3,6 +3,7 @@
 -----------------------------------------------------------------------------------------------------------------------------------------
 Travel = {}
 Dismantle = {}
+Dismantling = {}
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- GENERATEPLATE
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -52,6 +53,7 @@ function Creative.CreateVehicle(Model,Coords)
 		Entity(Vehicle).state:set("Nitro",0,true)
 		Entity(Vehicle).state:set("Fuel",100,true)
 		Entity(Vehicle).state:set("Tower",true,true)
+		Entity(Vehicle).state:set("isDismantleVehicle",true,true)
 
 		Dismantle[Plate] = source
 
@@ -80,8 +82,10 @@ AddEventHandler("inventory:Dismantle",function(Entity)
 	local Passport = vRP.Passport(source)
 	local UserVehicle = vRP.PassportPlate(Entity[1])
 	local Plate,Name,Network = Entity[1],Entity[2],Entity[4]
-	if Passport and not Active[Passport] and VehicleExist(Name) and (UserVehicle or Dismantle[Plate]) then
+
+	if Passport and not Active[Passport] and not Dismantling[Plate] and VehicleExist(Name) and (UserVehicle or Dismantle[Plate]) then
 		Active[Passport] = os.time() + 30
+		Dismantling[Plate] = Passport
 		Player(source).state.Buttons = true
 		TriggerClientEvent("Progress",source,"Desmanchando",30000)
 		vRPC.playAnim(source,false,{"anim@amb@clubhouse@tutorial@bkr_tut_ig3@","machinic_loop_mechandplayer"},true)
@@ -90,6 +94,8 @@ AddEventHandler("inventory:Dismantle",function(Entity)
 			while Active[Passport] and os.time() < Active[Passport] do
 				Wait(100)
 			end
+
+			Dismantling[Plate] = nil
 
 			if Active[Passport] then
 				vRPC.Destroy(source)
