@@ -90,7 +90,7 @@ RegisterCommand("PlayerFunctions",function()
 	local Ped = PlayerPedId()
 	if not LocalPlayer["state"]["Commands"] and not LocalPlayer["state"]["Handcuff"] and not Dynamic and not IsPauseMenuActive() and GetEntityHealth(Ped) > 100 then
 		exports.dynamic:AddMenu("Andar","Mude o seu estilo de andar.","walks")
-		exports.dynamic:AddButton("Normal","Voltar ao padrão.","player:SetWalk",false,"walks",true)
+		exports.dynamic:AddButton("Normal","Voltar ao padrão.","player:ResetWalk","","walks",true)
 		exports.dynamic:AddButton("Rápido","Passos acelerados.","player:SetWalk","move_m@quick","walks",true)
 		exports.dynamic:AddButton("Corrida Leve","Caminhada em ritmo de trote.","player:SetWalk","move_m@jog@","walks",true)
 		exports.dynamic:AddButton("Sexy","Ande de forma sensual.","player:SetWalk","move_f@sexy@a","walks",true)
