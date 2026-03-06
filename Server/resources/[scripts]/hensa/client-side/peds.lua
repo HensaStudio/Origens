@@ -87,6 +87,18 @@ local List = {
 		Collision = true
 	},
 
+	-- Lumberman
+	{
+		Distance = 100,
+		Coords = vec4(1964.6,5184.16,47.97,232.45),
+		Model = "a_m_m_trampbeac_01",
+		Anim = { "amb@world_human_janitor@male@idle_a","idle_a" },
+		Prop = "prop_tool_broom",
+		Flag = 49,
+		Mao = 28422,
+		Collision = true
+	},
+
 	-- LSPD
 	{
 		Distance = 50,
