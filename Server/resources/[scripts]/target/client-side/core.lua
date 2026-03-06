@@ -415,7 +415,7 @@ CreateThread(function()
 		Distance = 0.75
 	})
 
-	AddCircleZone("Trash:01",vec3(-330.36,-1564.11,25.47),0.25,{
+	AddCircleZone("Trash:01",vec3(-330.55,-1564.29,25.22),0.45,{
 		name = "Trash:01",
 		heading = 0.0,
 		useZ = true
@@ -431,7 +431,7 @@ CreateThread(function()
 		}
 	})
 
-	AddCircleZone("Trash:02",vec3(12.99,6501.61,31.84),0.25,{
+	AddCircleZone("Trash:02",vec3(13.14,6501.8,31.49),0.45,{
 		name = "Trash:02",
 		heading = 0.0,
 		useZ = true
