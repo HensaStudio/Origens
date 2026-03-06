@@ -177,5 +177,5 @@ end)
 -- SAVEPERMISSIONS
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNUICallback("SavePermissions",function(Data,Callback)
-	Callback(vSERVER.SavePermissions(Data.Permissions))
+	Callback(vSERVER.SavePermissions(Data))
 end)
