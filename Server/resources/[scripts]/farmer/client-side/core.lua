@@ -14,7 +14,7 @@ Tunnel.bindInterface("farmer",Creative)
 local Poly = {}
 local Blips = {}
 local Display = {}
-local WeedBlips = {}
+local Waypoints = {}
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- INPUTTARGETPOSITION
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -132,33 +132,44 @@ end)
 RegisterNetEvent("farmer:Weeds")
 AddEventHandler("farmer:Weeds",function()
 	if LocalPlayer["state"]["Basket"] then
-		if next(WeedBlips) then
-			for _,v in pairs(WeedBlips) do
-				if DoesBlipExist(v) then
-					RemoveBlip(v)
-				end
+		if next(Waypoints) then
+			for _,id in pairs(Waypoints) do
+				exports["waypoints"]:RemoveWaypoint(id)
 			end
 
-			WeedBlips = {}
+			Waypoints = {}
 
-			TriggerEvent("Notify","Brotos","Marcações desativadas.","default",5000)
+			TriggerEvent("Notify","Brotos de Maconha","Marcação desativada.","default",5000)
 		else
-			for Number,v in pairs(Objects) do
-				if not WeedBlips[Number] and v["Model"] == "prop_weed_02" and GlobalState["Work"] >= GlobalState["Farmer:"..Number] then
-					WeedBlips[Number] = AddBlipForRadius(v["Coords"]["xyz"],5.0)
-					SetBlipAlpha(WeedBlips[Number],150)
-					SetBlipColour(WeedBlips[Number],25)
-				end
-			end
+			local Coords = vec3(1551.30,1560.24,106.90)
 
-			TriggerEvent("Notify","Brotos","Marcações ativadas. Por segurança, elas serão desativadas automaticamente ao término desta notificação.","default",10000)
+			Waypoints[1] = exports["waypoints"]:AddWaypoint(Coords,{ label = "Brotos de Maconha", color = Theme["main"], autoRemove = true })
 
-			SetTimeout(10000,function()
-				TriggerEvent("farmer:Weeds")
-			end)
+			TriggerEvent("Notify","Brotos de Maconha","Marcação ativada.","default",5000)
 		end
 	else
-		TriggerEvent("Notify","Brotos","Você precisa estar com <b>1x "..ItemName("basket").."</b> em mãos.","amarelo",5000)
+		TriggerEvent("Notify","Brotos de Maconha","Você precisa estar com <b>1x "..ItemName("basket").."</b> em mãos.","amarelo",5000)
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- FARMER:TREES
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("farmer:Trees")
+AddEventHandler("farmer:Trees",function()
+	if next(Waypoints) then
+		for _,id in pairs(Waypoints) do
+			exports["waypoints"]:RemoveWaypoint(id)
+		end
+
+		Waypoints = {}
+
+		TriggerEvent("Notify","Árvores","Marcação desativada.","default",5000)
+	else
+		local Coords = vec3(2110.77,5078.5,44.3)
+
+		Waypoints[1] = exports["waypoints"]:AddWaypoint(Coords,{ label = "Árvores", color = Theme["main"], autoRemove = true })
+
+		TriggerEvent("Notify","Árvores","Marcação ativada.","default",5000)
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -185,12 +196,9 @@ AddStateBagChangeHandler(nil,"global",function(Name,Key,Value)
 				Blips[Number] = nil
 			end
 
-			if WeedBlips[Number] then
-				if DoesBlipExist(WeedBlips[Number]) then
-					RemoveBlip(WeedBlips[Number])
-				end
-
-				WeedBlips[Number] = nil
+			if Waypoints[Number] then
+				exports["waypoints"]:RemoveWaypoint(Waypoints[Number])
+				Waypoints[Number] = nil
 			end
 		end
 	end
