@@ -293,6 +293,14 @@ local ALPHAS = {
 	{ Coords = vec3(210.77,4032.24,30.72), Alpha = 100, Color = 53, Radius = 150.0 },
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- HUNTINGS
+-----------------------------------------------------------------------------------------------------------------------------------------
+local HUNTINGS = {
+	{ Coords = vec3(-639.48,5091.26,131.7), Alpha = 100, Color = 2, Radius = 200.0, name = "Floresta", animals = { "deer", "boar" } },
+	{ Coords = vec3(2366.89,3537.49,60.83), Alpha = 100, Color = 6, Radius = 200.0, name = "Deserto", animals = { "coyote" } },
+	{ Coords = vec3(-2352.35,1338.39,336.42), Alpha = 100, Color = 46, Radius = 200.0, name = "Montanha", animals = { "mtlion", "boar" } }
+}
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- ISLAND
 -----------------------------------------------------------------------------------------------------------------------------------------
 local ISLAND = {
@@ -799,6 +807,20 @@ CreateThread(function()
 		end
 	end
 
+	for _, v in ipairs(HUNTINGS) do
+		local blip = CreateBlip({ Coords = v.Coords, Sprite = 141, Color = 16, Name = "Área de Caça: " .. v.name, Scale = 0.8 })
+		if blip then
+			CreatedBlips[#CreatedBlips + 1] = blip
+			Wait(0)
+		end
+
+		local radiusBlip = CreateBlipRadius(v)
+		if radiusBlip then
+			CreatedRadiusBlips[#CreatedRadiusBlips + 1] = radiusBlip
+			Wait(0)
+		end
+	end
+
 	for index, blipData in ipairs(BLIPS) do
 		local Blip = CreateBlip(blipData)
 		
@@ -895,4 +917,10 @@ CreateThread(function()
 
 		Wait(100)
 	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- EXPORTS
+-----------------------------------------------------------------------------------------------------------------------------------------
+exports("GetHuntingAreas", function()
+	return HUNTINGS
 end)
