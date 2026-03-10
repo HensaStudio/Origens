@@ -2435,27 +2435,31 @@ Use = {
 
 	["ration"] = function(source,Passport,Amount,Slot,Full,Item,Split)
 		if not vRP.InsideVehicle(source) and not vCLIENT.CheckRation(source) then
-			Active[Passport] = os.time() + 10
-			Player(source)["state"]["Buttons"] = true
-			TriggerClientEvent("inventory:Close",source)
-			TriggerClientEvent("Progress",source,"Colocando",10000)
-			vRPC.playAnim(source,false,{"anim@amb@clubhouse@tutorial@bkr_tut_ig3@","machinic_loop_mechandplayer"},true)
+			if vCLIENT.HuntingArea(source) then
+				Active[Passport] = os.time() + 10
+				Player(source)["state"]["Buttons"] = true
+				TriggerClientEvent("inventory:Close",source)
+				TriggerClientEvent("Progress",source,"Colocando",10000)
+				vRPC.playAnim(source,false,{"anim@amb@clubhouse@tutorial@bkr_tut_ig3@","machinic_loop_mechandplayer"},true)
 
-			CreateThread(function()
-				while Active[Passport] and os.time() < Active[Passport] do
-					Wait(100)
-				end
-
-				if Active[Passport] then
-					vRPC.Destroy(source)
-					Active[Passport] = nil
-					Player(source)["state"]["Buttons"] = false
-
-					if vRP.TakeItem(Passport,Full,1,true,Slot) then
-						TriggerClientEvent("inventory:Ration",source)
+				CreateThread(function()
+					while Active[Passport] and os.time() < Active[Passport] do
+						Wait(100)
 					end
-				end
-			end)
+
+					if Active[Passport] then
+						vRPC.Destroy(source)
+						Active[Passport] = nil
+						Player(source)["state"]["Buttons"] = false
+
+						if vRP.TakeItem(Passport,Full,1,true,Slot) then
+							TriggerClientEvent("inventory:Ration",source)
+						end
+					end
+				end)
+			else
+				TriggerClientEvent("Notify",source,"Atenção","Você não está em uma área de caça.","amarelo",5000)
+			end
 		end
 	end,
 
