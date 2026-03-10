@@ -763,9 +763,20 @@ AddEventHandler("inventory:Animals",function(Entity)
 	local source = source
 	local Passport = vRP.Passport(source)
 	if Passport and not Active[Passport] and Entity[5] then
-		local MyEntity,Mode = vCLIENT.Animals(source)
+		local MyEntity,RationMode = vCLIENT.Animals(source)
+		local isRationAnimal = MyEntity == Entity[1]
+		local animalModel = Entity[2]
 
-		if MyEntity == Entity[1] then
+		local validAnimals = { "deer", "boar", "mtlion", "coyote" }
+		local isHuntable = false
+		for _,v in pairs(validAnimals) do
+			if v == animalModel then
+				isHuntable = true
+				break
+			end
+		end
+
+		if isRationAnimal or isHuntable then
 			if vCLIENT.CheckWeapon(source,"WEAPON_SWITCHBLADE") then
 				if vRP.CheckWeight(Passport,"deer1star") then
 					Active[Passport] = os.time() + 30
@@ -790,8 +801,13 @@ AddEventHandler("inventory:Animals",function(Entity)
 							vRP.BattlepassPoints(Passport,1)
 							TriggerEvent("DeletePed",Entity[3])
 							vRP.PutExperience(Passport,"Hunting",1)
-							vRP.GenerateItem(Passport,"meatfillet",Star,true)
-							vRP.GenerateItem(Passport,Mode..Star.."star",1,true)
+
+							if isRationAnimal then
+								vRP.GenerateItem(Passport,"meatfillet",Star,true)
+								vRP.GenerateItem(Passport,RationMode..Star.."star",1,true)
+							else
+								vRP.GenerateItem(Passport,"meatfillet",math.random(2),true)
+							end
 						end
 					end)
 				else
@@ -801,7 +817,7 @@ AddEventHandler("inventory:Animals",function(Entity)
 				TriggerClientEvent("Notify",source,"Atenção","Você precisa do <b>Canivete</b> em mãos.","amarelo",5000)
 			end
 		else
-			TriggerClientEvent("Notify",source,"Atenção","Carcaça animal não é sua.","amarelo",5000)
+			TriggerClientEvent("Notify",source,"Atenção","Você não pode esfolar este animal.","vermelho",5000)
 		end
 	end
 end)
