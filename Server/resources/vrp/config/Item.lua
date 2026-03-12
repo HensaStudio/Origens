@@ -667,7 +667,7 @@ local List = {
 		["Rarity"] = "legendary"
 	},
 	["fishingrodplus"] = {
-		["Index"] = "fishingrod",
+		["Index"] = "fishingrodplus",
 		["Name"] = "Vara de Pescar ++",
 		["Description"] = "Companheira ideal para os amantes da pesca, seja em água doce ou salgada, com sua construção leve e resistente, proporciona equilíbrio perfeito e sensibilidade para detectar até os mais sutis movimentos dos peixes, seja para pescadores iniciantes ou experientes, esta vara é a escolha confiável para horas de diversão e sucesso nas pescarias.",
 		["Repair"] = "repairkit04",
@@ -677,7 +677,7 @@ local List = {
 		["Delete"] = true,
 		["Economy"] = 50000,
 		["Rarity"] = "legendary",
-		["Water"] = "In"
+		["Water"] = "Out"
 	},
 	["pickaxeplus"] = {
 		["Index"] = "pickaxe",
@@ -3921,43 +3921,7 @@ local List = {
 		["Weight"] = 2.75,
 		["Economy"] = 575,
 		["Market"] = true,
-		["Water"] = "In"
-	},
-	["fishingrod2"] = {
-		["Index"] = "fishingrod2",
-		["Name"] = "Vara de Grafite",
-		["Description"] = "Companheira ideal para os amantes da pesca, seja em água doce ou salgada, com sua construção leve e resistente, proporciona equilíbrio perfeito e sensibilidade para detectar até os mais sutis movimentos dos peixes, seja para pescadores iniciantes ou experientes, esta vara é a escolha confiável para horas de diversão e sucesso nas pescarias.",
-		["Repair"] = "repairkit01",
-		["Type"] = "Consumível",
-		["Durability"] = 72,
-		["Weight"] = 2.75,
-		["Economy"] = 875,
-		["Market"] = true,
-		["Water"] = "In"
-	},
-	["fishingrod3"] = {
-		["Index"] = "fishingrod3",
-		["Name"] = "Vara de Fibra",
-		["Description"] = "Companheira ideal para os amantes da pesca, seja em água doce ou salgada, com sua construção leve e resistente, proporciona equilíbrio perfeito e sensibilidade para detectar até os mais sutis movimentos dos peixes, seja para pescadores iniciantes ou experientes, esta vara é a escolha confiável para horas de diversão e sucesso nas pescarias.",
-		["Repair"] = "repairkit01",
-		["Type"] = "Consumível",
-		["Durability"] = 72,
-		["Weight"] = 2.75,
-		["Economy"] = 1275,
-		["Market"] = true,
-		["Water"] = "In"
-	},
-	["fishingrod4"] = {
-		["Index"] = "fishingrod4",
-		["Name"] = "Vara de Carbono",
-		["Description"] = "Companheira ideal para os amantes da pesca, seja em água doce ou salgada, com sua construção leve e resistente, proporciona equilíbrio perfeito e sensibilidade para detectar até os mais sutis movimentos dos peixes, seja para pescadores iniciantes ou experientes, esta vara é a escolha confiável para horas de diversão e sucesso nas pescarias.",
-		["Repair"] = "repairkit01",
-		["Type"] = "Consumível",
-		["Durability"] = 72,
-		["Weight"] = 2.75,
-		["Economy"] = 1925,
-		["Market"] = true,
-		["Water"] = "In"
+		["Water"] = "Out"
 	},
 	["pickaxe"] = {
 		["Index"] = "pickaxe",
