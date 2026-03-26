@@ -2,6 +2,37 @@
 -- LIST
 -----------------------------------------------------------------------------------------------------------------------------------------
 local List = {
+	-- PÁSCOA
+	["bronzeegg"] = {
+		["Index"] = "bronzeegg",
+		["Name"] = "Ovo de Bronze",
+		["Description"] = "Especial de Páscoa.",
+		["Type"] = "Comum",
+		["Weight"] = 0.10,
+		["Market"] = true,
+		["Delete"] = false,
+		["Rarity"] = "rare",
+	},
+	["silveregg"] = {
+		["Index"] = "silveregg",
+		["Name"] = "Ovo de Prata",
+		["Description"] = "Especial de Páscoa.",
+		["Type"] = "Comum",
+		["Weight"] = 0.10,
+		["Market"] = true,
+		["Delete"] = false,
+		["Rarity"] = "epic",
+	},
+	["goldegg"] = {
+		["Index"] = "goldegg",
+		["Name"] = "Ovo de Ouro",
+		["Description"] = "Especial de Páscoa.",
+		["Type"] = "Comum",
+		["Weight"] = 0.10,
+		["Market"] = true,
+		["Delete"] = false,
+		["Rarity"] = "legendary",
+	},
 	-- ESSÊNCIAS
 	["blue_essence"] = {
 		["Index"] = "blue_essence",
