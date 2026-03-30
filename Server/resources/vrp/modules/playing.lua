@@ -2,6 +2,7 @@
 -- VARIABLES
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Played = {}
+local Salary = {}
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- UPDATEPLAYING
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -36,7 +37,20 @@ CreateThread(function()
 		local Players = vRP.Players()
 
 		for Passport, _ in pairs(Players) do
-			Played[Passport] = (Played[Passport] or 0) + (os.time() - Timer)
+			local Seconds = os.time() - Timer
+
+			Played[Passport] = (Played[Passport] or 0) + Seconds
+			Salary[Passport] = (Salary[Passport] or 0) + Seconds
+
+			if Salary[Passport] >= SalaryCooldowns then
+				local Valuation = vRP.UserSalarys(Passport)
+				if Valuation > 0 then
+					vRP.GiveBank(Passport,Valuation)
+					TriggerClientEvent("Notify",vRP.Source(Passport),"Salário","Você recebeu seu salário de <b>$"..Dotted(Valuation).."</b>.","verde",5000)
+				end
+
+				Salary[Passport] = 0
+			end
 		end
 
 		if os.time() - Timer >= 1 then
