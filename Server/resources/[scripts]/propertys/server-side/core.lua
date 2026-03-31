@@ -312,7 +312,7 @@ AddEventHandler("propertys:Buy",function(Name)
 	local Split = splitString(Name)
 	local Passport = vRP.Passport(source)
 
-	if not Passport or exports.bank:CheckTaxs(Passport) or exports.bank:CheckFines(Passport) then
+	if not Passport or exports.bank:CheckTaxes(Passport) or exports.bank:CheckFines(Passport) then
 		return false
 	end
 
@@ -349,7 +349,7 @@ AddEventHandler("propertys:Buy",function(Name)
 	TriggerClientEvent("Notify",source,"Propriedades","Compra concluída.","verde",10000)
 
 	if Mode == "Dollar" then
-		exports.bank:AddTaxs(Passport,source,"Propriedades",Informations[Interior].Price,"Compra de propriedade.",false)
+		exports.bank:AddTaxes(Passport,source,"Propriedades",Informations[Interior].Price,"Compra de propriedade.")
 	end
 
 	vRP.Query("propertys/Buy",{
