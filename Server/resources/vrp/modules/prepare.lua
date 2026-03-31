@@ -118,11 +118,6 @@ vRP.Prepare("taxs/Remove","DELETE FROM taxs WHERE Passport = @Passport AND id = 
 vRP.Prepare("taxs/Check","SELECT * FROM taxs WHERE Passport = @Passport AND id = @id")
 vRP.Prepare("taxs/Add","INSERT INTO taxs (Passport,Name,Date,Hour,Price,Message) VALUES (@Passport,@Name,@Date,@Hour,@Price,@Message)")
 -----------------------------------------------------------------------------------------------------------------------------------------
--- TRANSACTIONS
------------------------------------------------------------------------------------------------------------------------------------------
-vRP.Prepare("transactions/List","SELECT * FROM transactions WHERE Passport = @Passport ORDER BY id DESC LIMIT @Limit")
-vRP.Prepare("transactions/Add","INSERT INTO transactions (Passport,Type,Date,Price,Balance,Timeset) VALUES (@Passport,@Type,@Date,@Price,@Balance,UNIX_TIMESTAMP() + (86400 * 30))")
------------------------------------------------------------------------------------------------------------------------------------------
 -- DEPENDENTS
 -----------------------------------------------------------------------------------------------------------------------------------------
 vRP.Prepare("dependents/List","SELECT * FROM dependents WHERE Passport = @Passport")
@@ -154,7 +149,6 @@ vRP.Prepare("hwid/Insert","INSERT INTO hwid (Token,Account) VALUES (@Token,@Acco
 -- CLEARTABLES
 -----------------------------------------------------------------------------------------------------------------------------------------
 vRP.Prepare("Hensa/Prison","UPDATE characters SET Prison = 0 WHERE Prison < 0")
-vRP.Prepare("Hensa/Transactions","DELETE FROM transactions WHERE Timeset <= UNIX_TIMESTAMP()")
 vRP.Prepare("Hensa/Playerdata","DELETE FROM playerdata WHERE Information = '[]' OR Information = '{}'")
 vRP.Prepare("Hensa/Entitydata","DELETE FROM entitydata WHERE Information = '[]' OR Information = '{}'")
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -200,10 +194,8 @@ vRP.Prepare("RedeemedCodes/GetUserRedeemed","SELECT * FROM redeemed_codes WHERE 
 -----------------------------------------------------------------------------------------------------------------------------------------
 CreateThread(function()
 	vRP.Query("Hensa/Prison")
-
 	vRP.Query("Hensa/Playerdata")
 	vRP.Query("Hensa/Entitydata")
-	vRP.Query("Hensa/Transactions")
 
 	-- LB-PHONE
 	if UsingLB then
