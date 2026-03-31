@@ -91,7 +91,7 @@ AddEventHandler("player:Call", function()
 		})
 	end
 
-	exports.bank:AddTaxs(Passport,source,"Telefone",ServiceData.price,"Chamado para "..Keyboard[1]..".",false)
+	exports.bank:AddTaxes(Passport,source,"Telefone",ServiceData.price,"Chamado para "..Keyboard[1]..".")
 
 	CallCooldown[Passport] = os.time() + CooldownTime
 end)
@@ -132,7 +132,7 @@ AddEventHandler("player:Demand",function(OtherSource)
 	local source = source
 	local Passport = vRP.Passport(source)
 	local OtherPassport = vRP.Passport(OtherSource)
-	if Passport and OtherPassport and not exports.bank:CheckTaxs(OtherPassport) and not exports.bank:CheckFines(OtherPassport) then
+	if Passport and OtherPassport and not exports.bank:CheckTaxes(OtherPassport) and not exports.bank:CheckFines(OtherPassport) then
 		local Keyboard = vKEYBOARD.Primary(source,"Valor")
 		if Keyboard and vRP.Passport(OtherSource) then
 			local Price = parseInt(Keyboard[1],true)
