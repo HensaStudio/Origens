@@ -16,7 +16,7 @@ function Creative.Permission(Name)
 	local source = source
 	local Passport = vRP.Passport(source)
 
-	if Passport and List[Name] and not exports.bank:CheckTaxs(Passport) and not exports.bank:CheckFines(Passport) then
+	if Passport and List[Name] and not exports.bank:CheckTaxes(Passport) and not exports.bank:CheckFines(Passport) then
 		if Name == "HuntingBuy" and not vRP.DatatableInformation(Passport,"Firearms") then
 			TriggerClientEvent("Notify",source,"Aviso","Você precisa possuir <b>Porte de Armas</b>.","vermelho",5000)
 			return false
