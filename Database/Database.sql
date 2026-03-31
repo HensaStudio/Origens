@@ -59,8 +59,8 @@ CREATE TABLE IF NOT EXISTS `chests` (
 
 DROP TABLE IF EXISTS `dependents`;
 CREATE TABLE IF NOT EXISTS `dependents` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `Passport` bigint(20) NOT NULL DEFAULT 0,
+  `id` bigint(19) NOT NULL AUTO_INCREMENT,
+  `Passport` bigint(19) NOT NULL DEFAULT 0,
   `Dependent` int(10) NOT NULL DEFAULT 0,
   `Name` varchar(50) NOT NULL,
   PRIMARY KEY (`id`),
@@ -136,27 +136,14 @@ CREATE TABLE IF NOT EXISTS `hwid` (
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-DROP TABLE IF EXISTS `investments`;
-CREATE TABLE IF NOT EXISTS `investments` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `Passport` bigint(20) NOT NULL DEFAULT 0,
-  `Liquid` bigint(20) NOT NULL DEFAULT 0,
-  `Monthly` bigint(20) NOT NULL DEFAULT 0,
-  `Deposit` bigint(20) NOT NULL DEFAULT 0,
-  `Last` bigint(20) NOT NULL DEFAULT 0,
-  PRIMARY KEY (`id`),
-  KEY `Passport` (`Passport`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
 DROP TABLE IF EXISTS `invoices`;
 CREATE TABLE IF NOT EXISTS `invoices` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `Passport` bigint(20) NOT NULL DEFAULT 0,
-  `Received` bigint(20) NOT NULL DEFAULT 0,
-  `Type` varchar(50) NOT NULL,
+  `id` bigint(19) NOT NULL AUTO_INCREMENT,
+  `Passport` bigint(19) NOT NULL DEFAULT 0,
+  `Received` bigint(19) NOT NULL DEFAULT 0,
   `Reason` longtext NOT NULL,
-  `Holder` varchar(50) NOT NULL,
-  `Price` bigint(20) NOT NULL DEFAULT 0,
+  `Price` bigint(19) NOT NULL DEFAULT 0,
+  `Timestamp` bigint(19) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `Passport` (`Passport`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -423,28 +410,26 @@ CREATE TABLE IF NOT EXISTS `races` (
   KEY `idx_races_race_points` (`Race`,`Points`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-DROP TABLE IF EXISTS `taxs`;
-CREATE TABLE IF NOT EXISTS `taxs` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `Passport` bigint(20) NOT NULL DEFAULT 0,
+DROP TABLE IF EXISTS `taxes`;
+CREATE TABLE IF NOT EXISTS `taxes` (
+  `id` bigint(19) NOT NULL AUTO_INCREMENT,
+  `Passport` bigint(19) NOT NULL DEFAULT 0,
   `Name` varchar(50) NOT NULL,
-  `Date` varchar(50) NOT NULL,
-  `Hour` varchar(50) NOT NULL,
-  `Price` bigint(20) NOT NULL,
-  `Message` longtext DEFAULT NULL,
+  `Timestamp` bigint(19) NOT NULL DEFAULT 0,
+  `Price` bigint(19) NOT NULL,
+  `Description` longtext DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `Passport` (`Passport`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 DROP TABLE IF EXISTS `transactions`;
 CREATE TABLE IF NOT EXISTS `transactions` (
-  `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `Passport` bigint(20) NOT NULL DEFAULT 0,
+  `id` bigint(19) NOT NULL AUTO_INCREMENT,
+  `Passport` bigint(19) NOT NULL DEFAULT 0,
   `Type` varchar(50) NOT NULL,
-  `Date` varchar(50) NOT NULL,
-  `Price` bigint(20) NOT NULL,
-  `Balance` bigint(20) NOT NULL,
-  `Timeset` bigint(20) NOT NULL DEFAULT 0,
+  `Price` bigint(19) NOT NULL DEFAULT 0,
+  `Timestamp` bigint(19) NOT NULL DEFAULT 0,
+  `Reference` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `Passport` (`Passport`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
