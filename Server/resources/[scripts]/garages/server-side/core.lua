@@ -327,7 +327,7 @@ function Creative.Vehicles(Number)
 		return false
 	end
 
-	if exports.bank:CheckTaxs(Passport) or exports.bank:CheckFines(Passport) then
+	if exports.bank:CheckTaxes(Passport) or exports.bank:CheckFines(Passport) then
 		return false
 	end
 
@@ -656,7 +656,7 @@ AddEventHandler("garages:Spawn",function(Name,Number)
 					end
 
 					exports.discord:Embed("Vehicles","**[PASSAPORTE]:** "..Passport.."\n**[COMPROU]:** "..Name.."\n**[VALOR]:** "..Currency..Dotted(Price))
-					exports.bank:AddTaxs(Passport,source,"Concessionária",Price,"Compra do veículo "..VehicleName(Name)..".",false)
+					exports.bank:AddTaxes(Passport,source,"Concessionária",Price,"Compra do veículo "..VehicleName(Name)..".")
 					Vehicle = vRP.SelectVehicle(Passport,Name)
 				else
 					return CancelProcess("Processo cancelado.")
