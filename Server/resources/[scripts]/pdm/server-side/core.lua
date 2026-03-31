@@ -20,7 +20,7 @@ local VehiclekeyPrice = ItemEconomy("vehiclekey")
 function Creative.Open()
 	local source = source
 	local Passport = vRP.Passport(source)
-	if Passport and not exports.bank:CheckTaxs(Passport) and not exports.bank:CheckFines(Passport) then
+	if Passport and not exports.bank:CheckTaxes(Passport) and not exports.bank:CheckFines(Passport) then
 		return true
 	end
 
@@ -76,7 +76,7 @@ function Creative.Buy(Model)
 						end
 
 						exports.discord:Embed("Pdm","**[PASSAPORTE]:** "..Passport.."\n**[COMPROU]:** "..Model.."\n**[VALOR]:** "..Currency..Dotted(VehiclePrice))
-						exports.bank:AddTaxs(Passport,source,"Concessionária",VehiclePrice,"Compra do veículo "..VehicleName(Model)..".",false)
+						exports.bank:AddTaxes(Passport,source,"Concessionária",VehiclePrice,"Compra do veículo "..VehicleName(Model)..".")
 						TriggerClientEvent("Notify",source,"Sucesso","Compra concluída.<br>O veículo foi para a <b>Garagem Concessionária</b>.","verde",10000)
 						Return = true
 					else
