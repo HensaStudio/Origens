@@ -58,7 +58,7 @@ AdaptiveCardsWhitelist = true -- Mostrado em caso de Whitelist
 -----------------------------------------------------------------------------------------------------------------------------------------
 MaintenanceEnabled = false -- Ativa manutenção do servidor
 Maintenance = {
-	["11000012ecc3cdc"] = true
+	["28072000"] = true
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- TEXTS
@@ -473,5 +473,6 @@ Theme = { -- Configurações de tema do HUD, menus, notificações e chat
 			main = "#efcf2f",
 			mainText = "#120b02"
 		}
-	}
+	},
+	eyeColorAtBarbershop = true
 }
