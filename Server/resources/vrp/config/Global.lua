@@ -1,6 +1,7 @@
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- VARIABLES
 -----------------------------------------------------------------------------------------------------------------------------------------
+BucketMode = "strict" -- strict, relaxed ou inactive
 MaxRepair = 1 -- Máximo de reparos em um item
 MinimumWeight = 15 -- Peso mínimo padrão que todo jogador tem no inventário
 NotifyLogin = true -- Envia notificação de login
