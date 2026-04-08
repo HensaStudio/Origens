@@ -477,7 +477,7 @@ exports("Bucket",function(source,Mode,Route)
 		Player(source).state.Route = Route
 
 		if Route > 0 then
-			SetRoutingBucketEntityLockdownMode(Route,"strict")
+			SetRoutingBucketEntityLockdownMode(Route,BucketMode)
 			SetRoutingBucketPopulationEnabled(Route,false)
 		end
 	else
