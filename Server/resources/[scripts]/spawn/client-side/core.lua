@@ -22,7 +22,7 @@ RegisterNUICallback("Config",function(Data,Callback)
 
 	RequestModel(Model)
 	while not HasModelLoaded(Model) do
-		Wait(100)
+		Wait(50)
 	end
 
 	SetPlayerModel(Pid,Model)
@@ -83,7 +83,14 @@ end)
 -- REQUEST
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNUICallback("Request",function(Data,Callback)
-	Callback("Ok")
+	Callback(vSERVER.CheckPayment(Data.Passport))
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- SPAWN:REQUEST
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("spawn:Request")
+AddEventHandler("spawn:Request",function()
+	SendNUIMessage({ Action = "Request", Payload = SkinMontlyPrice })
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- NEWCHARACTER
@@ -222,7 +229,7 @@ function Customization(Table,Check)
 
 	RequestModel(Model)
 	while not HasModelLoaded(Model) do
-		Wait(100)
+		Wait(50)
 	end
 
 	if not Check or (Check and GetEntityModel(Ped) ~= Model) then
