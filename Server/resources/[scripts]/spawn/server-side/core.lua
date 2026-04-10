@@ -102,6 +102,44 @@ function Creative.PurchaseSlot()
 	return true
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- CHECKPAYMENT
+-----------------------------------------------------------------------------------------------------------------------------------------
+function Creative.CheckPayment(Passport)
+	if not Passport then
+		return false
+	end
+
+	local source = source
+	local License = vRP.Identities(source)
+	if not License then
+		return false
+	end
+
+	local Account = vRP.Account(License)
+	if not Account then
+		return false
+	end
+
+	local Identity = vRP.Identity(Passport)
+	if not Identity then
+		return false
+	end
+
+	local CurrentTimer = os.time()
+	local IsExpired = Identity.SkinMontly and Identity.SkinMontly ~= 0 and Identity.SkinMontly <= CurrentTimer
+	if IsExpired and Account.Gemstone >= SkinMontlyPrice then
+		local NewExpiration = CurrentTimer + SkinDuration
+
+		exports.oxmysql:update_async("UPDATE characters SET SkinMontly = ? WHERE id = ?",{ NewExpiration,Passport })
+		vRP.Update("accounts/RemoveGemstone",{ License = License, Gemstone = SkinMontlyPrice })
+		TriggerClientEvent("spawn:Notify",source,"Sucesso","Compra concluída.","verde")
+
+		return NewExpiration
+	end
+
+	return false
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- CHARACTERCHOSEN
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Creative.CharacterChosen(Passport)
@@ -130,7 +168,7 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- NEWCHARACTER
 -----------------------------------------------------------------------------------------------------------------------------------------
-function Creative.NewCharacter(Name,Lastname,Sex)
+function Creative.NewCharacter(Name,Lastname,Gender)
 	local source = source
 	if not Creating[source] then
 		Creating[source] = true
@@ -151,13 +189,17 @@ function Creative.NewCharacter(Name,Lastname,Sex)
 			return false
 		end
 
+		if Gender ~= "mp_m_freemode_01" and Gender ~= "mp_f_freemode_01" then
+			Gender = "mp_m_freemode_01"
+		end
+
 		local Name = FirstName(Name)
 		local Lastname = FirstName(Lastname)
-		local Consult = exports.oxmysql:insert_async("INSERT INTO characters (License,Name,Lastname,Skin,Blood,Created) VALUES (@License,@Name,@Lastname,@Skin,@Blood,UNIX_TIMESTAMP())",{ License = License, Name = Name, Lastname = Lastname, Skin = Sex, Blood = math.random(4) })
+		local Consult = exports.oxmysql:insert_async("INSERT INTO characters (License,Name,Lastname,Skin,Blood,Created) VALUES (@License,@Name,@Lastname,@Skin,@Blood,UNIX_TIMESTAMP())",{ License = License, Name = Name, Lastname = Lastname, Skin = Gender, Blood = math.random(4) })
 		if Consult then
 			Creating[source] = nil
 			vRPC.DoScreenFadeOut(source)
-			vRP.CharacterChosen(source,Consult,Sex)
+			vRP.CharacterChosen(source,Consult,Gender)
 
 			return true
 		end
