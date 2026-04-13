@@ -4,6 +4,8 @@ lua54 "yes"
 
 creative_network "extended"
 
+version "1.0.0"
+
 client_scripts {
 	"lib/Utils.lua",
 	"config/Native.lua",
@@ -33,7 +35,8 @@ server_scripts {
 	"modules/prepare.lua",
 	"modules/battlepass.lua",
 	"modules/vehicles.lua",
-	"modules/playing.lua"
+	"modules/playing.lua",
+	"modules/version.lua"
 }
 
 files {
