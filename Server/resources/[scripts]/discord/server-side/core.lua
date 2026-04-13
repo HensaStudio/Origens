@@ -42,6 +42,7 @@ local Discord = {
 	Pdm = "",
 	Announces = "",
 	Inspect = "",
+	Referral = "",
 	Money = "",
 	CleanPrison = ""
 }
