@@ -4,6 +4,7 @@ lua54 "yes"
 
 client_scripts {
 	"@vrp/config/Native.lua",
+	"@vrp/config/Vehicle.lua",
 	"@PolyZone/client.lua",
 	"@vrp/lib/Utils.lua",
 	"client-side/*"
