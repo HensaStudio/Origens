@@ -2,6 +2,19 @@
 -- VARIABLES
 -----------------------------------------------------------------------------------------------------------------------------------------
 local CreatedBlips = {}
+local GasStationsBlips = false
+local CreatedGasStations = {}
+local ChargingStationsBlips = false
+local CreatedChargingStations = {}
+local FishingAreasBlips = false
+local CreatedFishingAreas = {}
+local CreatedFishingRadius = {}
+local HuntingAreasBlips = false
+local CreatedHuntingAreas = {}
+local CreatedHuntingRadius = {}
+local AirDefenseBlips = false
+local CreatedAirDefense = {}
+local CreatedAirDefenseRadius = {}
 local CreatedRadiusBlips = {}
 local CONTROLS = { 37,204,211,349,192,157,158,159,160,161,162,163,164,165 }
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -73,52 +86,6 @@ local BLIPS = {
 
 	{ Coords = vec3(896.79,-1037.06,35.25), Sprite = 73, Color = 78, Name = "Lavanderia", Scale = 0.6 },
 
-	{ Coords = vec3(265.01,-1261.14,29.28), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
-	{ Coords = vec3(818.8,-1027.92,26.4), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
-	{ Coords = vec3(1208.61,-1402.43,35.23), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
-	{ Coords = vec3(1181.48,-330.26,69.32), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
-	{ Coords = vec3(621.01,268.68,103.09), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
-	{ Coords = vec3(2581.09,361.79,108.47), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
-	{ Coords = vec3(175.08,-1562.12,29.27), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
-	{ Coords = vec3(-319.76,-1471.63,30.55), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
-	{ Coords = vec3(49.42,2778.8,58.05), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
-	{ Coords = vec3(264.09,2606.56,44.99), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
-	{ Coords = vec3(1039.38,2671.28,39.56), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
-	{ Coords = vec3(1207.4,2659.93,37.9), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
-	{ Coords = vec3(2539.19,2594.47,37.95), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
-	{ Coords = vec3(2679.95,3264.18,55.25), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
-	{ Coords = vec3(2005.03,3774.43,32.41), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
-	{ Coords = vec3(1687.07,4929.53,42.08), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
-	{ Coords = vec3(1701.53,6415.99,32.77), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
-	{ Coords = vec3(180.1,6602.88,31.87), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
-	{ Coords = vec3(-94.46,6419.59,31.48), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
-	{ Coords = vec3(-2555.17,2334.23,33.08), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
-	{ Coords = vec3(-1800.09,803.54,138.72), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
-	{ Coords = vec3(-1437.0,-276.8,46.21), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
-	{ Coords = vec3(-2096.3,-320.17,13.17), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
-	{ Coords = vec3(-724.56,-935.97,19.22), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
-	{ Coords = vec3(-525.26,-1211.19,18.19), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
-	{ Coords = vec3(-70.96,-1762.21,29.54), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
-	{ Coords = vec3(1785.41,3330.36,41.38), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
-
-	{ Coords = vec3(-969.82,-2103.53,9.3), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
-	{ Coords = vec3(-1692.18,-948.58,7.67), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
-	{ Coords = vec3(-460.56,-610.57,31.32), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
-	{ Coords = vec3(583.02,2717.7,42.09), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
-	{ Coords = vec3(-753.03,-1081.23,11.71), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
-	{ Coords = vec3(-2193.11,4243.34,48.04), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
-	{ Coords = vec3(-140.82,6278.8,31.34), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
-	{ Coords = vec3(863.0,-3147.94,5.9), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
-	{ Coords = vec3(-1682.24,72.51,64.21), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
-	{ Coords = vec3(-978.38,-181.33,38.03), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
-	{ Coords = vec3(2579.4,436.07,108.45), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
-	{ Coords = vec3(688.45,237.9,93.47), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
-	{ Coords = vec3(2779.23,3491.91,55.18), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
-	{ Coords = vec3(1733.68,6406.37,34.76), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
-	{ Coords = vec3(-755.84,5551.38,33.48), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
-	{ Coords = vec3(-2528.37,2350.46,33.21), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
-	{ Coords = vec3(1952.93,3757.09,32.2), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
-
 	{ Coords = vec3(149.64,-1041.36,29.59), Sprite = 108, Color = 25, Name = "Banco", Scale = 0.7 },
 	{ Coords = vec3(313.95,-279.74,54.39), Sprite = 108, Color = 25, Name = "Banco", Scale = 0.7 },
 	{ Coords = vec3(-351.2,-50.57,49.26), Sprite = 108, Color = 25, Name = "Banco", Scale = 0.7 },
@@ -154,10 +121,6 @@ local BLIPS = {
 	{ Coords = vec3(1200.52,-1276.06,35.22), Sprite = 357, Color = 2, Name = "Garagem", Scale = 0.6 },
 
 	{ Coords = vec3(1331.48,4271.61,31.49), Sprite = 356, Color = 2, Name = "Embarcações", Scale = 0.6 },
-
-	{ Coords = vec3(2003.91,4230.95,29.93), Sprite = 1, Color = 53, Name = "Área de Pesca", Scale = 0.6 },
-	{ Coords = vec3(1038.35,3938.64,31.27), Sprite = 1, Color = 53, Name = "Área de Pesca", Scale = 0.6 },
-	{ Coords = vec3(210.77,4032.24,30.72), Sprite = 1, Color = 53, Name = "Área de Pesca", Scale = 0.6 },
 
 	{ Coords = vec3(29.2,-1351.89,29.34), Sprite = 52, Color = 36, Name = "Loja de Departamento", Scale = 0.7 },
 	{ Coords = vec3(2561.74,385.22,108.61), Sprite = 52, Color = 36, Name = "Loja de Departamento", Scale = 0.7 },
@@ -266,6 +229,89 @@ local BLIPS = {
 	{ Coords = vec3(1239.87,-3257.2,7.09), Sprite = 67, Color = 62, Name = "Caminhoneiro", Scale = 0.6 }
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- GAS_STATIONS
+-----------------------------------------------------------------------------------------------------------------------------------------
+local GAS_STATIONS = {
+	{ Coords = vec3(265.01,-1261.14,29.28), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
+	{ Coords = vec3(818.8,-1027.92,26.4), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
+	{ Coords = vec3(1208.61,-1402.43,35.23), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
+	{ Coords = vec3(1181.48,-330.26,69.32), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
+	{ Coords = vec3(621.01,268.68,103.09), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
+	{ Coords = vec3(2581.09,361.79,108.47), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
+	{ Coords = vec3(175.08,-1562.12,29.27), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
+	{ Coords = vec3(-319.76,-1471.63,30.55), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
+	{ Coords = vec3(49.42,2778.8,58.05), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
+	{ Coords = vec3(264.09,2606.56,44.99), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
+	{ Coords = vec3(1039.38,2671.28,39.56), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
+	{ Coords = vec3(1207.4,2659.93,37.9), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
+	{ Coords = vec3(2539.19,2594.47,37.95), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
+	{ Coords = vec3(2679.95,3264.18,55.25), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
+	{ Coords = vec3(2005.03,3774.43,32.41), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
+	{ Coords = vec3(1687.07,4929.53,42.08), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
+	{ Coords = vec3(1701.53,6415.99,32.77), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
+	{ Coords = vec3(180.1,6602.88,31.87), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
+	{ Coords = vec3(-94.46,6419.59,31.48), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
+	{ Coords = vec3(-2555.17,2334.23,33.08), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
+	{ Coords = vec3(-1800.09,803.54,138.72), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
+	{ Coords = vec3(-1437.0,-276.8,46.21), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
+	{ Coords = vec3(-2096.3,-320.17,13.17), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
+	{ Coords = vec3(-724.56,-935.97,19.22), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
+	{ Coords = vec3(-525.26,-1211.19,18.19), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
+	{ Coords = vec3(-70.96,-1762.21,29.54), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 },
+	{ Coords = vec3(1785.41,3330.36,41.38), Sprite = 361, Color = 65, Name = "Posto de Combustível", Scale = 0.6 }
+}
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- CHARGING_STATIONS
+-----------------------------------------------------------------------------------------------------------------------------------------
+local CHARGING_STATIONS = {
+	{ Coords = vec3(-969.82,-2103.53,9.3), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
+	{ Coords = vec3(-1692.18,-948.58,7.67), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
+	{ Coords = vec3(-460.56,-610.57,31.32), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
+	{ Coords = vec3(583.02,2717.7,42.09), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
+	{ Coords = vec3(-753.03,-1081.23,11.71), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
+	{ Coords = vec3(-2193.11,4243.34,48.04), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
+	{ Coords = vec3(-140.82,6278.8,31.34), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
+	{ Coords = vec3(863.0,-3147.94,5.9), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
+	{ Coords = vec3(-1682.24,72.51,64.21), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
+	{ Coords = vec3(-978.38,-181.33,38.03), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
+	{ Coords = vec3(2579.4,436.07,108.45), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
+	{ Coords = vec3(688.45,237.9,93.47), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
+	{ Coords = vec3(2779.23,3491.91,55.18), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
+	{ Coords = vec3(1733.68,6406.37,34.76), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
+	{ Coords = vec3(-755.84,5551.38,33.48), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
+	{ Coords = vec3(-2528.37,2350.46,33.21), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
+	{ Coords = vec3(1952.93,3757.09,32.2), Sprite = 354, Color = 60, Name = "Posto de Recarga", Scale = 1.0 },
+}
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- FISHING_AREAS
+-----------------------------------------------------------------------------------------------------------------------------------------
+local FISHING_AREAS = {
+	{ Coords = vec3(2003.91,4230.95,29.93), Sprite = 1, Color = 53, Name = "Área de Pesca", Scale = 0.6 },
+	{ Coords = vec3(1038.35,3938.64,31.27), Sprite = 1, Color = 53, Name = "Área de Pesca", Scale = 0.6 },
+	{ Coords = vec3(210.77,4032.24,30.72), Sprite = 1, Color = 53, Name = "Área de Pesca", Scale = 0.6 }
+}
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- AIR_DEFENSE_LOCATIONS
+-----------------------------------------------------------------------------------------------------------------------------------------
+AIR_DEFENSE_LOCATIONS = {
+	{ Coords = vec3(1680.02, 2573.79, 46.15), Radius = 260.0 },
+	{ Coords = vec3(-2179.51,3093.99,32.81), Radius = 560.0 }
+}
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- AIR_DEFENSE
+-----------------------------------------------------------------------------------------------------------------------------------------
+local AIR_DEFENSE = {}
+for i, loc in ipairs(AIR_DEFENSE_LOCATIONS) do
+	AIR_DEFENSE[i] = { Coords = loc.Coords, Sprite = 1, Color = 1, Name = "Área com Defesa Aérea", Scale = 0.6 }
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- AIR_DEFENSE_ALPHAS
+-----------------------------------------------------------------------------------------------------------------------------------------
+local AIR_DEFENSE_ALPHAS = {}
+for i, loc in ipairs(AIR_DEFENSE_LOCATIONS) do
+	AIR_DEFENSE_ALPHAS[i] = { Coords = loc.Coords, Alpha = 100, Color = 1, Radius = loc.Radius, Name = "Área com Defesa Aérea" }
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- TELEPORT
 -----------------------------------------------------------------------------------------------------------------------------------------
 local TELEPORT = {
@@ -285,21 +331,35 @@ local TELEPORT = {
 	{ vec3(252.32,220.21,101.67),vec3(254.06,225.28,101.87) }
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
--- ALPHAS
+-- FISHING_ALPHAS
 -----------------------------------------------------------------------------------------------------------------------------------------
-local ALPHAS = {
-	{ Coords = vec3(2003.91,4230.95,29.93), Alpha = 100, Color = 53, Radius = 150.0 },
-	{ Coords = vec3(1038.35,3938.64,31.27), Alpha = 100, Color = 53, Radius = 150.0 },
-	{ Coords = vec3(210.77,4032.24,30.72), Alpha = 100, Color = 53, Radius = 150.0 },
+local FISHING_ALPHAS = {
+	{ Coords = vec3(2003.91,4230.95,29.93), Alpha = 100, Color = 53, Radius = 150.0, Name = "Área de Pesca" },
+	{ Coords = vec3(1038.35,3938.64,31.27), Alpha = 100, Color = 53, Radius = 150.0, Name = "Área de Pesca" },
+	{ Coords = vec3(210.77,4032.24,30.72), Alpha = 100, Color = 53, Radius = 150.0, Name = "Área de Pesca" },
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
--- HUNTINGS
+-- HUNTING_DATA
 -----------------------------------------------------------------------------------------------------------------------------------------
-local HUNTINGS = {
+local HUNTING_DATA = {
 	{ Coords = vec3(-639.48,5091.26,131.7), Alpha = 100, Color = 2, Radius = 200.0, name = "Floresta", animals = { "deer", "boar" } },
 	{ Coords = vec3(2366.89,3537.49,60.83), Alpha = 100, Color = 6, Radius = 200.0, name = "Deserto", animals = { "coyote" } },
 	{ Coords = vec3(-2352.35,1338.39,336.42), Alpha = 100, Color = 46, Radius = 200.0, name = "Montanha", animals = { "mtlion", "boar" } }
 }
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- HUNTING_BLIPS
+-----------------------------------------------------------------------------------------------------------------------------------------
+local HUNTING_BLIPS = {}
+for i, v in ipairs(HUNTING_DATA) do
+	HUNTING_BLIPS[i] = { Coords = v.Coords, Sprite = 141, Color = 16, Name = "Área de Caça: " .. v.name, Scale = 0.8 }
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- HUNTING_ALPHAS
+-----------------------------------------------------------------------------------------------------------------------------------------
+local HUNTING_ALPHAS = {}
+for i, v in ipairs(HUNTING_DATA) do
+	HUNTING_ALPHAS[i] = { Coords = v.Coords, Alpha = 100, Color = v.Color, Radius = v.Radius, Name = "Área de Caça: " .. v.name }
+end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- ISLAND
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -685,9 +745,8 @@ CreateThread(function()
 	while true do
 		local Pid = PlayerId()
 		local Ped = PlayerPedId()
-		if IsPedInAnyVehicle(Ped) then
-			DisableControlAction(0,345,true)
 
+		if IsPedInAnyVehicle(Ped) then
 			local Vehicle = GetVehiclePedIsUsing(Ped)
 			if not GetPedConfigFlag(Ped,184,true) then
 				SetPedConfigFlag(Ped,184,true)
@@ -752,39 +811,39 @@ CreateThread(function()
 			ClearPlayerWantedLevel(Pid)
 		end
 
+		Wait(0)
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- THREADWEATHER
+-----------------------------------------------------------------------------------------------------------------------------------------
+CreateThread(function()
+	while true do
 		if LocalPlayer.state.Active then
 			NetworkOverrideClockTime(GlobalState.Hours,GlobalState.Minutes,0)
 
-			SetWeatherTypeNowPersist(GlobalState.Weather)
-			SetOverrideWeather(GlobalState.Weather)
-			SetWeatherTypeNow(GlobalState.Weather)
+			if GetPrevWeatherTypeHashName() ~= GetHashKey(GlobalState.Weather) then
+				SetWeatherTypeNowPersist(GlobalState.Weather)
+				SetOverrideWeather(GlobalState.Weather)
+				SetWeatherTypeNow(GlobalState.Weather)
+			end
 		else
 			NetworkOverrideClockTime(12,0,0)
 
-			SetWeatherTypeNow("EXTRASUNNY")
-			SetOverrideWeather("EXTRASUNNY")
-			SetWeatherTypeNowPersist("EXTRASUNNY")
+			if GetPrevWeatherTypeHashName() ~= GetHashKey("EXTRASUNNY") then
+				SetWeatherTypeNow("EXTRASUNNY")
+				SetOverrideWeather("EXTRASUNNY")
+				SetWeatherTypeNowPersist("EXTRASUNNY")
+			end
 		end
 
-		Wait(0)
+		Wait(2000)
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- THREADSERVERSTART
 -----------------------------------------------------------------------------------------------------------------------------------------
 CreateThread(function()
-	local mapZoomData = {
-		{ 0,0.96,0.9,0.08,0.0,0.0 },
-		{ 1,1.6,0.9,0.08,0.0,0.0 },
-		{ 2,8.6,0.9,0.08,0.0,0.0 },
-		{ 3,12.3,0.9,0.08,0.0,0.0 },
-		{ 4,22.3,0.9,0.08,0.0,0.0 }
-	}
-
-	for _,zoomData in ipairs(mapZoomData) do
-		SetMapZoomDataLevel(zoomData[1],zoomData[2],zoomData[3],zoomData[4],zoomData[5],zoomData[6])
-	end
-
 	for _,v in pairs(IPL_LIST) do
 		local Interior = GetInteriorAtCoords(v["Coords"])
 		LoadInterior(Interior)
@@ -798,35 +857,11 @@ CreateThread(function()
 		RefreshInterior(Interior)
 	end
 
-	for index, alphaData in ipairs(ALPHAS) do
-		local Blip = CreateBlipRadius(alphaData)
-		
-		if Blip then
-			CreatedRadiusBlips[index] = Blip
-			Wait(0)
-		end
-	end
-
-	for _, v in ipairs(HUNTINGS) do
-		local blip = CreateBlip({ Coords = v.Coords, Sprite = 141, Color = 16, Name = "Área de Caça: " .. v.name, Scale = 0.8 })
-		if blip then
-			CreatedBlips[#CreatedBlips + 1] = blip
-			Wait(0)
-		end
-
-		local radiusBlip = CreateBlipRadius(v)
-		if radiusBlip then
-			CreatedRadiusBlips[#CreatedRadiusBlips + 1] = radiusBlip
-			Wait(0)
-		end
-	end
-
 	for index, blipData in ipairs(BLIPS) do
 		local Blip = CreateBlip(blipData)
 		
 		if Blip then
 			CreatedBlips[index] = Blip
-			Wait(0)
 		end
 	end
 
@@ -867,6 +902,10 @@ CreateThread(function()
 	local IslandLoaded = false
 	for _,v in pairs(ISLAND) do
 		RequestIpl(v)
+	end
+
+	for Number = 1,121 do
+		EnableDispatchService(Number,false)
 	end
 
 	while true do
@@ -911,16 +950,140 @@ CreateThread(function()
 			end
 		end
 
-		for Number = 1,121 do
-			EnableDispatchService(Number,false)
+		Wait(2500)
+	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- TOGGLEBLIPS
+-----------------------------------------------------------------------------------------------------------------------------------------
+local function ToggleBlips(Type, Table, Storage, Active, RadiusTable, RadiusStorage)
+	if Active then
+		for index, blipData in ipairs(Table) do
+			local Blip = CreateBlip(blipData)
+			if Blip then
+				Storage[index] = Blip
+			end
 		end
 
-		Wait(100)
+		if RadiusTable and RadiusStorage then
+			for index, alphaData in ipairs(RadiusTable) do
+				local Blip = CreateBlipRadius(alphaData)
+				if Blip then
+					RadiusStorage[index] = Blip
+				end
+			end
+		end
+
+		TriggerEvent("Notify", "Sucesso", "Blips de <b>"..Type.."</b> ativados.", "verde", 5000)
+	else
+		for index, blipHandle in pairs(Storage) do
+			if DoesBlipExist(blipHandle) then
+				RemoveBlip(blipHandle)
+			end
+		end
+
+		for k in pairs(Storage) do Storage[k] = nil end
+
+		if RadiusStorage then
+			for index, blipHandle in pairs(RadiusStorage) do
+				if DoesBlipExist(blipHandle) then
+					RemoveBlip(blipHandle)
+				end
+			end
+
+			for k in pairs(RadiusStorage) do RadiusStorage[k] = nil end
+		end
+
+		TriggerEvent("Notify", "Atenção", "Blips de <b>"..Type.."</b> desativados.", "amarelo", 5000)
+	end
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- HENSA:GASSTATIONS
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("hensa:GasStations")
+AddEventHandler("hensa:GasStations",function()
+	GasStationsBlips = not GasStationsBlips
+	ToggleBlips("Postos de Combustível", GAS_STATIONS, CreatedGasStations, GasStationsBlips)
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- HENSA:CHARGINGSTATIONS
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("hensa:ChargingStations")
+AddEventHandler("hensa:ChargingStations",function()
+	ChargingStationsBlips = not ChargingStationsBlips
+	ToggleBlips("Postos de Recarga", CHARGING_STATIONS, CreatedChargingStations, ChargingStationsBlips)
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- HENSA:FISHINGAREAS
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("hensa:FishingAreas")
+AddEventHandler("hensa:FishingAreas",function()
+	FishingAreasBlips = not FishingAreasBlips
+	ToggleBlips("Áreas de Pesca", FISHING_AREAS, CreatedFishingAreas, FishingAreasBlips, FISHING_ALPHAS, CreatedFishingRadius)
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- HENSA:AIRDEFENSE
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("hensa:AirDefense")
+AddEventHandler("hensa:AirDefense",function()
+	AirDefenseBlips = not AirDefenseBlips
+	ToggleBlips("Defesa Aérea", AIR_DEFENSE, CreatedAirDefense, AirDefenseBlips, AIR_DEFENSE_ALPHAS, CreatedAirDefenseRadius)
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- HENSA:HUNTINGAREAS
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("hensa:HuntingAreas")
+AddEventHandler("hensa:HuntingAreas",function()
+	HuntingAreasBlips = not HuntingAreasBlips
+	ToggleBlips("Áreas de Caça", HUNTING_BLIPS, CreatedHuntingAreas, HuntingAreasBlips, HUNTING_ALPHAS, CreatedHuntingRadius)
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- VEHICLECHECK
+-----------------------------------------------------------------------------------------------------------------------------------------
+CreateThread(function()
+	local InVehicle = false
+
+	while true do
+		local Ped = PlayerPedId()
+		if IsPedInAnyVehicle(Ped) then
+			InVehicle = true
+		else
+			if InVehicle then
+				InVehicle = false
+
+				if GasStationsBlips then
+					GasStationsBlips = false
+					ToggleBlips("Postos de Combustível", GAS_STATIONS, CreatedGasStations, false)
+				end
+
+				if ChargingStationsBlips then
+					ChargingStationsBlips = false
+					ToggleBlips("Postos de Recarga", CHARGING_STATIONS, CreatedChargingStations, false)
+				end
+
+				if FishingAreasBlips then
+					FishingAreasBlips = false
+					ToggleBlips("Áreas de Pesca", FISHING_AREAS, CreatedFishingAreas, false, nil, CreatedFishingRadius)
+				end
+
+				if AirDefenseBlips then
+					AirDefenseBlips = false
+					ToggleBlips("Defesa Aérea", AIR_DEFENSE, CreatedAirDefense, false, nil, CreatedAirDefenseRadius)
+				end
+
+				if HuntingAreasBlips then
+					HuntingAreasBlips = false
+					ToggleBlips("Áreas de Caça", HUNTING_BLIPS, CreatedHuntingAreas, false, nil, CreatedHuntingRadius)
+				end
+			end
+		end
+
+		Wait(1000)
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- EXPORTS
 -----------------------------------------------------------------------------------------------------------------------------------------
 exports("GetHuntingAreas", function()
-	return HUNTINGS
+	return HUNTING_DATA
 end)
