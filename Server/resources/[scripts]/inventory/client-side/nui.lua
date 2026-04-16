@@ -3,7 +3,20 @@
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Drops = {}
 local Opened = false
+local DropObjects = {}
 local Cooldown = GetGameTimer()
+local DropModel = GetHashKey("prop_paper_bag_01")
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- REMOVEDROPOBJECT
+-----------------------------------------------------------------------------------------------------------------------------------------
+local function RemoveDropObject(id)
+	if DropObjects[id] then
+		if DoesEntityExist(DropObjects[id]) then
+			DeleteObject(DropObjects[id])
+		end
+		DropObjects[id] = nil
+	end
+end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- INVENTORY:OPEN
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -177,6 +190,9 @@ RegisterKeyMapping("Inventory","Abrir/Fechar a mochila.","keyboard","OEM_3")
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNetEvent("inventory:Drops")
 AddEventHandler("inventory:Drops",function(Table)
+	for k,v in pairs(DropObjects) do
+		RemoveDropObject(k)
+	end
 	Drops = Table
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -186,6 +202,7 @@ RegisterNetEvent("inventory:DropsRemover")
 AddEventHandler("inventory:DropsRemover",function(Route,Number)
 	if Drops[Route] and Drops[Route][Number] then
 		Drops[Route][Number] = nil
+		RemoveDropObject(Number)
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -282,14 +299,39 @@ CreateThread(function()
 		if not IsPedInAnyVehicle(Ped) and Drops[Route] then
 			local Coords = GetEntityCoords(Ped)
 
-			for _,v in pairs(Drops[Route]) do
-				if #(Coords - v.coords) <= DistanceDrops then
+			for k,v in pairs(Drops[Route]) do
+				local distance = #(Coords - v.coords)
+				if distance <= DistanceDrops then
 					SetDrawOrigin(v.coords.x,v.coords.y,v.coords.z - 0.75)
 					DrawSprite("Textures","Drop",0.0,0.0,0.02,0.02 * GetAspectRatio(false),0.0,255,255,255,255)
 					ClearDrawOrigin()
 
+					if not DropObjects[k] then
+						if not HasModelLoaded(DropModel) then
+							RequestModel(DropModel)
+						else
+							local obj = CreateObject(DropModel,v.coords.x,v.coords.y,v.coords.z - 1.0,false,false,false)
+							if DoesEntityExist(obj) then
+								PlaceObjectOnGroundProperly(obj)
+								FreezeEntityPosition(obj,true)
+								SetEntityCollision(obj,true,true)
+								DropObjects[k] = obj
+							end
+						end
+					end
+
 					TimeDistance = 1
+				else
+					if DropObjects[k] then
+						RemoveDropObject(k)
+					end
 				end
+			end
+		end
+
+		for k,v in pairs(DropObjects) do
+			if not Drops[Route] or not Drops[Route][k] then
+				RemoveDropObject(k)
 			end
 		end
 
