@@ -73,34 +73,3 @@ CreateThread(function()
 		Wait(10000)
 	end
 end)
------------------------------------------------------------------------------------------------------------------------------------------
--- TIMESET
------------------------------------------------------------------------------------------------------------------------------------------
-RegisterCommand("timeset",function(source,Message)
-	local Passport = vRP.Passport(source)
-	if Passport and vRP.HasGroup(Passport,"Admin") then
-		local List = { "EXTRASUNNY","CLEAR","NEUTRAL","SMOG","FOGGY","OVERCAST","CLOUDS","CLEARING","RAIN","THUNDER","SNOW","BLIZZARD","SNOWLIGHT","XMAS","HALLOWEEN" }
-
-		local Keyboard = vKEYBOARD.Timeset(source,"Hora","Minuto",List)
-		if Keyboard then
-			local Hours = parseInt(Keyboard[1])
-			local Minutes = parseInt(Keyboard[2])
-
-			if Hours >= 24 or Hours <= 0 then
-				Hours = 0
-			end
-
-			if Minutes >= 60 or Minutes <= 0 then
-				Minutes = 0
-			end
-
-			GlobalState["Hours"] = Hours
-			GlobalState["Minutes"] = Minutes
-			GlobalState["Weather"] = Keyboard[3]
-
-			TriggerClientEvent("Notify",source,ServerName,WeatherWarning.." <b>"..WeathersType(Keyboard[3]).."</b>.","weather",10000,"bottom-center")
-		else
-			TriggerClientEvent("Notify",source,"Atenção","Você não pode deixar campos vazios.","amarelo",5000)
-		end
-	end
-end)
