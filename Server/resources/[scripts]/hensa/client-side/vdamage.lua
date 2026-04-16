@@ -55,7 +55,7 @@ local Class = {
 -- THREADHEALTHVEH
 -----------------------------------------------------------------------------------------------------------------------------------------
 CreateThread(function()
-	local DamageCheckInterval = 50
+	local DamageCheckInterval = 250
 	local LastDamageCheck = 0
 
 	while true do
@@ -165,7 +165,7 @@ CreateThread(function()
 					end
 				end
 
-				TimeDistance = 50
+				TimeDistance = DamageCheckInterval
 			end
 		else
 			Same = false
