@@ -89,6 +89,13 @@ end)
 RegisterCommand("PlayerFunctions",function()
 	local Ped = PlayerPedId()
 	if not LocalPlayer["state"]["Commands"] and not LocalPlayer["state"]["Handcuff"] and not Dynamic and not IsPauseMenuActive() and GetEntityHealth(Ped) > 100 then
+		exports.dynamic:AddMenu("Mapas","Todas as marcações do mapa.","maps")
+		exports.dynamic:AddButton("Postos de Combustível","Marcar/Desmarcar postos no mapa.","hensa:GasStations","","maps",false)
+		exports.dynamic:AddButton("Postos de Recarga","Marcar/Desmarcar postos no mapa.","hensa:ChargingStations","","maps",false)
+		exports.dynamic:AddButton("Áreas de Pesca","Marcar/Desmarcar áreas no mapa.","hensa:FishingAreas","","maps",false)
+		exports.dynamic:AddButton("Áreas de Caça","Marcar/Desmarcar áreas no mapa.","hensa:HuntingAreas","","maps",false)
+		exports.dynamic:AddButton("Defesa Aérea","Marcar/Desmarcar áreas no mapa.","hensa:AirDefense","","maps",false)
+
 		exports.dynamic:AddMenu("Andar","Mude o seu estilo de andar.","walks")
 		exports.dynamic:AddButton("Normal","Voltar ao padrão.","player:ResetWalk","","walks",true)
 		exports.dynamic:AddButton("Rápido","Passos acelerados.","player:SetWalk","move_m@quick","walks",true)
@@ -227,7 +234,13 @@ RegisterCommand("PlayerFunctions",function()
 			exports.dynamic:AddButton("Minhas Residências","Marcar/Desmarcar suas residências no mapa.","propertys:MyBlips","","others",false)
 		end
 
-		TriggerEvent("animals:Dynamic")
+		if GetResourceState("animals") == "started" then
+			TriggerEvent("animals:Dynamic")
+		end
+
+		if GetResourceState("ticket") == "started" then
+			TriggerEvent("ticket:Dynamic")
+		end
 
 		exports.dynamic:Open()
 	end
