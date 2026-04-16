@@ -9,7 +9,8 @@ local List = {
 		Price = 230000,
 		Mode = "Cars",
 		Gemstone = 0,
-		Class = "Elétricos"
+		Class = "Elétricos",
+		Electric = true
 	},
 	["raiden"] = {
 		Name = "Raiden",
@@ -17,7 +18,8 @@ local List = {
 		Price = 210000,
 		Mode = "Cars",
 		Gemstone = 0,
-		Class = "Elétricos"
+		Class = "Elétricos",
+		Electric = true
 	},
 	["cyclone"] = {
 		Name = "Cyclone",
@@ -25,7 +27,8 @@ local List = {
 		Price = 300000,
 		Mode = "Cars",
 		Gemstone = 0,
-		Class = "Elétricos"
+		Class = "Elétricos",
+		Electric = true
 	},
 	["voltic"] = {
 		Name = "Voltic",
@@ -33,7 +36,8 @@ local List = {
 		Price = 180000,
 		Mode = "Cars",
 		Gemstone = 0,
-		Class = "Elétricos"
+		Class = "Elétricos",
+		Electric = true
 	},
 	["tezeract"] = {
 		Name = "Tezeract",
@@ -41,7 +45,8 @@ local List = {
 		Price = 300000,
 		Mode = "Cars",
 		Gemstone = 0,
-		Class = "Elétricos"
+		Class = "Elétricos",
+		Electric = true
 	},
 	["imorgon"] = {
 		Name = "Imorgon",
@@ -49,7 +54,8 @@ local List = {
 		Price = 200000,
 		Mode = "Cars",
 		Gemstone = 0,
-		Class = "Elétricos"
+		Class = "Elétricos",
+		Electric = true
 	},
 	["khamelion"] = {
 		Name = "Khamelion",
@@ -57,7 +63,8 @@ local List = {
 		Price = 140000,
 		Mode = "Cars",
 		Gemstone = 0,
-		Class = "Elétricos"
+		Class = "Elétricos",
+		Electric = true
 	},
 	-- BOATS
 	["dinghy"] = {
@@ -1660,7 +1667,8 @@ local List = {
 		Price = 100,
 		Mode = nil,
 		Gemstone = 0,
-		Class = "Motocicletas"
+		Class = "Motocicletas",
+		Electric = true
 	},
 	["ratbike"] = {
 		Name = "Ratbike",
