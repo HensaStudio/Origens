@@ -474,6 +474,5 @@ Theme = { -- Configurações de tema do HUD, menus, notificações e chat
 			main = "#efcf2f",
 			mainText = "#120b02"
 		}
-	},
-	eyeColorAtBarbershop = true
+	}
 }
