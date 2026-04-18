@@ -44,11 +44,15 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- UPDATE
 -----------------------------------------------------------------------------------------------------------------------------------------
-function Creative.Update(Clothes)
+function Creative.Update(Clothes,Creation)
 	local source = source
 	local Passport = vRP.Passport(source)
 	if Passport then
 		vRP.Query("playerdata/SetData",{ Passport = Passport, Name = "Clothings", Information = json.encode(Clothes) })
+
+		if Creation then
+			vRP.Creation(Passport)
+		end
 	end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -98,8 +102,8 @@ end)
 -- THREADINITSYSTEM
 -----------------------------------------------------------------------------------------------------------------------------------------
 CreateThread(function()
-	local Consult = vRP.SingleQuery("entitydata/GetData",{ Name = "Skinshop" })
-	local Result = Consult and json.decode(Consult.Information) or {}
+	local Consult = vRP.Query("entitydata/GetData",{ Name = "Skinshop" })
+	local Result = Consult and Consult[1] and json.decode(Consult[1].Information) or {}
 
 	for _,v in pairs(Result) do
 		table.insert(Locations,v)
@@ -109,8 +113,8 @@ end)
 -- ADD
 -----------------------------------------------------------------------------------------------------------------------------------------
 exports("Add",function(Table)
-	local Consult = vRP.SingleQuery("entitydata/GetData",{ Name = "Skinshop" })
-	local Result = Consult and json.decode(Consult.Information) or {}
+	local Consult = vRP.Query("entitydata/GetData",{ Name = "Skinshop" })
+	local Result = Consult and Consult[1] and json.decode(Consult[1].Information) or {}
 
 	table.insert(Result,Table)
 	table.insert(Locations,Table)
