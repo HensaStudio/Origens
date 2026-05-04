@@ -107,9 +107,11 @@ function PlayVomit()
 		TaskPlayAnim(Ped,"missfam5_blackout","vomit",3.0,-3.0,-1,49,0,false,false,false)
 
 		TriggerServerEvent("vomit:SyncParticles",PedToNet(Ped),Duration)
+		exports["smells"]:AddAnimationTrail("vomit",Ped)
 
 		Wait(Duration + 500)
 		ClearPedTasks(Ped)
+		exports["smells"]:RemoveActiveAnimation("vomit")
 
 		TriggerServerEvent("health:Contagion")
 	end
@@ -127,6 +129,7 @@ AddEventHandler("vomit:PlayParticles", function(NetPed,Duration)
 
 		local Bone = GetPedBoneIndex(Ped,47495)
 		local Puke = StartParticleFxLoopedOnEntityBone("scr_trev_puke",Ped,0.0,0.0,0.0,0.0,0.0,0.0,Bone,1.0,false,false,false)
+		SetParticleFxLoopedColour(Puke, 0.9, 0.85, 0.5, 0)
 
 		SetTimeout(Duration, function()
 			StopParticleFxLooped(Puke,0)
