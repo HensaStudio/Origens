@@ -617,6 +617,12 @@ local List = {
 		Coords = vec4(-37.83,-205.62,45.78,164.41),
 		Model = "ig_lifeinvad_02",
 		Anim = { "anim@heists@heist_corona@single_team","single_team_loop_boss" }
+	},{ -- Bikes
+		Distance = 100,
+		Coords = vec4(-613.6,-907.56,24.1,93.55),
+		Model = "u_m_y_cyclist_01",
+		Anim = { "anim@heists@heist_corona@single_team","single_team_loop_boss" },
+		Collision = true
 	}
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
