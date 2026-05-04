@@ -73,9 +73,11 @@ function tvRP.HasVehicleKey(Plate)
 	local source = source
 	local Passport = vRP.Passport(source)
 	local Inventory = vRP.Inventory(Passport)
+	local Plate = Plate:gsub("%s+","")
+
 	for Slot,v in pairs(Inventory) do
 		local Split = splitString(v.item,"-")
-		if Split[1] == "vehiclekey" and Split[2] == Plate then
+		if Split[1] == "vehiclekey" and Split[2]:gsub("%s+","") == Plate then
 			return true
 		end
 	end
@@ -87,9 +89,11 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 function vRP.PassportHasVehicleKey(Passport,Plate)
 	local Inventory = vRP.Inventory(Passport)
+	local Plate = Plate:gsub("%s+","")
+
 	for Slot,v in pairs(Inventory) do
 		local Split = splitString(v.item,"-")
-		if Split[1] == "vehiclekey" and Split[2] == Plate then
+		if Split[1] == "vehiclekey" and Split[2]:gsub("%s+","") == Plate then
 			return true
 		end
 	end
@@ -190,6 +194,24 @@ function vRP.InventoryWeight(Passport)
 	end
 
 	return Weight
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- UPDATESMELLYITEMS
+-----------------------------------------------------------------------------------------------------------------------------------------
+function vRP.UpdateSmellyItems(Passport)
+	local source = vRP.Source(Passport)
+	if source then
+		local Inventory = vRP.Inventory(Passport)
+
+		local SmellyItems = {}
+		for _,v in pairs(Inventory) do
+			if ItemSmell(v.item) then
+				SmellyItems[v.item] = true
+			end
+		end
+
+		Player(source).state:set("SmellyItems",SmellyItems,true)
+	end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CHECKDAMAGED
@@ -336,6 +358,8 @@ function vRP.GiveItem(Passport,Item,Amount,Notify,Slot)
 		AddItemToInventory(Slot)
 	end
 
+	vRP.UpdateSmellyItems(Passport)
+
 	return true
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -385,6 +409,8 @@ function vRP.GenerateItem(Passport,Item,Amount,Notify,Slot)
 	if Notify and ItemExist(Item) then
 		TriggerClientEvent("inventory:NotifyItem",source,{ Item,Amount })
 	end
+
+	vRP.UpdateSmellyItems(Passport)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- MAXITENS
@@ -472,6 +498,8 @@ function vRP.TakeItem(Passport,Item,Amount,Notify,Slot)
 						TriggerClientEvent("inventory:NotifyItem",source,{ Item,-Amount })
 					end
 
+					vRP.UpdateSmellyItems(Passport)
+
 					Returned = true
 
 					break
@@ -513,6 +541,8 @@ function vRP.TakeItem(Passport,Item,Amount,Notify,Slot)
 				if Notify and ItemExist(Item) then
 					TriggerClientEvent("inventory:NotifyItem",source,{ Item,-Amount })
 				end
+
+				vRP.UpdateSmellyItems(Passport)
 
 				Returned = true
 			end
@@ -582,6 +612,8 @@ function vRP.RemoveItem(Passport,Item,Amount,Notify)
 			if Notify and ItemExist(Item) then
 				TriggerClientEvent("inventory:NotifyItem",source,{ Item,-Amount })
 			end
+
+			vRP.UpdateSmellyItems(Passport)
 
 			return true
 		end
