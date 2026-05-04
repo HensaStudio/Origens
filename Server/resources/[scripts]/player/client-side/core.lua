@@ -288,6 +288,9 @@ AddEventHandler("player:Residual",function(Informations)
 		Residuals[Informations] = true
 	else
 		Residuals = false
+		if exports["smells"] then
+			exports["smells"]:ClearAllTrails()
+		end
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
