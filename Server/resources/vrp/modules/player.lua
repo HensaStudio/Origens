@@ -446,6 +446,8 @@ function tvRP.CreateObject(Model,x,y,z,Weapon,Component)
 		end
 
 		if DoesEntityExist(Object) then
+			local Route = GetPlayerRoutingBucket(source)
+			SetEntityRoutingBucket(Object,Route)
 			SetEntityIgnoreRequestControlFilter(Object,true)
 
 			local NetObjects = NetworkGetNetworkIdFromEntity(Object)
