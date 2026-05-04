@@ -1,4 +1,32 @@
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- FARTEFFECT
+-----------------------------------------------------------------------------------------------------------------------------------------
+function FartEffect(source)
+	CreateThread(function()
+		Wait(5000)
+
+		if vRP.Passport(source) then
+			local Ped = GetPlayerPed(source)
+			if DoesEntityExist(Ped) then
+				if math.random(100) <= 50 then
+					local Sounds = { "fartone","farttwo" }
+					local Selected = Sounds[math.random(#Sounds)]
+					local Coords = GetEntityCoords(Ped)
+					TriggerClientEvent("sounds:playSoundDistance",-1,"fart-"..source,Selected,0.5,false,vec3(Coords.x,Coords.y,Coords.z),5.0)
+				end
+			end
+		end
+	end)
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- INVENTORY:FARTEFFECT
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterServerEvent("inventory:FartEffect")
+AddEventHandler("inventory:FartEffect", function()
+	local source = source
+	FartEffect(source)
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- USE
 -----------------------------------------------------------------------------------------------------------------------------------------
 Use = {
@@ -452,6 +480,8 @@ Use = {
 		TriggerClientEvent("Progress",source,"Inalando",15000)
 		vRPC.playAnim(source,true,{"amb@world_human_clipboard@male@idle_a","idle_c"},true)
 
+		TriggerClientEvent("smells:startDrugSmell",source,"meth")
+
 		CreateThread(function()
 			while Active[Passport] and os.time() < Active[Passport] do
 				Wait(100)
@@ -461,6 +491,7 @@ Use = {
 				vRPC.Destroy(source)
 				Active[Passport] = nil
 				Player(source)["state"]["Buttons"] = false
+				TriggerClientEvent("smells:stopDrugSmell",source,"meth")
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					TriggerClientEvent("Methamphetamine",source)
@@ -610,7 +641,7 @@ Use = {
 
 	["vehiclekey"] = function(source,Passport,Amount,Slot,Full,Item,Split)
 		local Vehicle,Network,Plate = vRPC.VehicleList(source)
-		if Vehicle and Plate == Split[2] then
+		if Vehicle and Plate:gsub("%s+","") == Split[2]:gsub("%s+","") then
 			TriggerEvent("garages:LockVehicle",source,Network)
 		end
 	end,
@@ -770,11 +801,13 @@ Use = {
 
 	["joint"] = function(source,Passport,Amount,Slot,Full,Item,Split)
 		if vRP.ConsultItem(Passport,"lighter",1) then
-			Active[Passport] = os.time() + 10
+			Active[Passport] = os.time() + 60
 			Player(source)["state"]["Buttons"] = true
 			TriggerClientEvent("inventory:Close",source)
-			TriggerClientEvent("Progress",source,"Fumando",10000)
-			vRPC.CreateObjects(source,"amb@world_human_aa_smoke@male@idle_a","idle_c","prop_cs_ciggy_01",49,28422)
+			TriggerClientEvent("Progress",source,"Fumando",60000)
+                vRPC.CreateObjects(source,"amb@world_human_aa_smoke@male@idle_a","idle_c","prop_cs_ciggy_01",49,28422)
+
+                TriggerClientEvent("smells:startDrugSmell",source,"joint",60000)
 
 			CreateThread(function()
 				while Active[Passport] and os.time() < Active[Passport] do
@@ -785,6 +818,7 @@ Use = {
 					vRPC.Destroy(source)
 					Active[Passport] = nil
 					Player(source)["state"]["Buttons"] = false
+					TriggerClientEvent("smells:stopDrugSmell",source,"joint")
 
 					if vRP.TakeItem(Passport,Full,1,true,Slot) then
 						vRP.WeedTimer(Passport,120)
@@ -805,6 +839,8 @@ Use = {
 		TriggerClientEvent("Progress",source,"Tomando",3000)
 		vRPC.playAnim(source,true,{"mp_suicide","pill"},true)
 
+		TriggerClientEvent("smells:startDrugSmell",source,"metadone")
+
 		CreateThread(function()
 			while Active[Passport] and os.time() < Active[Passport] do
 				Wait(100)
@@ -814,6 +850,7 @@ Use = {
 				vRPC.Destroy(source)
 				Active[Passport] = nil
 				Player(source)["state"]["Buttons"] = false
+				TriggerClientEvent("smells:stopDrugSmell",source,"metadone")
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.ChemicalTimer(Passport,120)
@@ -830,6 +867,8 @@ Use = {
 		TriggerClientEvent("Progress",source,"Tomando",15000)
 		vRPC.playAnim(source,true,{"amb@world_human_clipboard@male@idle_a","idle_c"},true)
 
+		TriggerClientEvent("smells:startDrugSmell",source,"heroin")
+
 		CreateThread(function()
 			while Active[Passport] and os.time() < Active[Passport] do
 				Wait(100)
@@ -839,6 +878,7 @@ Use = {
 				vRPC.Destroy(source)
 				Active[Passport] = nil
 				Player(source)["state"]["Buttons"] = false
+				TriggerClientEvent("smells:stopDrugSmell",source,"heroin")
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.ChemicalTimer(Passport,120)
@@ -855,6 +895,8 @@ Use = {
 		TriggerClientEvent("Progress",source,"Fumando",15000)
 		vRPC.playAnim(source,true,{"amb@world_human_clipboard@male@idle_a","idle_c"},true)
 
+		TriggerClientEvent("smells:startDrugSmell",source,"crack")
+
 		CreateThread(function()
 			while Active[Passport] and os.time() < Active[Passport] do
 				Wait(100)
@@ -864,6 +906,7 @@ Use = {
 				vRPC.Destroy(source)
 				Active[Passport] = nil
 				Player(source)["state"]["Buttons"] = false
+				TriggerClientEvent("smells:stopDrugSmell",source,"crack")
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.ChemicalTimer(Passport,120)
@@ -880,6 +923,8 @@ Use = {
 		TriggerClientEvent("Progress",source,"Cheirando",5000)
 		vRPC.playAnim(source,true,{"anim@amb@nightclub@peds@","missfbi3_party_snort_coke_b_male3"},true)
 
+		TriggerClientEvent("smells:startDrugSmell",source,"cocaine")
+
 		CreateThread(function()
 			while Active[Passport] and os.time() < Active[Passport] do
 				Wait(100)
@@ -889,6 +934,7 @@ Use = {
 				vRPC.Destroy(source)
 				Active[Passport] = nil
 				Player(source)["state"]["Buttons"] = false
+				TriggerClientEvent("smells:stopDrugSmell",source,"cocaine")
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.ChemicalTimer(Passport,120)
@@ -901,11 +947,13 @@ Use = {
 
 	["cigarette"] = function(source,Passport,Amount,Slot,Full,Item,Split)
 		if vRP.ConsultItem(Passport,"lighter",1) then
-			Active[Passport] = os.time() + 10
+			Active[Passport] = os.time() + 60
 			Player(source)["state"]["Buttons"] = true
 			TriggerClientEvent("inventory:Close",source)
-			TriggerClientEvent("Progress",source,"Fumando",10000)
+			TriggerClientEvent("Progress",source,"Fumando",60000)
 			vRPC.CreateObjects(source,"amb@world_human_aa_smoke@male@idle_a","idle_c","prop_cs_ciggy_01",49,28422)
+
+			TriggerClientEvent("smells:startDrugSmell",source,"cigarette",60000)
 
 			CreateThread(function()
 				while Active[Passport] and os.time() < Active[Passport] do
@@ -916,6 +964,7 @@ Use = {
 					vRPC.Destroy(source)
 					Active[Passport] = nil
 					Player(source)["state"]["Buttons"] = false
+					TriggerClientEvent("smells:stopDrugSmell",source,"cigarette")
 
 					if vRP.TakeItem(Passport,Full,1,true,Slot) then
 						vRP.DowngradeStress(Passport,10)
@@ -928,11 +977,13 @@ Use = {
 	end,
 
 	["vape"] = function(source,Passport,Amount,Slot,Full,Item,Split)
-		Active[Passport] = os.time() + 20
+		Active[Passport] = os.time() + 30
 		Player(source)["state"]["Buttons"] = true
 		TriggerClientEvent("inventory:Close",source)
-		TriggerClientEvent("Progress",source,"Fumando",20000)
+		TriggerClientEvent("Progress",source,"Fumando",30000)
 		vRPC.CreateObjects(source,"anim@heists@humane_labs@finale@keycards","ped_a_enter_loop","ba_prop_battle_vape_01",49,18905,0.08,-0.00,0.03,-150.0,90.0,-10.0)
+
+		TriggerClientEvent("smells:startDrugSmell",source,"vape",30000)
 
 		CreateThread(function()
 			while Active[Passport] and os.time() < Active[Passport] do
@@ -944,6 +995,8 @@ Use = {
 				Active[Passport] = nil
 				vRP.DowngradeStress(Passport,20)
 				Player(source)["state"]["Buttons"] = false
+
+				TriggerClientEvent("smells:stopDrugSmell",source,"vape")
 			end
 		end)
 	end,
@@ -1520,6 +1573,7 @@ Use = {
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.UpgradeThirst(Passport,40)
+					FartEffect(source)
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Dexterity",600)
@@ -1549,6 +1603,7 @@ Use = {
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.UpgradeThirst(Passport,40)
+					FartEffect(source)
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Dexterity",600)
@@ -1579,6 +1634,7 @@ Use = {
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.UpgradeThirst(Passport,40)
 					vRP.DowngradeStress(Passport,15)
+					FartEffect(source)
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Dexterity",600)
@@ -1608,6 +1664,7 @@ Use = {
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.UpgradeThirst(Passport,40)
+					FartEffect(source)
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Dexterity",600)
@@ -1637,6 +1694,7 @@ Use = {
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.UpgradeThirst(Passport,40)
+					FartEffect(source)
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Dexterity",600)
@@ -1666,6 +1724,7 @@ Use = {
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.UpgradeThirst(Passport,40)
+					FartEffect(source)
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Dexterity",600)
@@ -1695,6 +1754,7 @@ Use = {
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.UpgradeThirst(Passport,40)
+					FartEffect(source)
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Dexterity",600)
@@ -1724,6 +1784,7 @@ Use = {
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.UpgradeThirst(Passport,40)
+					FartEffect(source)
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Dexterity",600)
@@ -1753,6 +1814,7 @@ Use = {
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.UpgradeThirst(Passport,40)
+					FartEffect(source)
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Dexterity",600)
@@ -1782,6 +1844,7 @@ Use = {
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.UpgradeThirst(Passport,40)
+					FartEffect(source)
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Dexterity",600)
@@ -1811,6 +1874,7 @@ Use = {
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.UpgradeThirst(Passport,40)
+					FartEffect(source)
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Dexterity",600)
@@ -1840,6 +1904,7 @@ Use = {
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.UpgradeStress(Passport,7)
+					FartEffect(source)
 				end
 			end
 		end)
@@ -1865,6 +1930,8 @@ Use = {
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.UpgradeStress(Passport,5)
+					FartEffect(source)
+
 					TriggerClientEvent("Energetic",source,60,1.2)
 				end
 			end
@@ -1941,6 +2008,7 @@ Use = {
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.UpgradeThirst(Passport,7)
+					FartEffect(source)
 				end
 			end
 		end)
@@ -1966,6 +2034,7 @@ Use = {
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.UpgradeThirst(Passport,7)
+					FartEffect(source)
 				end
 			end
 		end)
@@ -2062,6 +2131,7 @@ Use = {
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.UpgradeHunger(Passport,40)
+					FartEffect(source)
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Luck",600)
@@ -2091,6 +2161,7 @@ Use = {
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.UpgradeHunger(Passport,40)
+					FartEffect(source)
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Luck",600)
@@ -2120,6 +2191,7 @@ Use = {
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.UpgradeHunger(Passport,40)
+					FartEffect(source)
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Luck",600)
@@ -2149,6 +2221,7 @@ Use = {
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.UpgradeHunger(Passport,20)
+					FartEffect(source)
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Luck",600)
@@ -2178,6 +2251,7 @@ Use = {
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.UpgradeHunger(Passport,20)
+					FartEffect(source)
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Luck",600)
@@ -2207,6 +2281,7 @@ Use = {
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.UpgradeHunger(Passport,25)
+					FartEffect(source)
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Luck",600)
@@ -2265,6 +2340,7 @@ Use = {
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.UpgradeHunger(Passport,7)
+					FartEffect(source)
 				end
 			end
 		end)
@@ -2290,6 +2366,7 @@ Use = {
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.UpgradeHunger(Passport,40)
+					FartEffect(source)
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Luck",600)
@@ -2319,6 +2396,7 @@ Use = {
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.UpgradeHunger(Passport,40)
+					FartEffect(source)
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Luck",600)
@@ -2705,6 +2783,7 @@ Use = {
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.UpgradeHunger(Passport,7)
+					FartEffect(source)
 				end
 			end
 		end)
@@ -2730,6 +2809,7 @@ Use = {
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.UpgradeHunger(Passport,7)
+					FartEffect(source)
 				end
 			end
 		end)
@@ -2755,6 +2835,7 @@ Use = {
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.UpgradeHunger(Passport,7)
+					FartEffect(source)
 				end
 			end
 		end)
@@ -2780,6 +2861,39 @@ Use = {
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.UpgradeHunger(Passport,7)
+					FartEffect(source)
+				end
+			end
+		end)
+	end,
+
+	["milkbottle"] = function(source,Passport,Amount,Slot,Full,Item,Split)
+		vRPC.AnimActive(source)
+		Active[Passport] = os.time() + 10
+		Player(source)["state"]["Buttons"] = true
+		TriggerClientEvent("inventory:Close",source)
+		TriggerClientEvent("Progress",source,"Tomando",10000)
+		vRPC.CreateObjects(source,"amb@world_human_aa_coffee@idle_a", "idle_a","p_amb_coffeecup_01",49,28422)
+
+		CreateThread(function()
+			while Active[Passport] and os.time() < Active[Passport] do
+				Wait(100)
+			end
+
+			if Active[Passport] then
+				Active[Passport] = nil
+				vRPC.Destroy(source,"one")
+				Player(source)["state"]["Buttons"] = false
+
+				if vRP.TakeItem(Passport,Full,1,true,Slot) then
+					TriggerClientEvent("inventory:ClearDrugs",source)
+					vRP.UpgradeThirst(Passport,25)
+					FartEffect(source)
+
+					if math.random(100) >= 50 then
+						TriggerEvent("health:Infect","intoxication",source)
+						TriggerClientEvent("Notify",source,"Atenção","Você bebeu um leite estragado.","amarelo",5000)
+					end
 				end
 			end
 		end)
@@ -2805,6 +2919,7 @@ Use = {
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.UpgradeThirst(Passport,25)
+					FartEffect(source)
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Dexterity",600)
@@ -2834,6 +2949,7 @@ Use = {
 
 				if vRP.TakeItem(Passport,Full,1,true,Slot) then
 					vRP.UpgradeThirst(Passport,25)
+					FartEffect(source)
 
 					if vCLIENT.Restaurant(source) then
 						TriggerEvent("inventory:BuffServer",source,Passport,"Dexterity",600)
