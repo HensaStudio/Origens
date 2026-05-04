@@ -463,6 +463,22 @@ local List = {
 		Gemstone = 0,
 		Class = "Compactos"
 	},
+	["clube"] = {
+		Name = "Club E",
+		Weight = 10,
+		Price = 3550,
+		Mode = "Cars",
+		Gemstone = 0,
+		Class = "Compactos"
+	},
+	["piccolo"] = {
+		Name = "Piccolo",
+		Weight = 20,
+		Price = 9450,
+		Mode = "Cars",
+		Gemstone = 0,
+		Class = "Compactos"
+	},
 	["dilettante"] = {
 		Name = "Dilettante",
 		Weight = 30,
@@ -1357,6 +1373,22 @@ local List = {
 	},
 
 	-- BIKES
+	["mosquito"] = {
+		Name = "Mosquito",
+		Weight = 10,
+		Price = 1750,
+		Mode = "Bikes",
+		Gemstone = 0,
+		Class = "Motocicletas"
+	},
+	["sgzoomer"] = {
+		Name = "Zoomer",
+		Weight = 10,
+		Price = 7430,
+		Mode = "Bikes",
+		Gemstone = 0,
+		Class = "Motocicletas"
+	},
 	["akuma"] = {
 		Name = "Akuma",
 		Weight = 20,
