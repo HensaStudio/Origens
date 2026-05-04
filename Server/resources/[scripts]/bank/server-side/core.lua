@@ -14,6 +14,13 @@ Tunnel.bindInterface("bank",Creative)
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Active = {}
 -----------------------------------------------------------------------------------------------------------------------------------------
+-- CONFIG
+-----------------------------------------------------------------------------------------------------------------------------------------
+local Config = {
+	["TaxesThreshold"] = 2500,
+	["FinesThreshold"] = 5500
+}
+-----------------------------------------------------------------------------------------------------------------------------------------
 -- TRANSACTIONS
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Transactions(Passport,Limit,Before)
@@ -600,9 +607,9 @@ exports("CheckTaxes",function(Passport)
 		return false
 	end
 
-	local Consult = exports.oxmysql:single_async("SELECT 1 FROM taxes WHERE Passport = ? AND (Timestamp + 86400) < UNIX_TIMESTAMP() LIMIT 1",{ Passport })
-	if Consult then
-		TriggerClientEvent("Notify",source,"Impostos","Você possui débitos bancários.","amarelo",5000)
+	local Consult = exports.oxmysql:single_async("SELECT SUM(Price) as Total FROM taxes WHERE Passport = ? AND (Timestamp + 86400) < UNIX_TIMESTAMP()",{ Passport })
+	if Consult and Consult["Total"] and Consult["Total"] > Config["TaxesThreshold"] then
+		TriggerClientEvent("Notify",source,"Impostos","Você possui débitos de impostos acima de <b>"..Currency..""..Dotted(Config["TaxesThreshold"]).."</b>.","amarelo",5000)
 		return true
 	end
 
@@ -621,9 +628,9 @@ exports("CheckFines",function(Passport)
 		return false
 	end
 
-	local Consult = exports.oxmysql:single_async("SELECT 1 FROM mdt_creative_fines WHERE Passport = ? AND Paid = 0 AND (Timestamp + 86400) < UNIX_TIMESTAMP() LIMIT 1",{ Passport })
-	if Consult then
-		TriggerClientEvent("Notify",source,"Multas","Você possui débitos bancários.","amarelo",5000)
+	local Consult = exports.oxmysql:single_async("SELECT SUM(Fine) as Total FROM mdt_creative_fines WHERE Passport = ? AND Paid = 0 AND (Timestamp + 86400) < UNIX_TIMESTAMP()",{ Passport })
+	if Consult and Consult["Total"] and Consult["Total"] > Config["FinesThreshold"] then
+		TriggerClientEvent("Notify",source,"Multas","Você possui débitos de multas acima de <b>"..Currency..""..Dotted(Config["FinesThreshold"]).."</b>.","amarelo",5000)
 		return true
 	end
 
