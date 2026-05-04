@@ -11,31 +11,18 @@ Creative = {}
 Tunnel.bindInterface("hud",Creative)
 vKEYBOARD = Tunnel.getInterface("keyboard")
 -----------------------------------------------------------------------------------------------------------------------------------------
--- WEATHERLIST
------------------------------------------------------------------------------------------------------------------------------------------
-local WeatherList = {
-	{ Weather = "EXTRASUNNY", Chance = 20 },
-	{ Weather = "CLEAR", Chance = 20 },
-	{ Weather = "CLOUDS", Chance = 15 },
-	{ Weather = "OVERCAST", Chance = 10 },
-	{ Weather = "FOGGY", Chance = 5 },
-	{ Weather = "RAIN", Chance = 10 },
-	{ Weather = "THUNDER", Chance = 5 },
-	{ Weather = "CLEARING", Chance = 15 }
-}
------------------------------------------------------------------------------------------------------------------------------------------
 -- RANDOMWEATHER
 -----------------------------------------------------------------------------------------------------------------------------------------
 local function RandomWeather()
 	local Chance = 0
-	for _,List in pairs(WeatherList) do
+	for _,List in pairs(Config["Weather"]) do
 		Chance = Chance + List.Chance
 	end
 
 	local Random = math.random() * Chance
 	local Result = 0
 
-	for _,List in pairs(WeatherList) do
+	for _,List in pairs(Config["Weather"]) do
 		Result = Result + List.Chance
 		if Random <= Result then
 			return List.Weather

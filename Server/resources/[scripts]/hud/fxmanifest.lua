@@ -22,6 +22,7 @@ files {
 }
 
 shared_scripts {
+	"shared-side/shared.lua",
 	"@vrp/config/Item.lua",
 	"@vrp/config/Vehicle.lua",
 	"@vrp/config/Global.lua",
