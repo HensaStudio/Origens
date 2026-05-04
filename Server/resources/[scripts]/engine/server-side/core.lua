@@ -38,28 +38,11 @@ function Creative.RechargeFuel(Price,Amount,Mode)
 	return false
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
--- CANUSE
------------------------------------------------------------------------------------------------------------------------------------------
-function Creative.CanUse(Number)
-	local source = source
-	local Health = tonumber(Number)
-	local Passport = vRP.Passport(source)
-	if Passport and Health <= 900 then
-		if vRP.Request(source,"Atenção","O motor do seu veículo está danificado, <b>prosseguir com esta ação pode causar o risco de explosões</b>, deseja continuar?") then
-			return true
-		else
-			return false
-		end
-	end
-
-	return true
-end
------------------------------------------------------------------------------------------------------------------------------------------
 -- VEHICLEBRAKES
 -----------------------------------------------------------------------------------------------------------------------------------------
 function Creative.VehicleBrakes(Vehicle)
 	if VehicleBrakes[Vehicle] == nil then
-		VehicleBrakes[Vehicle] = { 0.55,0.35,0.45 }
+		VehicleBrakes[Vehicle] = { 0.90,0.55,0.75 }
 	end
 
 	return VehicleBrakes[Vehicle]
