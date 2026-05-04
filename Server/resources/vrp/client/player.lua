@@ -142,8 +142,13 @@ AddEventHandler("vRP:Active",function(Passport,Name,Inventory,Creation)
 		end
 
 		if Inventory then
+			local SmellyItems = {}
 			for Slot,v in pairs(Inventory) do
 				local Animation = ItemAnim(v["item"])
+
+				if ItemSmell(v["item"]) then
+					SmellyItems[v["item"]] = true
+				end
 
 				if Animation then
 					tvRP.PersistentBlock(v["item"],Animation)
@@ -156,6 +161,7 @@ AddEventHandler("vRP:Active",function(Passport,Name,Inventory,Creation)
 					end
 				end
 			end
+			LocalPlayer.state:set("SmellyItems", SmellyItems, true)
 		end
 	end)
 end)
