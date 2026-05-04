@@ -153,6 +153,17 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 function TargetLabel(Number,Coords,Mode,Weight,Item)
 	local Modes = {
+		Destroy = {
+			isBox = false,
+			size = { radius = 0.75 },
+			options = {
+				shop = Number,
+				Distance = 1.5,
+				options = {
+					{ event = "inventory:StoreObjects", label = "Destruir", tunnel = "server" }
+				}
+			}
+		},
 		Store = {
 			isBox = false,
 			size = { radius = 0.75 },
@@ -164,14 +175,14 @@ function TargetLabel(Number,Coords,Mode,Weight,Item)
 				}
 			}
 		},
-		Destroy = {
+		Camera = {
 			isBox = false,
-			size = { radius = 0.75 },
+			size = { radius = 0.25 },
 			options = {
 				shop = Number,
-				Distance = 1.5,
+				Distance = 5.0,
 				options = {
-					{ event = "inventory:StoreObjects", label = "Destruir", tunnel = "server" }
+					{ event = "inventory:StoreObjects", label = "Retirar", tunnel = "server" }
 				}
 			}
 		},
