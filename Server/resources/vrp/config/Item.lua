@@ -351,6 +351,7 @@ local List = {
 		["Name"] = "Cigarro de Cannabis",
 		["Type"] = "Consumível",
 		["Arrest"] = true,
+		["Smell"] = true,
 		["Weight"] = 0.25,
 		["Market"] = true,
 		["Economy"] = 25,
@@ -371,6 +372,7 @@ local List = {
 		["Name"] = "Carreira de Cocaína",
 		["Type"] = "Consumível",
 		["Arrest"] = true,
+		["Smell"] = true,
 		["Weight"] = 0.25,
 		["Market"] = true,
 		["Economy"] = 25,
@@ -391,6 +393,7 @@ local List = {
 		["Name"] = "Metanfetamina",
 		["Type"] = "Consumível",
 		["Arrest"] = true,
+		["Smell"] = true,
 		["Weight"] = 0.25,
 		["Market"] = true,
 		["Economy"] = 25,
@@ -411,6 +414,7 @@ local List = {
 		["Name"] = "Seringa de Crack",
 		["Type"] = "Consumível",
 		["Arrest"] = true,
+		["Smell"] = true,
 		["Weight"] = 0.25,
 		["Market"] = true,
 		["Economy"] = 375,
@@ -421,6 +425,7 @@ local List = {
 		["Name"] = "Seringa de Heroína",
 		["Type"] = "Consumível",
 		["Arrest"] = true,
+		["Smell"] = true,
 		["Weight"] = 0.25,
 		["Market"] = true,
 		["Economy"] = 525,
@@ -431,6 +436,7 @@ local List = {
 		["Name"] = "Seringa de Metadona",
 		["Type"] = "Consumível",
 		["Arrest"] = true,
+		["Smell"] = true,
 		["Weight"] = 0.25,
 		["Market"] = true,
 		["Economy"] = 475,
@@ -3408,7 +3414,7 @@ local List = {
 	["milkbottle"] = {
 		["Index"] = "milkbottle",
 		["Name"] = "Garrafa de Leite",
-		["Type"] = "Comum",
+		["Type"] = "Consumível",
 		["Weight"] = 0.35,
 		["Economy"] = 35,
 		["Market"] = true,
@@ -3974,6 +3980,13 @@ local List = {
 		["Durability"] = 240,
 		["Weight"] = 2.75,
 		["Economy"] = 1225,
+		["Market"] = true
+	},
+	["encryptedkey"] = {
+		["Index"] = "encryptedkey",
+		["Name"] = "Chave Criptografada",
+		["Type"] = "Comum",
+		["Weight"] = 3.5,
 		["Market"] = true
 	},
 	["lockpick"] = {
@@ -5648,4 +5661,11 @@ end
 function WeaponAttach(Item,Weapon)
 	local Item = SplitOne(Item)
 	return List[Weapon] and List[Weapon]["Attachs"] and List[Weapon]["Attachs"][Item] or false
+end
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- ITEMSMELL
+-----------------------------------------------------------------------------------------------------------------------------------------
+function ItemSmell(Item)
+	local Item = SplitOne(Item)
+	return List[Item] and List[Item]["Smell"] or false
 end
