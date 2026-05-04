@@ -150,6 +150,18 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 function AddWaypoint(pos, opts)
   opts = opts or {}
+
+  if type(pos) == "vector2" then
+    pos = vec3(pos.x, pos.y, 0.0)
+  end
+
+  if pos.z == 0.0 then
+    local Ground,z = GetGroundZFor_3dCoord(pos.x, pos.y, 1000.0, 0)
+    if Ground then
+      pos = vec3(pos.x, pos.y, z)
+    end
+  end
+
   idCounter = idCounter + 1
   local id = idCounter
 
