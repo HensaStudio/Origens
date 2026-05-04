@@ -247,6 +247,9 @@ local Garages = {
 	},
 	["154"] = { x = -7.47, y = -1085.78, z = 26.67,
 		["1"] = { -12.79,-1087.5,26.32,158.75 }
+	},
+	["155"] = { x = -613.6, y = -907.56, z = 24.1,
+		["1"] = { -615.83,-905.18,23.62,39.69 }
 	}
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -457,7 +460,8 @@ CreateThread(function()
 			local Vehicle = GetVehiclePedIsUsing(Ped)
 			if Vehicle then
 				local Plate = GetVehicleNumberPlateText(Vehicle)
-				if GetPedInVehicleSeat(Vehicle,-1) == Ped and Plate ~= "PDMSPORT" and not Entity(Vehicle).state.Lockpick then
+				local state = Entity(Vehicle).state
+				if GetPedInVehicleSeat(Vehicle,-1) == Ped and Plate ~= "PDMSPORT" and not (state and (type(state) == "userdata" or type(state) == "table") and state.Lockpick) then
 					SetVehicleEngineOn(Vehicle,false,true,true)
 					DisablePlayerFiring(Ped,true)
 					TimeDistance = 1
