@@ -740,10 +740,11 @@ function TargetEnable()
 						Selected[6] = true
 						table.insert(Menu,{ event = "engine:Supply", label = "Abastecer", tunnel = "client" })
 					else
-						if TowedSouth:isPointInside(HitCoords) and not Entity(Entitys).state.Tow then
+						local state = Entity(Entitys).state
+						if TowedSouth:isPointInside(HitCoords) and not (state and (type(state) == "userdata" or type(state) == "table") and state.Tow) then
 							table.insert(Menu,{ event = "towed:Payment", label = "Entregar", tunnel = "paramedic" })
 						else
-							local Lockpick = Entity(Entitys).state.Lockpick
+							local Lockpick = (state and (type(state) == "userdata" or type(state) == "table")) and state.Lockpick or false
 							if Lockpick then
 								table.insert(Menu,{ event = "engine:Vehrify", label = "Verificar", tunnel = "client" })
 
