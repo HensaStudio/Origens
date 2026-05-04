@@ -260,6 +260,10 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNetEvent("Joint")
 AddEventHandler("Joint",function()
+	if exports["smells"] then
+		exports["smells"]:AddItemTrail("joint",GetEntityCoords(PlayerPedId()))
+	end
+
 	if AnimpostfxIsRunning("DeathFailMPIn") then
 		AnimpostfxStop("DeathFailMPIn")
 	end
@@ -413,4 +417,37 @@ CreateThread(function()
 
 		Wait(1000)
 	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- INVENTORY:CLEARDRUG
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("inventory:ClearDrugs")
+AddEventHandler("inventory:ClearDrugs",function()
+	local Ped = PlayerPedId()
+	local Pid = PlayerId()
+
+	Cocaine = 0
+	Energetic = 0
+	Methamphetamine = 0
+	Metadone = 0
+	Heroin = 0
+	Crack = 0
+	Joint = 0
+	Oxycontin = 0
+
+	AnimpostfxStop("MinigameTransitionIn")
+	AnimpostfxStop("HeistTripSkipFade")
+	AnimpostfxStop("Dont_tazeme_bro")
+	AnimpostfxStop("DeathFailMPDark")
+	AnimpostfxStop("DrugsMichaelAliensFight")
+	AnimpostfxStop("HeistCelebPassBW")
+	AnimpostfxStop("DeathFailMPIn")
+
+	SetRunSprintMultiplierForPlayer(Pid,1.0)
+	RestorePlayerStamina(Pid,1.0)
+
+	SetPlayerWeaponDamageModifier(Pid,1.0)
+	SetPlayerMeleeWeaponDamageModifier(Pid,1.0)
+	SetAiWeaponDamageModifier(0.5)
+	SetAiMeleeWeaponDamageModifier(5.0)
 end)
