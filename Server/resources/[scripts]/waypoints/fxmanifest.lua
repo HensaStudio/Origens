@@ -17,3 +17,11 @@ shared_scripts {
 files {
 	"web-side/*"
 }
+
+exports {
+	"AddWaypoint",
+	"RemoveWaypoint",
+	"UpdateWaypoint",
+	"GetWaypointForCoord",
+	"ClearWaypoints"
+}
