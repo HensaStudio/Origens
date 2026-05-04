@@ -57,6 +57,8 @@ AddEventHandler("throwing:Init",function()
 	else
 		if vSERVER.First() then
 			TriggerEvent("Notify","Central de Empregos","Você acaba de dar inicio a sua jornada de trabalho, lembrando que a sua vida não se resume só a isso.","default",5000)
+
+			exports["waypoints"]:AddWaypoint(vec3(-613.6,-907.56,23.86),{ label = "Bicicletas", color = Theme["main"], autoRemove = true })
 			exports.target:LabelText("Throwing","Finalizar Expediente")
 
 			if Deliverys <= 0 then
