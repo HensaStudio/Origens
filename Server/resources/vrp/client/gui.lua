@@ -184,6 +184,8 @@ end
 function tvRP.Destroy(Mode)
 	local Ped = PlayerPedId()
 
+	TriggerEvent("smells:stopDrugSmell")
+
 	if LocalPlayer.state.Chair then
 		TriggerEvent("target:UpChair")
 	end
@@ -338,8 +340,19 @@ RegisterCommand("Engine",function()
 
 		if Vehicle and GetPedInVehicleSeat(Vehicle,-1) == Ped then
 			local Plate = GetVehicleNumberPlateText(Vehicle)
+			local PlateTrim = Plate:gsub("%s+","")
 
-			if vRPS.HasVehicleKey(Plate) or Entity(Vehicle)["state"]["Lockpick"] == Plate then
+			local state = Entity(Vehicle).state
+			local Lockpicked = false
+
+			if state and (type(state) == "userdata" or type(state) == "table") then
+				local PlateLockpick = state.Lockpick
+				if type(PlateLockpick) == "string" and PlateLockpick:gsub("%s+","") == PlateTrim then
+					Lockpicked = true
+				end
+			end
+
+			if vRPS.HasVehicleKey(Plate) or Lockpicked then
 				local Running = GetIsVehicleEngineRunning(Vehicle)
 				SetVehicleEngineOn(Vehicle,not Running,false,false)
 
