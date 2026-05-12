@@ -29,21 +29,25 @@ RegisterNUICallback("Config",function(Data,Callback)
 	SetModelAsNoLongerNeeded(Model)
 
 	local Ped = PlayerPedId()
-	SetEntityCoords(Ped,149.64,-157.97,-24.99,false,false,false,false)
+	SetEntityCoords(Ped,242.77,-392.07,45.3,false,false,false)
+	SetEntityHeading(Ped,337.33)
+
+	if IsEntityVisible(Ped) then
+		SetEntityVisible(Ped,false)
+	end
+
 	NetworkSetFriendlyFireOption(false)
 	FreezeEntityPosition(Ped,true)
 	SetEntityInvincible(Ped,true)
 	ClearPedTasksImmediately(Ped)
-	SetEntityHeading(Ped,306.15)
-	SetEntityVisible(Ped,false)
 	SetEntityHealth(Ped,100)
 	DisplayRadar(false)
 	DoScreenFadeIn(0)
 
 	Camera = CreateCam("DEFAULT_SCRIPTED_CAMERA",true)
 	RenderScriptCams(true,false,0,false,false)
-	SetCamCoord(Camera,151.6,-156.61,-23.99)
-	SetCamRot(Camera,0.0,0.0,125.0,2)
+	SetCamCoord(Camera,243.55,-389.67,46.25)
+	SetCamRot(Camera,0.0,0.0,157.0,2)
 	SetCamActive(Camera,true)
 
 	Characters = vSERVER.Characters()
@@ -209,7 +213,7 @@ RegisterNUICallback("Chosen",function(Data,Callback)
 	local Ped = PlayerPedId()
 	local Index = Data.Index
 	
-	SetEntityCoords(Ped,Locate[Index].Coords.x,Locate[Index].Coords.y,Locate[Index].Coords.z - 1)
+	SetEntityCoords(Ped,Locate[Index].Coords.x,Locate[Index].Coords.y,Locate[Index].Coords.z - 0.75)
 	SetCamCoord(Camera,Locate[Index].Coords.x,Locate[Index].Coords.y,Locate[Index].Coords.z + 1)
 	SetCamRot(Camera,0.0,0.0,0.0,2)
 
@@ -238,18 +242,23 @@ function Customization(Table,Check)
 	end
 
 	local Ped = PlayerPedId()
-	local Random = math.random(#Anims)
-	if LoadAnim(Anims[Random].Dict) then
-		TaskPlayAnim(Ped,Anims[Random].Dict,Anims[Random].Name,8.0,8.0,-1,1,1,0,0,0)
-	end
 
 	exports.skinshop:Apply(Table.Clothes,Ped)
 	exports.barbershop:Apply(Table.Barber,Ped)
 	exports.tattooshop:Apply(Table.Tattoos,Ped)
 
+	FreezeEntityPosition(Ped,true)
 	ClearPedTasksImmediately(Ped)
 	SetEntityInvincible(Ped,true)
-	SetEntityVisible(Ped,true)
+
+	if not IsEntityVisible(Ped) then
+		SetEntityVisible(Ped,true)
+	end
+
+	local Anim = Anims[math.random(#Anims)]
+	if LoadAnim(Anim.Dict) then
+		TaskPlayAnim(Ped,Anim.Dict,Anim.Name,8.0,8.0,-1,1,1,0,0,0)
+	end
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- SPAWN:INCREMENT
