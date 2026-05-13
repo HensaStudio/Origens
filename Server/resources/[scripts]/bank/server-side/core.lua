@@ -17,8 +17,8 @@ local Active = {}
 -- CONFIG
 -----------------------------------------------------------------------------------------------------------------------------------------
 local Config = {
-	["TaxesThreshold"] = 2500,
-	["FinesThreshold"] = 5500
+	["TaxesThreshold"] = 1, -- Depois dessa quantidade de Impostos os sistemas não abrem
+	["FinesThreshold"] = 5500 -- Depois desse valor em Multas os sistemas não abrem
 }
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- TRANSACTIONS
@@ -609,7 +609,7 @@ exports("CheckTaxes",function(Passport)
 
 	local Consult = exports.oxmysql:single_async("SELECT SUM(Price) as Total FROM taxes WHERE Passport = ? AND (Timestamp + 86400) < UNIX_TIMESTAMP()",{ Passport })
 	if Consult and Consult["Total"] and parseInt(Consult["Total"]) > Config["TaxesThreshold"] then
-		TriggerClientEvent("Notify",source,"Impostos","Você possui débitos de impostos acima de <b>"..Currency..""..Dotted(Config["TaxesThreshold"]).."</b>.","amarelo",5000)
+		TriggerClientEvent("Notify",source,"Impostos","Você ultrapassou o limite de <b>"..Dotted(Config["TaxesThreshold"]).."</b> em impostos.","amarelo",5000)
 		return true
 	end
 
