@@ -608,7 +608,7 @@ exports("CheckTaxes",function(Passport)
 	end
 
 	local Consult = exports.oxmysql:single_async("SELECT SUM(Price) as Total FROM taxes WHERE Passport = ? AND (Timestamp + 86400) < UNIX_TIMESTAMP()",{ Passport })
-	if Consult and Consult["Total"] and Consult["Total"] > Config["TaxesThreshold"] then
+	if Consult and Consult["Total"] and parseInt(Consult["Total"]) > Config["TaxesThreshold"] then
 		TriggerClientEvent("Notify",source,"Impostos","Você possui débitos de impostos acima de <b>"..Currency..""..Dotted(Config["TaxesThreshold"]).."</b>.","amarelo",5000)
 		return true
 	end
@@ -629,7 +629,7 @@ exports("CheckFines",function(Passport)
 	end
 
 	local Consult = exports.oxmysql:single_async("SELECT SUM(Fine) as Total FROM mdt_creative_fines WHERE Passport = ? AND Paid = 0 AND (Timestamp + 86400) < UNIX_TIMESTAMP()",{ Passport })
-	if Consult and Consult["Total"] and Consult["Total"] > Config["FinesThreshold"] then
+	if Consult and Consult["Total"] and parseInt(Consult["Total"]) > Config["FinesThreshold"] then
 		TriggerClientEvent("Notify",source,"Multas","Você possui débitos de multas acima de <b>"..Currency..""..Dotted(Config["FinesThreshold"]).."</b>.","amarelo",5000)
 		return true
 	end
