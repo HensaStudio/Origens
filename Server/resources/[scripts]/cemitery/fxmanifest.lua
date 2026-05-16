@@ -8,3 +8,7 @@ client_scripts {
 	"@vrp/lib/Utils.lua",
 	"client-side/*"
 }
+
+shared_scripts {
+	"@vrp/config/Global.lua"
+}
