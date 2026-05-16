@@ -43,26 +43,28 @@ CreateThread(function()
 
 	while true do
 		local TimeDistance = 999
-		if LocalPlayer["state"]["Active"] and Display then
-			if not Loadout then
-				if LoadTexture("circleminimap") then
-					AddReplaceTexture("platform:/textures/graphics","radarmasksm","circleminimap","radarmasksm")
+		if LocalPlayer["state"]["Active"] then
+			if Display then
+				if not Loadout then
+					if LoadTexture("circleminimap") then
+						AddReplaceTexture("platform:/textures/graphics","radarmasksm","circleminimap","radarmasksm")
 
-					SetMinimapComponentPosition("minimap","L","B",0.005,-0.025,0.175,0.225)
-					SetMinimapComponentPosition("minimap_mask","L","B",0.02,0.39,0.1135,0.5)
-					SetMinimapComponentPosition("minimap_blur","L","B",-0.02,-0.01,0.265,0.225)
+						SetMinimapComponentPosition("minimap","L","B",0.005,-0.025,0.175,0.225)
+						SetMinimapComponentPosition("minimap_mask","L","B",0.02,0.39,0.1135,0.5)
+						SetMinimapComponentPosition("minimap_blur","L","B",-0.02,-0.01,0.265,0.225)
 
-					SetBigmapActive(true,false)
+						SetBigmapActive(true,false)
 
-					repeat
-						Wait(100)
+						repeat
+							Wait(100)
 
-						SetMinimapClipType(1)
-						SetBigmapActive(false,false)
-					until not IsBigmapActive()
+							SetMinimapClipType(1)
+							SetBigmapActive(false,false)
+						until not IsBigmapActive()
 
-					SetRadarZoom(1100)
-					Loadout = true
+						SetRadarZoom(1100)
+						Loadout = true
+					end
 				end
 			end
 
@@ -129,69 +131,77 @@ CreateThread(function()
 					end
 				end
 
-				if ActualVehicle ~= Vehicle then
-					SendNUIMessage({ Action = "Vehicle", Payload = true })
-					ActualVehicle = Vehicle
-				end
+				if Display then
+					if ActualVehicle ~= Vehicle then
+						SendNUIMessage({ Action = "Vehicle", Payload = true })
+						ActualVehicle = Vehicle
+					end
 
-				if VEngineHealth ~= EngineHealth then
-					SendNUIMessage({ Action = "EngineHealth", Payload = VEngineHealth })
-					VEngineHealth = EngineHealth
-				end
+					if VEngineHealth ~= EngineHealth then
+						SendNUIMessage({ Action = "EngineHealth", Payload = VEngineHealth })
+						VEngineHealth = EngineHealth
+					end
 
-				if Locked ~= VLocked then
-					SendNUIMessage({ Action = "Locked", Payload = VLocked })
-					Locked = VLocked
-				end
+					if Locked ~= VLocked then
+						SendNUIMessage({ Action = "Locked", Payload = VLocked })
+						Locked = VLocked
+					end
 
-				if NitroActive then
-					SendNUIMessage({ Action = "Nitro", Payload = NitroFuel })
-					Nitro = NitroFuel
-				else
-					local EntityState = Entity(Vehicle).state.Nitro or 0
-					if EntityState ~= Nitro then
-						SendNUIMessage({ Action = "Nitro", Payload = EntityState })
-						Nitro = EntityState
+					if NitroActive then
+						SendNUIMessage({ Action = "Nitro", Payload = NitroFuel })
+						Nitro = NitroFuel
+					else
+						local EntityState = Entity(Vehicle).state.Nitro or 0
+						if EntityState ~= Nitro then
+							SendNUIMessage({ Action = "Nitro", Payload = EntityState })
+							Nitro = EntityState
+						end
+					end
+
+					if Fuel ~= VFuel then
+						SendNUIMessage({ Action = "Fuel", Payload = VFuel })
+						Fuel = VFuel
+					end
+
+					if Speed ~= VSpeed then
+						SendNUIMessage({ Action = "Speed", Payload = VSpeed })
+						Speed = VSpeed
+					end
+
+					if not GetIsVehicleEngineRunning(Vehicle) then
+						VRpm = 0.0
+					end
+
+					if Rpm ~= VRpm then
+						SendNUIMessage({ Action = "Rpm", Payload = VRpm })
+						Rpm = VRpm
 					end
 				end
 
-				if Fuel ~= VFuel then
-					SendNUIMessage({ Action = "Fuel", Payload = VFuel })
-					Fuel = VFuel
-				end
+				Speed = VSpeed
 
-				if Speed ~= VSpeed then
-					SendNUIMessage({ Action = "Speed", Payload = VSpeed })
-					Speed = VSpeed
-				end
+				if Display then
+					if not SeatbeltLock and SeatbeltAlarm <= GetGameTimer() and not IsPedOnAnyBike(Ped) and not IsPedInAnyHeli(Ped) and not IsPedInAnyPlane(Ped) and not IsPedInAnyBoat(Ped) and VSpeed >= 5.0 then
+						TriggerEvent("sounds:playSound","WithoutBelt","beltalarm",1.0)
 
-				if not GetIsVehicleEngineRunning(Vehicle) then
-					VRpm = 0.0
-				end
-
-				if Rpm ~= VRpm then
-					SendNUIMessage({ Action = "Rpm", Payload = VRpm })
-					Rpm = VRpm
-				end
-
-				if not SeatbeltLock and SeatbeltAlarm <= GetGameTimer() and not IsPedOnAnyBike(Ped) and not IsPedInAnyHeli(Ped) and not IsPedInAnyPlane(Ped) and not IsPedInAnyBoat(Ped) and VSpeed >= 5.0 then
-					TriggerEvent("sounds:playSound","WithoutBelt","beltalarm",1.0)
-
-					SeatbeltAlarm = GetGameTimer() + 1250
+						SeatbeltAlarm = GetGameTimer() + 1250
+					end
 				end
 			else
-				if ActualVehicle then
-					ActualVehicle = nil
-					SendNUIMessage({ Action = "Vehicle", Payload = false })
+				if Display then
+					if ActualVehicle then
+						ActualVehicle = nil
+						SendNUIMessage({ Action = "Vehicle", Payload = false })
 
-					Locked = false
-					SendNUIMessage({ Action = "Locked", Payload = false })
+						Locked = false
+						SendNUIMessage({ Action = "Locked", Payload = false })
 
-					Nitro = 0
-					SendNUIMessage({ Action = "Nitro", Payload = 0 })
+						Nitro = 0
+						SendNUIMessage({ Action = "Nitro", Payload = 0 })
 
-					Speed = 0
-					SendNUIMessage({ Action = "Speed", Payload = 0 })
+						Speed = 0
+						SendNUIMessage({ Action = "Speed", Payload = 0 })
+					end
 				end
 
 				if LastSpeed ~= 0 then
@@ -199,15 +209,17 @@ CreateThread(function()
 				end
 			end
 
-			if InVehicle or Radar then
-				if not IsMinimapRendering() then
-					SendNUIMessage({ Action = "Map", Payload = true })
-					SetBigmapActive(false,false)
-					DisplayRadar(true)
+			if Display then
+				if InVehicle or Radar then
+					if not IsMinimapRendering() then
+						SendNUIMessage({ Action = "Map", Payload = true })
+						SetBigmapActive(false,false)
+						DisplayRadar(true)
+					end
+				elseif not InVehicle and not Radar and IsMinimapRendering() then
+					SendNUIMessage({ Action = "Map", Payload = false })
+					DisplayRadar(false)
 				end
-			elseif not InVehicle and not Radar and IsMinimapRendering() then
-				SendNUIMessage({ Action = "Map", Payload = false })
-				DisplayRadar(false)
 			end
 		end
 
@@ -383,7 +395,9 @@ CreateThread(function()
 				end
 
 				if SeatbeltLock then
-					SendNUIMessage({ Action = "Seatbelt", Payload = false })
+					if Display then
+						SendNUIMessage({ Action = "Seatbelt", Payload = false })
+					end
 					SeatbeltLock = false
 				end
 
@@ -404,7 +418,9 @@ RegisterCommand("Seatbeltz",function(source)
 	if IsPedInAnyVehicle(Ped) and not IsPedOnAnyBike(Ped) and not IsPedInAnyHeli(Ped) and not IsPedInAnyBoat(Ped) and not IsPedInAnyPlane(Ped) then
 		if SeatbeltLock then
 			TriggerEvent("sounds:playSound","belt-off","beltoff",1.0,false)
-			SendNUIMessage({ Action = "Seatbelt", Payload = false })
+			if Display then
+				SendNUIMessage({ Action = "Seatbelt", Payload = false })
+			end
 			SeatbeltLock = false
 
 			local Vehicle = GetVehiclePedIsUsing(Ped)
@@ -413,7 +429,9 @@ RegisterCommand("Seatbeltz",function(source)
 			end
 		else
 			TriggerEvent("sounds:playSound","belt-on","belton",1.0,false)
-			SendNUIMessage({ Action = "Seatbelt", Payload = true })
+			if Display then
+				SendNUIMessage({ Action = "Seatbelt", Payload = true })
+			end
 			SeatbeltLock = true
 
 			local Vehicle = GetVehiclePedIsUsing(Ped)
