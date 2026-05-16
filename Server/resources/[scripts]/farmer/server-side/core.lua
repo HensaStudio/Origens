@@ -183,15 +183,37 @@ AddEventHandler("farmer:Lumberman",function(Number)
 			if not Axe and not AxePlus then
 				TriggerClientEvent("Notify",source,"Atenção","Precisa de <b>1x "..ItemName(Item).."</b>.","amarelo",5000)
 			else
-				if math.random(100) <= 50 then
-					TriggerClientEvent("farmer:SpawnCow",source)
+				if math.random(100) >= 75 then
+					TriggerClientEvent("farmer:SpawnActivist",source)
 				end
 
 				Player(source)["state"]["Cancel"] = true
 				Player(source)["state"]["Buttons"] = true
 				vRPC.CreateObjects(source,"lumberjackaxe@idle","idle","prop_tool_fireaxe",1,57005,0.1,0.0,0.0,-90.0,0.0,0.0)
 
-				if vRP.Task(source,Axe and 10 or 5,10000) and GlobalState["Work"] >= GlobalState["Farmer:"..Number] then
+				local Ped = GetPlayerPed(source)
+				local Coords = GetEntityCoords(Ped)
+				local TaskCompleted = false
+
+				CreateThread(function()
+					local SoundProgress = 30
+					repeat
+						if SoundProgress ~= 30 then
+							Wait(400)
+						end
+
+						Wait(700)
+
+						TriggerEvent("sounds:playSoundDistanceServer","lumberman_"..Passport.."_"..SoundProgress,"lumberman",0.1,false,Coords,30.0)
+
+						SoundProgress = SoundProgress - 1
+					until SoundProgress <= 0 or TaskCompleted
+				end)
+
+				local TaskSuccess = vRP.Task(source,5,2500)
+				TaskCompleted = true
+
+				if TaskSuccess and GlobalState["Work"] >= GlobalState["Farmer:"..Number] then
 					GlobalState["Farmer:"..Number] = GlobalState["Work"] + 30
 
 					local Valuation = CalculateValuation(Passport, 3, "Lumber")
