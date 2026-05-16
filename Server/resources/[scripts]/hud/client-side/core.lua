@@ -81,6 +81,23 @@ CreateThread(function()
 		if LocalPlayer["state"]["Active"] then
 			local Pid = PlayerId()
 			local Ped = PlayerPedId()
+			local Healing = GetEntityHealth(Ped) - 100
+
+			if GetEntityMaxHealth(Ped) == 200 then
+				if Healing > 100 then
+					SetEntityHealth(Ped,200)
+					Healing = 100
+				end
+
+				if not IsPedSwimming(Ped) then
+					if Healing <= 30 and GetPedMovementClipset(Ped) ~= -650503762 then
+						LocalPlayer["state"]:set("Walk",false,false)
+						SetPedMovementClipset(Ped,"move_m@injured",0.5)
+					elseif Healing > 30 and GetPedMovementClipset(Ped) == -650503762 then
+						LocalPlayer["state"]:set("Walk",false,false)
+					end
+				end
+			end
 
 			if IsPauseMenuActive() then
 				if not Pause and Display then
@@ -96,7 +113,6 @@ CreateThread(function()
 
 					local Coords = GetEntityCoords(Ped)
 					local Armouring = GetPedArmour(Ped)
-					local Healing = GetEntityHealth(Ped) - 100
 					local MinRoad,MinCross = GetStreetNameAtCoord(Coords["x"],Coords["y"],Coords["z"])
 					local FullRoad = GetStreetNameFromHashKey(MinRoad)
 					local FullCross = GetStreetNameFromHashKey(MinCross)
@@ -113,23 +129,9 @@ CreateThread(function()
 							Health = Healing
 						end
 					else
-						if Healing > 100 then
-							SetEntityHealth(Ped,200)
-							Healing = 100
-						end
-
 						if Health ~= Healing then
 							SendNUIMessage({ Action = "Health", Payload = Healing })
 							Health = Healing
-						end
-
-						if not IsPedSwimming(Ped) then
-							if Healing <= 30 and GetPedMovementClipset(Ped) ~= -650503762 then
-								LocalPlayer["state"]:set("Walk",false,false)
-								SetPedMovementClipset(Ped,"move_m@injured",0.5)
-							elseif Healing > 30 and GetPedMovementClipset(Ped) == -650503762 then
-								LocalPlayer["state"]:set("Walk",false,false)
-							end
 						end
 					end
 
@@ -437,8 +439,7 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- HUD:REMOVEGEMSTONE
 -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterNetEvent("hud:RemoveGemstone")
-AddEventHandler("hud:RemoveGemstone",function(Number)
+RegisterNetEvent("hud:RemoveGemstone",function(Number)
 	Gemstone = Gemstone - Number
 
 	if Gemstone < 0 then
@@ -462,8 +463,7 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- HUD:HOOD
 -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterNetEvent("hud:Hood")
-AddEventHandler("hud:Hood",function()
+RegisterNetEvent("hud:Hood",function()
 	if Hood then
 		DoScreenFadeIn(2500)
 		Hood = false
@@ -471,4 +471,10 @@ AddEventHandler("hud:Hood",function()
 		DoScreenFadeOut(0)
 		Hood = true
 	end
+end)
+-----------------------------------------------------------------------------------------------------------------------------------------
+-- HUD:DISPLAYEXPERIENCE
+-----------------------------------------------------------------------------------------------------------------------------------------
+RegisterNetEvent("hud:DisplayExperience",function(Type,Amount)
+	SendNUIMessage({ Action = Type, Payload = Amount })
 end)
