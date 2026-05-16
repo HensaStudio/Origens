@@ -9,7 +9,6 @@ function vRP.GiveBank(Passport,Amount,Notify)
 		return false
 	end
 
-	exports.bank:AddTransactions(Passport,"entry",Amount)
 	vRP.Query("characters/AddBank",{ Passport = Passport, Bank = Amount })
 
 	local source = vRP.Source(Passport)
@@ -32,7 +31,6 @@ function vRP.RemoveBank(Passport,Amount)
 		return false
 	end
 
-	exports.bank:AddTransactions(Passport,"exit",Amount)
 	vRP.Query("characters/RemBank",{ Passport = Passport, Bank = Amount })
 
 	local source = vRP.Source(Passport)
