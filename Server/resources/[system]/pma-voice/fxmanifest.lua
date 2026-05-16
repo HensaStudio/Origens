@@ -2,6 +2,8 @@ fx_version "cerulean"
 game "gta5"
 lua54 "yes"
 
+dependency "animations"
+
 ui_page "ui/index.html"
 shared_script "shared.lua"
 
