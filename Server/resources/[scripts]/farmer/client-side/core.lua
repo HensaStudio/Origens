@@ -213,13 +213,13 @@ function Creative.PolyZone(Service)
 	return Poly[Service] and Poly[Service]:isPointInside(Coords)
 end
 -----------------------------------------------------------------------------------------------------------------------------------------
--- FARMER:SPAWNCOW
+-- FARMER:SPAWNACTIVIST
 -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterNetEvent("farmer:SpawnCow")
-AddEventHandler("farmer:SpawnCow",function()
+RegisterNetEvent("farmer:SpawnActivist")
+AddEventHandler("farmer:SpawnActivist",function()
 	local Ped = PlayerPedId()
 	local Coords = GetEntityCoords(Ped)
-	local Model = "a_c_cow"
+	local Model = "cs_hunter"
 
 	local Angle = math.random() * 2 * math.pi
 	local Radius = math.random(25,30)
@@ -229,33 +229,32 @@ AddEventHandler("farmer:SpawnCow",function()
 
 	local Networked = vRPS.CreateModels(Model,x,y,z,28)
 	if Networked then
-		local Cow = LoadNetwork(Networked)
-		if Cow then
-			TriggerEvent("Notify","Atenção","Uma vaca raivosa apareceu.","amarelo",5000)
+		local Hunter = LoadNetwork(Networked)
+		if Hunter then
+			TriggerEvent("Notify","Atenção","Um caçador ativista apareceu.","amarelo",5000)
 
-			SetEntityMaxHealth(Cow,500)
-			SetEntityHealth(Cow,500)
-			SetEntityInvincible(Cow,false)
-			SetPedRelationshipGroupHash(Cow,GetHashKey("HATES_PLAYER"))
-			SetPedFleeAttributes(Cow,0,false)
-			SetPedCombatAttributes(Cow,0,true)
-			SetPedCombatAttributes(Cow,46,true)
-			SetPedCombatAttributes(Cow,5,true)
-			SetPedCombatAttributes(Cow,16,true)
-			SetPedCombatRange(Cow,2)
-			SetPedCombatMovement(Cow,3)
-			SetPedCombatAbility(Cow,2)
-			SetBlockingOfNonTemporaryEvents(Cow,false)
-			GiveWeaponToPed(Cow,GetHashKey("WEAPON_ANIMAL"),200,true,true)
-			SetPedWeaponLiveryColor(Cow,GetHashKey("WEAPON_ANIMAL"),0)
-			TaskCombatPed(Cow,Ped,0,16)
-			SetPedKeepTask(Cow,true)
+			SetEntityMaxHealth(Hunter,500)
+			SetEntityHealth(Hunter,500)
+			SetEntityInvincible(Hunter,false)
+			SetPedRelationshipGroupHash(Hunter,GetHashKey("HATES_PLAYER"))
+			SetPedFleeAttributes(Hunter,0,false)
+			SetPedCombatAttributes(Hunter,0,true)
+			SetPedCombatAttributes(Hunter,46,true)
+			SetPedCombatAttributes(Hunter,5,true)
+			SetPedCombatAttributes(Hunter,16,true)
+			SetPedCombatRange(Hunter,2)
+			SetPedCombatMovement(Hunter,3)
+			SetPedCombatAbility(Hunter,2)
+			SetBlockingOfNonTemporaryEvents(Hunter,false)
+			GiveWeaponToPed(Hunter,GetHashKey("WEAPON_MACHETE"),500,true,true)
+			TaskCombatPed(Hunter,Ped,0,16)
+			SetPedKeepTask(Hunter,true)
 
 			CreateThread(function()
 				local Timeout = GetGameTimer() + 45000
-				while DoesEntityExist(Cow) and GetGameTimer() < Timeout do
-					if not IsPedInCombat(Cow,Ped) then
-						TaskCombatPed(Cow,Ped,0,16)
+				while DoesEntityExist(Hunter) and GetGameTimer() < Timeout do
+					if not IsPedInCombat(Hunter,Ped) then
+						TaskCombatPed(Hunter,Ped,0,16)
 					end
 
 					Wait(3000)
