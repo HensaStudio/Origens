@@ -44,7 +44,7 @@ ShakeVehicleCamera = true -- Balançar a câmera do personagem quando bater o ve
 -----------------------------------------------------------------------------------------------------------------------------------------
 ServerLink = "https://hensa.site" -- Link exibido na whitelist
 ServerName = "Hensa" -- Nome do servidor
-ServerAvatar = "https://i.ibb.co/Jwp4Z2f8/Hensa2.png" -- Avatar padrão do servidor
+ServerAvatar = "https://i.ibb.co/BMJtgRx/Hensa.png" -- Avatar padrão do servidor
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- ADAPTIVECARDS
 -----------------------------------------------------------------------------------------------------------------------------------------
