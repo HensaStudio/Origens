@@ -335,6 +335,11 @@ function Creative.Use(Slot,Amount)
 	local Amount = parseInt(Amount,true)
 	local Passport = vRP.Passport(source)
 	if Passport and not Active[Passport] then
+		if Player(source).state.plushieEquipped then
+			TriggerClientEvent("Notify",source,"Atenção","Você precisa desequipar sua pelúcia para usar itens do inventário.","amarelo",5000)
+			return false
+		end
+
 		local Inv = vRP.Inventory(Passport)
 		if not Inv[Slot] or not Inv[Slot].item then
 			return
