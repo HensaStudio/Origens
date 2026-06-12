@@ -558,7 +558,7 @@ end)
 -- DELETE
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterNUICallback("Delete",function(Data,Callback)
-	local Vehicle = vRP.VehicleList(5.0)
+	local Vehicle = vRP.VehicleList(15.0)
 	if IsEntityAVehicle(Vehicle) then
 		local Doors = {}
 		for Number = 0,5 do
