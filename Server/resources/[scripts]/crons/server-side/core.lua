@@ -34,14 +34,18 @@ local function Mode(Amount,Level)
         
         if Array then
             table.insert(Parts, "[\n")
+
             for i, v in ipairs(Amount) do
                 table.insert(Parts, Next)
                 table.insert(Parts, Mode(v, Level + 1))
+
                 if i < #Amount then
                     table.insert(Parts, ",")
                 end
+
                 table.insert(Parts, "\n")
             end
+
             table.insert(Parts, Indent .. "]")
         else
             table.insert(Parts, "{\n")
@@ -54,6 +58,7 @@ local function Mode(Amount,Level)
                     if not First then
                         table.insert(Parts, ",\n")
                     end
+
                     First = false
                     
                     table.insert(Parts, Next)
@@ -133,11 +138,23 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- CHECK
 -----------------------------------------------------------------------------------------------------------------------------------------
-exports("Check", function(Passport, Permission)    
+exports("Check", function(Passport, Mode, Params)    
     for _, Crons in ipairs(Permissions) do
-        if Crons.Passport == Passport and 
-           (Crons.Mode == "RemovePermission" or Crons.Mode == "WipePermission") and Crons.Params and Crons.Params.Permission == Permission then
-            return Crons
+        if Crons.Passport == Passport and Crons.Mode == Mode then
+            if Params and Crons.Params then
+                local match = true
+                for key, value in pairs(Params) do
+                    if Crons.Params[key] ~= value then
+                        match = false
+                        break
+                    end
+                end
+                if match then
+                    return Crons
+                end
+            else
+                return Crons
+            end
         end
     end
     
