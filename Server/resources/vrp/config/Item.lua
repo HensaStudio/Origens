@@ -1140,20 +1140,6 @@ local List = {
 			["gunpowder"] = 1
 		}
 	},
-	["c4"] = {
-		["Index"] = "c4",
-		["Name"] = "Explosivo C4",
-		["Type"] = "Comum",
-		["Market"] = true,
-		["Arrest"] = true,
-		["Weight"] = 1.25,
-		["LostWater"] = true,
-		["Economy"] = 1625,
-		["Recycle"] = {
-			["gunpowder"] = 5,
-			["plastic"] = 10
-		}
-	},
 	["wheat"] = {
 		["Index"] = "wheat",
 		["Name"] = "Trigo",
