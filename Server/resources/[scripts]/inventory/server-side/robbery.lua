@@ -148,7 +148,7 @@ local Config = {
 		Explosion = true,
 		Title = "Caixa Eletrônico",
 		Need = {
-			Item = "c4",
+			Item = "explosives",
 			Amount = 1,
 			Consume = true
 		},
