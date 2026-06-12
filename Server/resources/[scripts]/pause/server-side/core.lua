@@ -322,7 +322,7 @@ function Creative.PremiumBuy(Index,Selectable)
 				exports.oxmysql:insert_async("INSERT INTO vehicles (Passport,Vehicle,Plate,Weight,Tax,Work,Block) VALUES (@Passport,@Vehicle,@Plate,@Weight,@Tax,@Work,@Block)",{ Passport = Passport, Vehicle = Model, Plate = vRP.GeneratePlate(), Weight = VehicleWeight(Model), Tax = os.time() + Data.Duration, Block = 1, Work = (VehicleMode(Model) == "Work" and 1 or 0) })
 			end
 
-			exports["crons"]:Insert(Passport,"RemoveVehicle",Data.Duration / 60,{ Model = Model })
+			exports["crons"]:Insert(Passport,"RemoveVehicle",Data.Duration,{ Model = Model })
 		end
 	end
 
@@ -330,7 +330,7 @@ function Creative.PremiumBuy(Index,Selectable)
 		vRP.SetPermission(Passport,Data.Permission)
 	end
 
-	exports["crons"]:Insert(Passport,"RemovePermission",Data.Duration / 60,{ Permission = Data.Permission })
+	exports["crons"]:Insert(Passport,"RemovePermission",Data.Duration,{ Permission = Data.Permission })
 
 	Active[Passport] = nil
 
