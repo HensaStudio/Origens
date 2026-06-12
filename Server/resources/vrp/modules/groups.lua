@@ -445,8 +445,14 @@ end
 AddEventHandler("Connect",function(Passport,source,First)
 	local Passport = tostring(Passport)
 	for Permission,v in pairs(Groups) do
-		if v.Service and vRP.HasPermission(Passport,Permission) and Service[Permission] and (Service[Permission][Passport] == false or (First and Service[Permission][Passport] == nil)) then
-			vRP.ServiceEnter(source,Passport,Permission,true)
+		if v.Service and vRP.HasPermission(Passport,Permission) then
+			if not Service[Permission] then
+				Service[Permission] = {}
+			end
+
+			if (Service[Permission][Passport] == false) or (Service[Permission][Passport] == nil) then
+				vRP.ServiceEnter(source,Passport,Permission,true)
+			end
 		end
 	end
 
