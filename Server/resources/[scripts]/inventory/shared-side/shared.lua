@@ -252,7 +252,6 @@ Robbery = {
 	{ Coords = vec3(-44.5,-2240.93,8.02), Mode = "Container" },
 
 	{ Coords = vec3(33.19,-1348.80,29.49), Mode = "Eletronic" },
-	{ Coords = vec3(33.19,-1348.80,29.49), Mode = "Eletronic" },
 	{ Coords = vec3(2559.05,389.47,108.62), Mode = "Eletronic" },
 	{ Coords = vec3(1153.11,-326.90,69.20), Mode = "Eletronic" },
 	{ Coords = vec3(-718.26,-915.71,19.21), Mode = "Eletronic" },
