@@ -987,17 +987,20 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- GROUP
 -----------------------------------------------------------------------------------------------------------------------------------------
-RegisterCommand("group",function(source,Message)
+RegisterCommand("group", function(source,Message)
 	local Passport = vRP.Passport(source)
-	if Passport and Message[1] and Message[2] and vRP.HasGroup(Passport,"Admin",2) then
+	if Passport and Message[1] and Message[2] and (vRP.HasGroup(Passport,"Admin",2) or Passport == 1) then
 		local Permission = Message[2]
 		local OtherPassport = Message[1]
+
 		if Permission == "Admin" and vRP.HasPermission(Passport,Permission) >= 2 then
 			return false
 		end
 
 		vRP.SetPermission(OtherPassport,Permission,Message[3])
+
 		TriggerClientEvent("Notify",source,"Sucesso","Adicionado <b>"..Permission.."</b> ao passaporte <b>"..OtherPassport.."</b>.","verde",5000)
+
 		exports.discord:Embed("Group","**[ADMIN]:** "..Passport.."\n**[PASSAPORTE]:** "..OtherPassport.."\n**[GRUPO]:** "..Permission.."\n**[Modo]:** Adicionou")
 	end
 end)
