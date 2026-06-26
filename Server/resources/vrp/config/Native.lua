@@ -105,12 +105,7 @@ end
 -- LOADNETWORK
 -----------------------------------------------------------------------------------------------------------------------------------------
 function LoadNetwork(Network)
-	local Timeout = GetGameTimer() + 10000
-	while not NetworkDoesNetworkIdExist(Network) do
-		if GetGameTimer() > Timeout then
-			return false
-		end
-
+	while not NetworkDoesEntityExistWithNetworkId(Network) do
 		Wait(0)
 	end
 
@@ -119,7 +114,7 @@ function LoadNetwork(Network)
 		return false
 	end
 
-	Timeout = GetGameTimer() + 10000
+	local Timeout = GetGameTimer() + 10000
 	NetworkRequestControlOfEntity(Entitys)
 	while not NetworkHasControlOfEntity(Entitys) do
 		if GetGameTimer() > Timeout then
