@@ -274,7 +274,7 @@ end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 RegisterCommand("GuiCancel",function()
 	local Ped = PlayerPedId()
-	if LocalPlayer.state.Active and GetNetworkTime() >= Button and not IsPauseMenuActive() and not IsPedReloading(Ped) and not LocalPlayer.state.Handcuff and not exports["lb-phone"]:IsOpen() and GetEntityHealth(Ped) > 100 and not LocalPlayer.state.Cancel and not IsPedReloading(Ped) then
+	if LocalPlayer.state.Active and GetNetworkTime() >= Button and not IsPauseMenuActive() and not IsPedReloading(Ped) and not LocalPlayer.state.Handcuff and GetEntityHealth(Ped) > 100 and not LocalPlayer.state.Cancel and not IsPedReloading(Ped) then
 		Button = GetNetworkTime() + 1000
 		TriggerServerEvent("inventory:Cancel")
 
