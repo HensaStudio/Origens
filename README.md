@@ -1,15 +1,21 @@
-# 📚 Hensa
-**Hensa** representa um coletivo composto por entusiastas dedicados à edição de conteúdo destinado à criação de servidores de roleplay para o jogo **Grand Theft Auto V**, utilizando a plataforma **FiveM**.
+# 📚 Hensa Studio
 
-Acesse o nosso **Website**: [Clique aqui para entrar](https://hensa.site/).
+A **Hensa Studio** é um coletivo de desenvolvedores apaixonados pela criação e aprimoramento de conteúdos para servidores de **Grand Theft Auto V Roleplay**, utilizando a plataforma **FiveM**.
 
--------
+Nosso objetivo é desenvolver sistemas, recursos e ferramentas com foco em desempenho, estabilidade e qualidade, oferecendo soluções que elevam a experiência de jogadores e desenvolvedores.
 
-### 💬 Comunidade
-Maiores informações você só encontra em nosso **Discord**: [Clique aqui para entrar](https://discord.com/invite/E4BsFbXwRX).
+---
 
--------
+## 💬 Comunidade
+
+Fique por dentro das novidades, atualizações e participe da nossa comunidade através do **Discord**:
+
+👉 **https://discord.gg/VKkWDXSaHh**
+
+---
 
 ## 📝 Licença
 
-Este conteúdo é distribuído sob a **Licença __MIT__**. Consulte o arquivo `LICENSE` para obter mais detalhes.
+Este projeto é distribuído sob a **Licença MIT**.
+
+Consulte o arquivo `LICENSE` para obter informações completas sobre os termos de uso, permissões e limitações da licença.
