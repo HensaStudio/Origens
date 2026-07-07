@@ -3,7 +3,7 @@
 -----------------------------------------------------------------------------------------------------------------------------------------
 local ResourceName = GetCurrentResourceName()
 local CurrentVersion = GetResourceMetadata(ResourceName,"version",0)
-local CheckVersion = "https://raw.githubusercontent.com/OiSouHen/Versions/refs/heads/main/Origens.txt?v=1"
+local CheckVersion = "https://raw.githubusercontent.com/SouLucasHen/Versions/refs/heads/main/Origens.txt?v=1"
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- VERSIONTOTABLE
 -----------------------------------------------------------------------------------------------------------------------------------------
