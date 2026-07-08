@@ -4,7 +4,7 @@ function triggerZoneEvent(eventName, ...)
   TriggerClientEvent(eventPrefix .. eventName, -1, ...)
 end
 
-RegisterNetEvent("PolyZone:TriggerZoneEvent")
+RegisterServerEvent("PolyZone:TriggerZoneEvent")
 AddEventHandler("PolyZone:TriggerZoneEvent", triggerZoneEvent)
 
 exports("TriggerZoneEvent", triggerZoneEvent)

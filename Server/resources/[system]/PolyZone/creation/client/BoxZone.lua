@@ -82,7 +82,7 @@ function boxStart(name, heading, length, width, minHeight, maxHeight)
     maxZ = center.z + maxHeight
     createdZone.maxZ = maxZ
   end
-  Citizen.CreateThread(function()
+  CreateThread(function()
     while createdZone do
       if IsDisabledControlJustPressed(0, 20) then -- Z pressed
         useZ = not useZ

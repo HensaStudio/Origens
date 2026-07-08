@@ -33,7 +33,7 @@ end
 
 function addBlip(pos)
   local blip = AddBlipForCoord(pos.x, pos.y, 0.0)
-  SetBlipColour(blip, 7)
+  SetBlipColour(blip, 77)
   SetBlipDisplay(blip, 8)
   SetBlipScale(blip, 1.0)
   SetBlipAsShortRange(blip, true)
@@ -42,7 +42,7 @@ end
 
 function clearTbl(tbl)
   -- Only works with contiguous (array-like) tables
-  if tbl == nil then return end
+  if not tbl then return end
   for i=1, #tbl do
     tbl[i] = nil
   end
@@ -51,7 +51,7 @@ end
 
 function copyTbl(tbl)
   -- Only a shallow copy, and only works with contiguous (array-like) tables
-  if tbl == nil then return end
+  if not tbl then return end
   local ret = {}
   for i=1, #tbl do
     ret[i] = tbl[i]
@@ -125,9 +125,7 @@ function PolyZone:TransformPoint(point)
   return point
 end
 
-function PolyZone:draw(forceDraw)
-  if not forceDraw and not self.debugPoly and not self.debugGrid then return end
-  
+function PolyZone:draw()
   local zDrawDist = 45.0
   local oColor = self.debugColors.outline or defaultColorOutline
   local oR, oG, oB = oColor[1], oColor[2], oColor[3]
@@ -141,49 +139,23 @@ function PolyZone:draw(forceDraw)
   local points = self.points
   for i=1, #points do
     local point = self:TransformPoint(points[i])
-    DrawLine(point.x, point.y, minZ, point.x, point.y, maxZ, oR, oG, oB, 164)
 
     if i < #points then
       local p2 = self:TransformPoint(points[i+1])
-      DrawLine(point.x, point.y, maxZ, p2.x, p2.y, maxZ, oR, oG, oB, 184)
-      _drawWall(point, p2, minZ, maxZ, wR, wG, wB, 48)
+      _drawWall(point, p2, minZ, maxZ, 255, 255, 255, 50)
     end
   end
 
   if #points > 2 then
     local firstPoint = self:TransformPoint(points[1])
     local lastPoint = self:TransformPoint(points[#points])
-    DrawLine(firstPoint.x, firstPoint.y, maxZ, lastPoint.x, lastPoint.y, maxZ, oR, oG, oB, 184)
-    _drawWall(firstPoint, lastPoint, minZ, maxZ, wR, wG, wB, 48)
+    _drawWall(firstPoint, lastPoint, minZ, maxZ, 255, 255, 255, 50)
   end
 end
 
-function PolyZone.drawPoly(poly, forceDraw)
-  PolyZone.draw(poly, forceDraw)
+function PolyZone.drawPoly(poly)
+  PolyZone.draw(poly)
 end
-
--- Debug drawing all grid cells that are completly within the polygon
-local function _drawGrid(poly)
-  local minZ = poly.minZ
-  local maxZ = poly.maxZ
-  if not minZ or not maxZ then
-    local plyPed = PlayerPedId()
-    local plyPos = GetEntityCoords(plyPed)
-    minZ = plyPos.z - 46.0
-    maxZ = plyPos.z - 45.0
-  end
-
-  local lines = poly.lines
-  local color = poly.debugColors.grid or defaultColorGrid
-  local r, g, b = color[1], color[2], color[3]
-  for i=1, #lines do
-    local line = lines[i]
-    local min = line.min
-    local max = line.max
-    DrawLine(min.x + 0.0, min.y + 0.0, maxZ + 0.0, max.x + 0.0, max.y + 0.0, maxZ + 0.0, r, g, b, 196)
-  end
-end
-
 
 local function _pointInPoly(point, poly)
   local x = point.x
@@ -219,7 +191,7 @@ local function _pointInPoly(point, poly)
     local gridCellX = (gridPosX * gridDivisions) // size.x
     local gridCellY = (gridPosY * gridDivisions) // size.y
     local gridCellValue = grid[gridCellY + 1][gridCellX + 1]
-    if gridCellValue == nil and poly.lazyGrid then
+    if not gridCellValue and poly.lazyGrid then
       gridCellValue = _isGridCellInsidePoly(gridCellX, gridCellY, poly)
       grid[gridCellY + 1][gridCellX + 1] = gridCellValue
     end
@@ -352,7 +324,7 @@ local function _createGrid(poly, options)
   poly.gridArea = 0.0
   poly.gridCellWidth = poly.size.x / poly.gridDivisions
   poly.gridCellHeight = poly.size.y / poly.gridDivisions
-  Citizen.CreateThread(function()
+  CreateThread(function()
     -- Calculate all grid cells that are entirely inside the polygon
     local isInside = {}
     local gridCellArea = poly.gridCellWidth * poly.gridCellHeight
@@ -373,10 +345,8 @@ local function _createGrid(poly, options)
 
     if options.debugGrid then
       local coverage = string.format("%.2f", poly.gridCoverage * 100)
-      print("[PolyZone] Debug: Grid Coverage at " .. coverage .. "% with " .. poly.gridDivisions
-      .. " divisions. Optimal coverage for memory usage and startup time is 80-90%")
 
-      Citizen.CreateThread(function()
+      CreateThread(function()
         poly.lines = _calculateLinesForDrawingGrid(poly)
         -- A lot of memory is used by this pre-calc. Force a gc collect after to clear it out
         collectgarbage("collect")
@@ -432,12 +402,9 @@ local function _initDebug(poly, options)
     return
   end
 
-  Citizen.CreateThread(function()
+  CreateThread(function()
     while not poly.destroyed do
-      poly:draw(false)
-      if options.debugGrid and poly.lines then
-        _drawGrid(poly)
-      end
+      poly:draw()
       Citizen.Wait(0)
     end
   end)
@@ -445,18 +412,14 @@ end
 
 function PolyZone:new(points, options)
   if not points then
-    print("[PolyZone] Error: Passed nil points table to PolyZone:Create() {name=" .. options.name .. "}")
     return
-  end
-  if #points < 3 then
-    print("[PolyZone] Warning: Passed points table with less than 3 points to PolyZone:Create() {name=" .. options.name .. "}")
   end
 
   options = options or {}
   local useGrid = options.useGrid
-  if useGrid == nil then useGrid = true end
+  if not useGrid then useGrid = true end
   local lazyGrid = options.lazyGrid
-  if lazyGrid == nil then lazyGrid = true end
+  if not lazyGrid then lazyGrid = true end
   local poly = {
     name = tostring(options.name) or nil,
     points = points,
@@ -491,7 +454,6 @@ end
 
 function PolyZone:isPointInside(point)
   if self.destroyed then
-    print("[PolyZone] Warning: Called isPointInside on destroyed zone {name=" .. self.name .. "}")
     return false
   end
 
@@ -500,9 +462,6 @@ end
 
 function PolyZone:destroy()
   self.destroyed = true
-  if self.debugPoly or self.debugGrid then
-    print("[PolyZone] Debug: Destroying zone {name=" .. self.name .. "}")
-  end
 end
 
 -- Helper functions
@@ -534,7 +493,7 @@ function PolyZone:onPointInOut(getPointCb, onPointInOutCb, waitInMS)
   local _waitInMS = 500
   if waitInMS ~= nil then _waitInMS = waitInMS end
 
-  Citizen.CreateThread(function()
+  CreateThread(function()
     local isInside = false
     while not self.destroyed do
       if not self.paused then
@@ -555,7 +514,7 @@ function PolyZone:onPlayerInOut(onPointInOutCb, waitInMS)
 end
 
 function PolyZone:addEvent(eventName)
-  if self.events == nil then self.events = {} end
+  if not self.events then self.events = {} end
   local internalEventName = eventPrefix .. eventName
   RegisterNetEvent(internalEventName)
   self.events[eventName] = AddEventHandler(internalEventName, function (...)

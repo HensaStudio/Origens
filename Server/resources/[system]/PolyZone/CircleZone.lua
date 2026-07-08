@@ -2,8 +2,7 @@ CircleZone = {}
 -- Inherits from PolyZone
 setmetatable(CircleZone, { __index = PolyZone })
 
-function CircleZone:draw(forceDraw)
-  if not forceDraw and not self.debugPoly then return end
+function CircleZone:draw()
   local center = self.center
   local debugColor = self.debugColor
   local r, g, b = debugColor[1], debugColor[2], debugColor[3]
@@ -23,9 +22,9 @@ local function _initDebug(zone, options)
     return
   end
 
-  Citizen.CreateThread(function()
+  CreateThread(function()
     while not zone.destroyed do
-      zone:draw(false)
+      zone:draw()
       Citizen.Wait(0)
     end
   end)
@@ -60,7 +59,6 @@ end
 
 function CircleZone:isPointInside(point)
   if self.destroyed then
-    print("[PolyZone] Warning: Called isPointInside on destroyed zone {name=" .. self.name .. "}")
     return false
   end
 
