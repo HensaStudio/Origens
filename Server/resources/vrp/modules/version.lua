@@ -55,4 +55,5 @@ PerformHttpRequest(CheckVersion, function(err,text,headers)
 
 	local Message = string.format("^3[HENSA VRP]^0 Status: %s | Atual: %s | Última: %s",Status,CurrentVersion,LatestVersion)
 	print(Message)
+	print("Experimente dar um upgrade para a nova base ^3Hensa: Summer^0")
 end)
