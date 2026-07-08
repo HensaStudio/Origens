@@ -140,7 +140,7 @@ local Doors = {
 	["116"] = { Coords = vec3(384.381195, 796.092773, 190.639633), Hash = -117185009, Disabled = false, Lock = true, Distance = 1.75, Permission = "PRPD" },
 
 	-- Lester
-	["117"] = { Coords = vec3(1273.815552,-1720.696899,54.921429), Hash = 1145337974, Disabled = false, Lock = true, Distance = 1.75, Item = "lockpick" },
+	["117"] = { Coords = vec3(1273.815552,-1720.696899,54.921429), Hash = 1145337974, Disabled = false, Lock = true, Distance = 1.75, Permission = "Lester", Item = "lockpick" },
 
 	-- BurgerShot
 	["118"] = { Coords = vec3(-1183.372681,-885.564392,13.903462), Hash = 1724308471, Disabled = false, Lock = true, Distance = 1.75, Permission = "BurgerShot", Other = "119" },
