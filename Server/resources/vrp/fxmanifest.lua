@@ -4,7 +4,7 @@ lua54 "yes"
 
 creative_network "extended"
 
-version "1.0.0"
+version "1.0.5"
 
 client_scripts {
 	"lib/Utils.lua",
