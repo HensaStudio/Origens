@@ -220,7 +220,7 @@ function tvRP.Destroy(Mode)
 		SetTimeout(250,function()
 			local Ped = PlayerPedId()
 			if Persistent and DoesEntityExist(Ped) and not IsPedInAnyVehicle(Ped) and GetEntityHealth(Ped) > 100 then
-				TriggerEvent("emotes",Persistent.Anim)
+				TriggerEvent("animations:Emotes",Persistent.Anim)
 			end
 		end)
 	end
@@ -277,10 +277,6 @@ RegisterCommand("GuiCancel",function()
 	if LocalPlayer.state.Active and GetNetworkTime() >= Button and not IsPauseMenuActive() and not IsPedReloading(Ped) and not LocalPlayer.state.Handcuff and GetEntityHealth(Ped) > 100 and not LocalPlayer.state.Cancel and not IsPedReloading(Ped) then
 		Button = GetNetworkTime() + 1000
 		TriggerServerEvent("inventory:Cancel")
-
-		if LocalPlayer.state.Arena then
-			TriggerEvent("arena:Exit")
-		end
 	end
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
@@ -420,7 +416,7 @@ RegisterCommand("GuiBind",function(source,Message)
 	end
 
 	local Slot = parseInt(Message[1])
-	if not Slot or Slot < 0 or Slot > 3 then
+	if not Slot or Slot < 100 or Slot > 103 then
 		return false
 	end
 
@@ -487,7 +483,7 @@ function tvRP.PersistentBlock(ItemName,Animation)
 			Anim = Animation
 		}
 
-		TriggerEvent("emotes",Animation)
+		TriggerEvent("animations:Emotes",Animation)
 
 		return false
 	end
@@ -540,7 +536,7 @@ function tvRP.PersistentNone(ItemName)
 				Anim = Next.Anim
 			}
 
-			TriggerEvent("emotes",Next.Anim)
+			TriggerEvent("animations:Emotes",Next.Anim)
 		end
 	end
 end
@@ -553,10 +549,10 @@ RegisterKeyMapping("GuiPoint","Apontar os dedos.","keyboard","B")
 RegisterKeyMapping("GuiEngine","Ligar o veículo.","keyboard","Z")
 RegisterKeyMapping("GuiCrouch","Agachar.","keyboard","LCONTROL")
 
-RegisterKeyMapping("GuiBind 0","Interação do botão 1.","keyboard","1")
-RegisterKeyMapping("GuiBind 1","Interação do botão 2.","keyboard","2")
-RegisterKeyMapping("GuiBind 2","Interação do botão 3.","keyboard","3")
-RegisterKeyMapping("GuiBind 3","Interação do botão 4.","keyboard","4")
+RegisterKeyMapping("GuiBind 100","Interação do botão 1.","keyboard","1")
+RegisterKeyMapping("GuiBind 101","Interação do botão 2.","keyboard","2")
+RegisterKeyMapping("GuiBind 102","Interação do botão 3.","keyboard","3")
+RegisterKeyMapping("GuiBind 103","Interação do botão 4.","keyboard","4")
 
 RegisterKeyMapping("GuiPads 0","Interação de animação 0.","keyboard","NUMPAD0")
 RegisterKeyMapping("GuiPads 1","Interação de animação 1.","keyboard","NUMPAD1")
