@@ -18,5 +18,6 @@ shared_scripts {
 	"@vrp/config/Item.lua",
 	"@vrp/config/Vehicle.lua",
 	"@vrp/config/Global.lua",
-	"@vrp/config/Drops.lua"
+	"@vrp/config/Drops.lua",
+	"shared-side/*"
 }

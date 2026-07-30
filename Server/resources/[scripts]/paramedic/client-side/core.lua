@@ -108,19 +108,24 @@ end
 -----------------------------------------------------------------------------------------------------------------------------------------
 AddEventHandler("paramedic:Injuries",function()
 	if next(Damaged) == nil then
-		TriggerEvent("Notify","Aviso","Nenhum ferimento encontrado.","amarelo",5000)
+		TriggerEvent("Notify","Aviso","Nenhum ferimento encontrado.","vermelho",5000)
+	else
+		local Index = 1
+		local Injuries = {}
+		for Number in pairs(Damaged) do
+			table.insert(Injuries,string.format("<b>%d</b>: %s<br>",Index,Bone(Number)))
+			Index = Index + 1
+		end
 
-		return false
+		TriggerEvent("Notify","Saúde",table.concat(Injuries),"sangue",10000)
 	end
 
-	local Index = 1
-	local Injuries = {}
-	for Number in pairs(Damaged) do
-		table.insert(Injuries,string.format("<b>%d</b>: %s<br>",Index,Bone(Number)))
-		Index = Index + 1
+	local Illness = LocalPlayer.state.Illness
+	if Illness and IllnessList[Illness] then
+		TriggerEvent("Notify","Saúde","<b>Doença:</b> "..IllnessList[Illness].Name.."<br><b>Cura Recomendada:</b> "..ItemName(IllnessList[Illness].Cure),"sangue",10000)
+	else
+		TriggerEvent("Notify","Aviso","Nenhuma doença encontrada.","vermelho",5000)
 	end
-
-	TriggerEvent("Notify","Ferimentos",table.concat(Injuries),"amarelo",10000)
 end)
 -----------------------------------------------------------------------------------------------------------------------------------------
 -- DIAGNOSTIC
